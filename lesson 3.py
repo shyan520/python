@@ -32,7 +32,7 @@ motorcycles.insert(1,'ducati')
 print(motorcycles)
 print('3--3.2.2\n')
 
-# 3--3.2.2 在列表中删除元素#########################################################
+# 3--3.2.3 在列表中删除元素#########################################################
 #方法1：del
 motorcycles = ['honda','yamaha','suzuki']
 print(motorcycles)
@@ -56,4 +56,38 @@ motorcycles = ['honda','yamaha','suzuki']
 print(motorcycles)
 motorcycles.remove('yamaha')
 print(motorcycles)
+print('3--3.2.3\n')
+
+# 3--3.3.1 使用方法 sort() 对列表进行永久性排序########################################
+cars = ['bmw','audi','toyota','subaru']
+# 按字母顺序排序
+cars.sort()
+print(cars)
+# 按字母反向顺序排序
+cars.sort(reverse=True)
+print(cars)
+print('3--3.3.1\n')
+
+# 3--3.3.2 使用函数 sorted() 对列表进行临时排序#########################################
+cars = ['bmw','audi','toyota','subaru']
+print(cars)
+print(sorted(cars))
+print(sorted(cars,reverse=True))
+print(cars)
+print('3--3.3.2\n')
+
+# 3--3.3.3 反转列表元素的排列顺序进行排序###############################################
+cars = ['bmw','audi','toyota','subaru']
+print(cars)
+cars.reverse()
+print(cars)
+print('3--3.3.3\n')
+
+# 3--3.3.4 确定列表长度#################################################################
+# Python计算列表元素数时从 1 开始，因此确定列表长度时，不会遇到差一错误。
+cars = ['bmw','audi','toyota','subaru']
+print(len(cars))
+print('3--3.3.4\n')
+
+
 

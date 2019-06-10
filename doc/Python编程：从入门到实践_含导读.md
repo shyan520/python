@@ -9,7 +9,7 @@ I'm thinking of a number! Try to guess the number I'm thinking of: 25
 Too low! Guess again: 50
 Too high! Guess again: 42
 That's it! Would you like to play again? (yes/no) no
-Thanks for playing!
+Thanks for playing! 
 ```
 
 看到家人玩着我编写的游戏，而且它完全按我预期的方式运行，我心里不知有多满足。此情此景我永远都忘不了。
@@ -99,7 +99,7 @@ Python 是一门杰出的语言，值得你去学习，咱们现在就开始吧�
 
 本章知识导图如下。用椭圆标记的表示学习者可以拓展的部分，如果有兴趣可以通过相关资料拓展。
 
-![](D:\4.学习资料\编码相关\Python资料\python\doc\第一章.png)
+![enter image description here](https://images.gitbook.cn/b1e4e650-8b25-11e9-b6ad-75422f81aa28)
 
 > 在本章中，你将运行自己的第一个程序——hello_world.py。为此，你首先需要检查自己的计算机是否安装了 Python；如果没有安装，你需要安装它。你还要安装一个文本编辑器，用于编写和运行 Python 程序。你输入 Python 代码时，这个文本编辑器能够识别它们并突出显示不同的部分，让你能够轻松地了解代码的结构。
 
@@ -214,7 +214,7 @@ python3 "%f"
 
 同样，务必确保空格和大小写都完全与显示的相同。图1-1显示了该如何在 Geany 中配置这些命令。
 
-![{%}](D:\4.学习资料\编码相关\Python资料\python\doc\1.1.png)
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/05.d01z.001.png)
 
 **图1-1　在 Linux 中配置 Geany，使其使用 Python 3**
 
@@ -332,7 +332,7 @@ Windows 系统并非都默认安装了 Python，因此你可能需要下载并�
 
 如果是这样，就需要下载 Windows Python 安装程序。为此，请访问<http://python.org/downloads/>。你将看到两个按钮，分别用于下载 Python 3 和 Python 2。单击用于下载 Python 3 的按钮，这会根据你的系统自动下载正确的安装程序。下载安装程序后，运行它。请务必选中复选框 Add Python to PATH（如图1-2所示），这让你能够更轻松地配置系统。
 
-![{%}](D:\4.学习资料\编码相关\Python资料\python\doc\1.2.png)
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/05.d01z.002.png)
 
 **图1-2　确保选中复选框 Add Python to PATH**
 
@@ -420,7 +420,7 @@ C:\Python35\python "%f"
 
 同样，指定执行命令时，务必确保空格和大小写与这里显示的一致。图1-3显示了该如何在 Geany 中配置这些命令。
 
-![{%}](D:\4.学习资料\编码相关\Python资料\python\doc\1.3.png)
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/05.d01z.003.png)
 
 **图1-3　在 Windows 中配置 Geany，使其使用 Python 3**
 
@@ -548,7 +548,7 @@ Python 中的数据类型，也可以说成是数据对象。这两种说法是�
 
 Python 语言的内置函数`dir`和`help`是非常好的学习助手，并且阅读官方文档，也是学习者从一开始就要逐渐学习并掌握的方法，这就是我在“前言”中所说的一种得“渔”之道。
 
-![](D:\4.学习资料\编码相关\Python资料\python\doc\第二章.png)
+![enter image description here](https://images.gitbook.cn/f02db660-8811-11e9-b1c9-d994bc31f268)
 
 PS：导图橙色内容为相对本书中的拓展知识技能，有兴趣的读者可以深入研究。
 

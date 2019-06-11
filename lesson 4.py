@@ -118,3 +118,7 @@ dimensions = (250,100,50)
 for dimension in dimensions:
     print(dimension)
 print('4--4.5.3\n')
+
+# 4--4.6 代码格式#####################################################################
+# 可以参考PEP 8 -- Style Guide for Python Code编码格式
+# 访问地址：https://www.python.org/dev/peps/pep-0008

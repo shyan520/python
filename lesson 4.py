@@ -61,6 +61,40 @@ print(players[:2])
 # 获取列表中的后2个
 print(players[3:])
 print(players[-2:])
+print('\n')
+
+# 进阶例子
+import copy
+li = [1,2,3,4,[1,2,3]]
+new_li = li
+copy_li = copy.copy(li)
+deepcopy_li = copy.deepcopy(li)
+
+print(id(li))
+print(id(new_li))
+print(id(copy_li))
+print(id(deepcopy_li))
+print('可以看到，使用copy这个模块创建的浅拷贝和深拷贝在内存中都有一个新的内存空间。\n')
+print(id(li[1]))
+print(id(new_li[1]))
+print(id(copy_li[1]))
+print(id(deepcopy_li[1]))
+print('\n')
+print(id(li[-1]))
+print(id(new_li[-1]))
+print(id(copy_li[-1]))
+print(id(deepcopy_li[-1]))
+print('浅拷贝是不会对li中的数据结构进行深层次的拷贝的。'
+      '也就是说，我要是在li列表，更改了li[-1]的值，那么copy_li中的最后一个元素的值是会跟着改变的，'
+      '因为他跟li引用的地址是同一个，而deepcopy_li的值是不会变的。\n')
+print(li)
+print(li[::-1])
+print('list[indexStart: indexEnd: step]，当step>0的时候，正向取值，也就是从左往右取值，'
+      '当step<0时，逆向取值。所以li[::-1]都是取的列表的逆序表，也就是从右往左取值。')
+print('li[:4] = li[:-1] --- ' + str(li[:4]) + ' = ' + str(li[:-1]))
+print('分片操作其实就是按照一定的顺序访问序列中某一范围内的元素，记住一点就行了，那就是在一定的访问顺序中，'
+      'indexStart所对应的元素必须先于indexEnd所对应的元素被访问到，否则，分片操作返回的就是空的序列；'
+      '而访问元素的顺序由step决定是从左往右，还是从右往左。')
 print('4--4.4.1\n')
 
 # 4--4.4.3 复制列表#####################################################################

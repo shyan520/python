@@ -2606,7 +2606,7 @@ PEP 8 还有很多其他的格式设置建议，但这些指南针对的程序�
 
 
 
-# 第5章　if 语句
+## 第5章　if 语句
 
 ### **老齐导读**
 
@@ -3330,4 +3330,3382 @@ Finished making your pizza!
 
 
 
-# 第6章　字典
+## 第6章　字典
+
+### **老齐导读**
+
+字典是一种不同于列表的对象类型，它是以“键值对”为元素，每个键值对可以理解为一种映射关系。
+
+通过书中的操作示例，并对如下内容给予总结：
+
+- 创建字典
+- 访问字典
+- 增加、删除、修改键值对
+
+上一章，用 for 循环可以遍历列表，本章用 for 循环也可以遍历字典的“键”。
+
+参照前面已经强调的一种学习方法，即使用`dir`和`help`两个函数查看对象方法和属性，也对字典的方法和属性进行研究，并且与书中有关操作对比。
+
+![enter image description here](https://images.gitbook.cn/2910e830-8817-11e9-b6f4-77ea8c81f44e)
+
+> 在本章中，你将学习能够将相关信息关联起来的 Python 字典。你将学习如何访问和修改字典中的信息。鉴于字典可存储的信息量几乎不受限制，因此我们会演示如何遍历字典中的数据。另外，你还将学习存储字典的列表、存储列表的字典和存储字典的字典。
+>
+> 理解字典后，你就能够更准确地为各种真实物体建模。你可以创建一个表示人的字典，然后想在其中存储多少信息就存储多少信息：姓名、年龄、地址、职业以及要描述的任何方面。你还能够存储任意两种相关的信息，如一系列单词及其含义，一系列人名及其喜欢的数字，以及一系列山脉及其海拔等。
+
+### **6.1　一个简单的字典**
+
+来看一个游戏，其中包含一些外星人，这些外星人的颜色和点数各不相同。下面是一个简单的字典，存储了有关特定外星人的信息：
+
+**alien.py**
+
+```
+alien_0 = {'color': 'green', 'points': 5}
+
+print(alien_0['color'])
+print(alien_0['points'])
+```
+
+字典`alien_0`存储了外星人的颜色和点数。使用两条`print`语句来访问并打印这些信息，如下所示：
+
+```
+green
+5
+```
+
+与大多数编程概念一样，要熟练使用字典，也需要一段时间的练习。使用字典一段时间后，你就会明白为何它们能够高效地模拟现实世界中的情形。
+
+### **6.2　使用字典**
+
+在 Python 中，**字典**是一系列**键—值对**。每个**键**都与一个值相关联，你可以使用键来访问与之相关联的值。与键相关联的值可以是数字、字符串、列表乃至字典。事实上，可将任何 Python 对象用作字典中的值。
+
+在 Python 中，字典用放在花括号`{}`中的一系列键—值对表示，如前面的示例所示：
+
+```
+alien_0 = {'color': 'green', 'points': 5}
+```
+
+**键—值**对是两个相关联的值。指定键时，Python 将返回与之相关联的值。键和值之间用冒号分隔，而键—值对之间用逗号分隔。在字典中，你想存储多少个键—值对都可以。
+
+最简单的字典只有一个键—值对，如下述修改后的字典`alien_0`所示：
+
+```
+alien_0 = {'color': 'green'}
+```
+
+这个字典只存储了一项有关`alien_0`的信息，具体地说是这个外星人的颜色。在这个字典中，字符串`'color'`是一个键，与之相关联的值为`'green'`。
+
+#### **6.2.1　访问字典中的值**
+
+要获取与键相关联的值，可依次指定字典名和放在方括号内的键，如下所示：
+
+```
+alien_0 = {'color': 'green'}
+print(alien_0['color'])
+```
+
+这将返回字典`alien_0`中与键`'color'`相关联的值：
+
+```
+green
+```
+
+字典中可包含任意数量的键—值对。例如，下面是最初的字典`alien_0`，其中包含两个键—值对：
+
+```
+alien_0 = {'color': 'green', 'points': 5}
+```
+
+现在，你可以访问外星人`alien_0`的颜色和点数。如果玩家射杀了这个外星人，你就可以使用下面的代码来确定玩家应获得多少个点：
+
+```
+  alien_0 = {'color': 'green', 'points': 5}
+
+❶ new_points = alien_0['points']
+❷ print("You just earned " + str(new_points) + " points!")
+```
+
+上述代码首先定义了一个字典，然后从这个字典中获取与键`'points'`相关联的值（见❶），并将这个值存储在变量`new_points`中。接下来，将这个整数转换为字符串，并打印一条消息，指出玩家获得了多少个点（见❷）：
+
+```
+You just earned 5 points!
+```
+
+如果你在有外星人被射杀时都运行这段代码，就会获取该外星人的点数。
+
+#### **6.2.2　添加键—值对**
+
+字典是一种动态结构，可随时在其中添加键—值对。要添加键—值对，可依次指定字典名、用方括号括起的键和相关联的值。
+
+下面在字典`alien_0`中添加两项信息：外星人的 *x* 坐标和 *y* 坐标，让我们能够在屏幕的特定位置显示该外星人。我们将这个外星人放在屏幕左边缘，且离屏幕上边缘25像素的地方。由于屏幕坐标系的原点通常为左上角，因此要将该外星人放在屏幕左边缘，可将 *x* 坐标设置为0；要将该外星人放在离屏幕顶部25像素的地方，可将 *y* 坐标设置为25，如下所示：
+
+```
+  alien_0 = {'color': 'green', 'points': 5}
+  print(alien_0)
+
+❶ alien_0['x_position'] = 0
+❷ alien_0['y_position'] = 25
+  print(alien_0)
+```
+
+我们首先定义了前面一直在使用的字典，然后打印这个字典，以显示其信息快照。在❶处，我们在这个字典中新增了一个键—值对，其中的键为`'x_position'`，而值为`0`。在❷处，我们重复这样的操作，但使用的键为`'y_position'`。打印修改后的字典时，将看到这两个新增的键—值对：
+
+```
+{'color': 'green', 'points': 5}
+{'color': 'green', 'points': 5, 'y_position': 25, 'x_position': 0}
+```
+
+这个字典的最终版本包含四个键—值对，其中原来的两个指定外星人的颜色和点数，而新增的两个指定位置。注意，键—值对的排列顺序与添加顺序不同。Python 不关心键—值对的添加顺序，而只关心键和值之间的关联关系。
+
+#### **6.2.3　先创建一个空字典**
+
+有时候，在空字典中添加键—值对是为了方便，而有时候必须这样做。为此，可先使用一对空的花括号定义一个字典，再分行添加各个键—值对。例如，下例演示了如何以这种方式创建字典`alien_0`：
+
+```
+alien_0 = {}
+
+alien_0['color'] = 'green'
+alien_0['points'] = 5
+
+print(alien_0)
+```
+
+这里首先定义了空字典`alien_0`，再在其中添加颜色和点数，得到前述示例一直在使用的字典：
+
+```
+{'color': 'green', 'points': 5}
+```
+
+使用字典来存储用户提供的数据或在编写能自动生成大量键—值对的代码时，通常都需要先定义一个空字典。
+
+#### **6.2.4　修改字典中的值**
+
+要修改字典中的值，可依次指定字典名、用方括号括起的键以及与该键相关联的新值。例如，假设随着游戏的进行，需要将一个外星人从绿色改为黄色：
+
+```
+alien_0 = {'color': 'green'}
+print("The alien is " + alien_0['color'] + ".")
+
+alien_0['color'] = 'yellow'
+print("The alien is now " + alien_0['color'] + ".")
+```
+
+我们首先定义了一个表示外星人`alien_0`的字典，其中只包含这个外星人的颜色。接下来，我们将与键`'color'`相关联的值改为`'yellow'`。输出表明，这个外星人确实从绿色变成了黄色：
+
+```
+The alien is green.
+The alien is now yellow.
+```
+
+来看一个更有趣的例子：对一个能够以不同速度移动的外星人的位置进行跟踪。为此，我们将存储该外星人的当前速度，并据此确定该外星人将向右移动多远：
+
+```
+  alien_0 = {'x_position': 0, 'y_position': 25, 'speed': 'medium'}
+  print("Original x-position: " + str(alien_0['x_position']))
+
+  # 向右移动外星人
+  # 据外星人当前速度决定将其移动多远
+❶ if alien_0['speed'] == 'slow':
+      x_increment = 1
+  elif alien_0['speed'] == 'medium':
+      x_increment = 2
+  else:
+      # 这个外星人的速度一定很快
+      x_increment = 3
+
+  # 新位置等于老位置加上增量
+❷ alien_0['x_position'] = alien_0['x_position'] + x_increment
+
+  print("New x-position: " + str(alien_0['x_position']))
+```
+
+我们首先定义了一个外星人，其中包含初始的 *x* 坐标和 *y* 坐标，还有速度`'medium'`。出于简化考虑，我们省略了颜色和点数，但即便包含这些键-值对，这个示例的工作原理也不会有任何变化。我们还打印了`x_position`的初始值，旨在让用户知道这个外星人向右移动了多远。
+
+在❶处，使用了一个`if-elif-else`结构来确定外星人应向右移动多远，并将这个值存储在变量`x_increment`中。如果外星人的速度为`'slow'`，它将向右移动一个单位；如果速度为`'medium'`，将向右移动两个单位；如果为`'fast'`，将向右移动三个单位。确定移动量后，将其与`x_position`的当前值相加（见❷），再将结果关联到字典中的键`x_position`。
+
+由于这是一个速度中等的外星人，因此其位置将向右移动两个单位：
+
+```
+Original x-position: 0
+New x-position: 2
+```
+
+这种技术很棒：通过修改外星人字典中的值，可改变外星人的行为。例如，要将这个速度中等的外星人变成速度很快的外星人，可添加如下代码行：
+
+```
+alien_0['speed'] = 'fast'
+```
+
+这样，再次运行这些代码时，其中的`if-elif-else`结构将把一个更大的值赋给变量`x_increment`。
+
+#### **6.2.5　删除键—值对**
+
+对于字典中不再需要的信息，可使用`del`语句将相应的键—值对彻底删除。使用`del`语句时，必须指定字典名和要删除的键。
+
+例如，下面的代码从字典`alien_0`中删除键`'points'`及其值：
+
+```
+  alien_0 = {'color': 'green', 'points': 5}
+  print(alien_0)
+
+❶ del alien_0['points']
+  print(alien_0)
+```
+
+❶处的代码行让 Python 将键`'points'`从字典`alien_0`中删除，同时删除与这个键相关联的值。输出表明，键`'points'`及其值`5`已从字典中删除，但其他键—值对未受影响：
+
+```
+{'color': 'green', 'points': 5}
+{'color': 'green'}
+```
+
+> **注意**　
+>
+> 删除的键—值对永远消失了。
+
+#### **6.2.6　由类似对象组成的字典**
+
+在前面的示例中，字典存储的是一个对象（游戏中的一个外星人）的多种信息，但你也可以使用字典来存储众多对象的同一种信息。例如，假设你要调查很多人，询问他们最喜欢的编程语言，可使用一个字典来存储这种简单调查的结果，如下所示：
+
+```
+favorite_languages = {
+    'jen': 'python',
+    'sarah': 'c',
+    'edward': 'ruby',
+    'phil': 'python',
+    }
+```
+
+正如你看到的，我们将一个较大的字典放在了多行中。其中每个键都是一个被调查者的名字，而每个值都是被调查者喜欢的语言。确定需要使用多行来定义字典时，在输入左花括号后按回车键，再在下一行缩进四个空格，指定第一个键—值对，并在它后面加上一个逗号。此后你再次按回车键时，文本编辑器将自动缩进后续键—值对，且缩进量与第一个键—值对相同。
+
+定义好字典后，在最后一个键—值对的下一行添加一个右花括号，并缩进四个空格，使其与字典中的键对齐。另外一种不错的做法是在最后一个键—值对后面也加上逗号，为以后在下一行添加键—值对做好准备。
+
+> **注意**　
+>
+> 对于较长的列表和字典，大多数编辑器都有以类似方式设置其格式的功能。对于较长的字典，还有其他一些可行的格式设置方式，因此在你的编辑器或其他源代码中，你可能会看到稍微不同的格式设置方式。
+
+给定被调查者的名字，可使用这个字典轻松地获悉他喜欢的语言：
+
+**favorite_languages.py**
+
+```
+  favorite_languages = {
+      'jen': 'python',
+      'sarah': 'c',
+      'edward': 'ruby',
+      'phil': 'python',
+      }
+
+❶ print("Sarah's favorite language is " +
+❷     favorite_languages['sarah'].title() +
+❸     ".")
+```
+
+为获悉`Sarah`喜欢的语言，我们使用如下代码：
+
+```
+favorite_languages['sarah']
+```
+
+在`print`语句中，我们使用了这种语法（见❷）；输出指出了 Sarah 喜欢的语言：
+
+```
+Sarah's favorite language is C.
+```
+
+这个示例还演示了如何将较长的`print`语句分成多行。单词`print`比大多数字典名都短，因此让输出的第一部分紧跟在左括号后面是合理的（见❶）。请选择在合适的地方拆分要打印的内容，并在第一行末尾（见❷）加上一个拼接运算符（`+`）。按回车键进入`print`语句的后续各行，并使用 Tab 键将它们对齐并缩进一级。指定要打印的所有内容后，在`print`语句的最后一行末尾加上右括号（见❸）。
+
+> **动手试一试**
+>
+> **6-1 人**：使用一个字典来存储一个熟人的信息，包括名、姓、年龄和居住的城市。该字典应包含键`first_name`、`last_name`、`age`和`city`。将存储在该字典中的每项信息都打印出来。
+>
+> **6-2 喜欢的数字**：使用一个字典来存储一些人喜欢的数字。请想出5个人的名字，并将这些名字用作字典中的键；想出每个人喜欢的一个数字，并将这些数字作为值存储在字典中。打印每个人的名字和喜欢的数字。为让这个程序更有趣，通过询问朋友确保数据是真实的。
+>
+> **6-3 词汇表**：Python 字典可用于模拟现实生活中的字典，但为避免混淆，我们将后者称为词汇表。
+>
+> - 想出你在前面学过的5个编程词汇，将它们用作词汇表中的键，并将它们的含义作为值存储在词汇表中。
+> - 以整洁的方式打印每个词汇及其含义。为此，你可以先打印词汇，在它后面加上一个冒号，再打印词汇的含义；也可在一行打印词汇，再使用换行符（`\n`）插入一个空行，然后在下一行以缩进的方式打印词汇的含义。
+
+### **6.3　遍历字典**
+
+一个 Python 字典可能只包含几个键—值对，也可能包含数百万个键—值对。鉴于字典可能包含大量的数据，Python 支持对字典遍历。字典可用于以各种方式存储信息，因此有多种遍历字典的方式：可遍历字典的所有键—值对、键或值。
+
+#### **6.3.1　遍历所有的键—值对**
+
+探索各种遍历方法前，先来看一个新字典，它用于存储有关网站用户的信息。下面的字典存储一名用户的用户名、名和姓：
+
+```
+user_0 = {
+    'username': 'efermi',
+    'first': 'enrico',
+    'last': 'fermi',
+    }
+```
+
+利用本章前面介绍过的知识，可访问`user_0`的任何一项信息，但如果要获悉该用户字典中的所有信息，该怎么办呢？可以使用一个`for`循环来遍历这个字典：
+
+**user.py**
+
+```
+  user_0 = {
+      'username': 'efermi',
+      'first': 'enrico',
+      'last': 'fermi',
+      }
+
+❶ for key, value in user_0.items():
+❷     print("\nKey: " + key)
+❸     print("Value: " + value)
+```
+
+如❶所示，要编写用于遍历字典的`for`循环，可声明两个变量，用于存储键—值对中的键和值。对于这两个变量，可使用任何名称。下面的代码使用了简单的变量名，这完全可行：
+
+```
+for k, v in user_0.items()
+```
+
+`for`语句的第二部分包含字典名和方法`items()`（见❶），它返回一个键—值对列表。接下来，`for`循环依次将每个键—值对存储到指定的两个变量中。在前面的示例中，我们使用这两个变量来打印每个键（见❷）及其相关联的值（见❸）。第一条`print`语句中的`"\n"`确保在输出每个键—值对前都插入一个空行：
+
+```
+Key: last
+Value: fermi
+
+Key: first
+Value: enrico
+
+Key: username
+Value: efermi
+```
+
+注意，即便遍历字典时，键—值对的返回顺序也与存储顺序不同。Python 不关心键—值对的存储顺序，而只跟踪键和值之间的关联关系。
+
+在6.2.6节的示例 favorite_languages.py 中，字典存储的是不同人的同一种信息；对于类似这样的字典，遍历所有的键—值对很合适。如果遍历字典`favorite_languages`，将得到其中每个人的姓名和喜欢的编程语言。由于其中的键都是人名，而值都是语言，因此我们在循环中使用变量`name`和`language`，而不是`key`和`value`，这让人更容易明白循环的作用：
+
+**favorite_languages.py**
+
+```
+  favorite_languages = {
+      'jen': 'python',
+      'sarah': 'c',
+      'edward': 'ruby',
+      'phil': 'python',
+      }
+
+❶ for name, language in favorite_languages.items():
+❷     print(name.title() + "'s favorite language is " +
+          language.title() + ".")
+```
+
+❶处的代码让 Python 遍历字典中的每个键—值对，并将键存储在变量`name`中，而将值存储在变量`language`中。这些描述性名称能够让人非常轻松地明白`print`语句（见❷）是做什么的。
+
+仅使用几行代码，我们就将全部调查结果显示出来了：
+
+```
+Jen's favorite language is Python.
+Sarah's favorite language is C.
+Phil's favorite language is Python.
+Edward's favorite language is Ruby.
+```
+
+即便字典存储的是上千乃至上百万人的调查结果，这种循环也管用。
+
+#### **6.3.2　遍历字典中的所有键**
+
+在不需要使用字典中的值时，方法`keys()`很有用。下面来遍历字典`favorite_languages`，并将每个被调查者的名字都打印出来：
+
+```
+  favorite_languages = {
+      'jen': 'python',
+      'sarah': 'c',
+      'edward': 'ruby',
+      'phil': 'python',
+      }
+
+❶ for name in favorite_languages.keys():
+      print(name.title())
+```
+
+❶处的代码行让 Python 提取字典`favorite_languages`中的所有键，并依次将它们存储到变量`name`中。输出列出了每个被调查者的名字：
+
+```
+Jen
+Sarah
+Phil
+Edward
+```
+
+遍历字典时，会默认遍历所有的键，因此，如果将上述代码中的`for name in favorite_languages.keys():`替换为`for name in favorite_languages:`，输出将不变。
+
+如果显式地使用方法`keys()`可让代码更容易理解，你可以选择这样做，但如果你愿意，也可省略它。
+
+在这种循环中，可使用当前键来访问与之相关联的值。下面来打印两条消息，指出两位朋友喜欢的语言。我们像前面一样遍历字典中的名字，但在名字为指定朋友的名字时，打印一条消息，指出其喜欢的语言：
+
+```
+  favorite_languages = {
+      'jen': 'python',
+      'sarah': 'c',
+      'edward': 'ruby',
+      'phil': 'python',
+      }
+
+❶ friends = ['phil', 'sarah']
+  for name in favorite_languages.keys():
+      print(name.title())
+
+❷     if name in friends:
+          print("  Hi " + name.title() +
+              ", I see your favorite language is " +
+❸             favorite_languages[name].title() + "!")
+```
+
+在❶处，我们创建了一个列表，其中包含我们要通过打印消息，指出其喜欢的语言的朋友。在循环中，我们打印每个人的名字，并检查当前的名字是否在列表`friends`中（见❷）。如果在列表中，就打印一句特殊的问候语，其中包含这位朋友喜欢的语言。为访问喜欢的语言，我们使用了字典名，并将变量`name`的当前值作为键（见❸）。每个人的名字都会被打印，但只对朋友打印特殊消息：
+
+```
+Edward
+Phil
+  Hi Phil, I see your favorite language is Python!
+Sarah
+  Hi Sarah, I see your favorite language is C!
+Jen
+```
+
+你还可以使用`keys()`确定某个人是否接受了调查。下面的代码确定 Erin 是否接受了调查：
+
+```
+  favorite_languages = {
+      'jen': 'python',
+      'sarah': 'c',
+      'edward': 'ruby',
+      'phil': 'python',
+      }
+
+❶ if 'erin' not in favorite_languages.keys():
+      print("Erin, please take our poll!")
+```
+
+方法`keys()`并非只能用于遍历；实际上，它返回一个列表，其中包含字典中的所有键，因此❶处的代码行只是核实`'erin'`是否包含在这个列表中。由于她并不包含在这个列表中，因此打印一条消息，邀请她参加调查：
+
+```
+Erin, please take our poll!
+```
+
+#### **6.3.3　按顺序遍历字典中的所有键**
+
+字典总是明确地记录键和值之间的关联关系，但获取字典的元素时，获取顺序是不可预测的。这不是问题，因为通常你想要的只是获取与键相关联的正确的值。
+
+要以特定的顺序返回元素，一种办法是在`for`循环中对返回的键进行排序。为此，可使用函数`sorted()`来获得按特定顺序排列的键列表的副本：
+
+```
+favorite_languages = {
+    'jen': 'python',
+    'sarah': 'c',
+    'edward': 'ruby',
+    'phil': 'python',
+    }
+
+for name in sorted(favorite_languages.keys()):
+    print(name.title() + ", thank you for taking the poll.")
+```
+
+这条`for`语句类似于其他`for`语句，但对方法`dictionary.keys()`的结果调用了函数`sorted()`。这让 Python 列出字典中的所有键，并在遍历前对这个列表进行排序。输出表明，按顺序显示了所有被调查者的名字：
+
+```
+Edward, thank you for taking the poll.
+Jen, thank you for taking the poll.
+Phil, thank you for taking the poll.
+Sarah, thank you for taking the poll.
+```
+
+#### **6.3.4　遍历字典中的所有值**
+
+如果你感兴趣的主要是字典包含的值，可使用方法`values()`，它返回一个值列表，而不包含任何键。例如，如果我们想获得一个这样的列表，即其中只包含被调查者选择的各种语言，而不包含被调查者的名字，可以这样做：
+
+```
+favorite_languages = {
+    'jen': 'python',
+    'sarah': 'c',
+    'edward': 'ruby',
+    'phil': 'python',
+    }
+
+print("The following languages have been mentioned:")
+for language in favorite_languages.values():
+    print(language.title())
+```
+
+这条`for`语句提取字典中的每个值，并将它们依次存储到变量`language`中。通过打印这些值，就获得了一个列表，其中包含被调查者选择的各种语言：
+
+```
+The following languages have been mentioned:
+Python
+C
+Python
+Ruby
+```
+
+这种做法提取字典中所有的值，而没有考虑是否重复。涉及的值很少时，这也许不是问题，但如果被调查者很多，最终的列表可能包含大量的重复项。为剔除重复项，可使用集合（set）。**集合**类似于列表，但每个元素都必须是独一无二的：
+
+```
+  favorite_languages = {
+      'jen': 'python',
+      'sarah': 'c',
+      'edward': 'ruby',
+      'phil': 'python',
+      }
+
+  print("The following languages have been mentioned:")
+❶ for language in set(favorite_languages.values()):
+      print(language.title())
+```
+
+通过对包含重复元素的列表调用`set()`，可让 Python 找出列表中独一无二的元素，并使用这些元素来创建一个集合。在❶处，我们使用了`set()`来提取`favorite_languages.values()`中不同的语言。
+
+结果是一个不重复的列表，其中列出了被调查者提及的所有语言：
+
+```
+The following languages have been mentioned:
+Python
+C
+Ruby
+```
+
+随着你更深入地学习 Python，经常会发现它内置的功能可帮助你以希望的方式处理数据。
+
+> **动手试一试**
+>
+> **6-4 词汇表2**：既然你知道了如何遍历字典，现在请整理你为完成练习6-3而编写的代码，将其中的一系列`print`语句替换为一个遍历字典中的键和值的循环。确定该循环正确无误后，再在词汇表中添加5个 Python 术语。当你再次运行这个程序时，这些新术语及其含义将自动包含在输出中。
+>
+> **6-5 河流**：创建一个字典，在其中存储三条大河流及其流经的国家。其中一个键—值对可能是`'nile': 'egypt'`。
+>
+> - 使用循环为每条河流打印一条消息，如“The Nile runs through Egypt.”。
+> - 使用循环将该字典中每条河流的名字都打印出来。
+> - 使用循环将该字典包含的每个国家的名字都打印出来。
+>
+> **6-6 调查**：在6.3.1节编写的程序 favorite_languages.py 中执行以下操作。
+>
+> - 创建一个应该会接受调查的人员名单，其中有些人已包含在字典中，而其他人未包含在字典中。
+> - 遍历这个人员名单，对于已参与调查的人，打印一条消息表示感谢。对于还未参与调查的人，打印一条消息邀请他参与调查。
+
+### **6.4　嵌套**
+
+有时候，需要将一系列字典存储在列表中，或将列表作为值存储在字典中，这称为**嵌套**。你可以在列表中嵌套字典、在字典中嵌套列表甚至在字典中嵌套字典。正如下面的示例将演示的，嵌套是一项强大的功能。
+
+#### **6.4.1　字典列表**
+
+字典`alien_0`包含一个外星人的各种信息，但无法存储第二个外星人的信息，更别说屏幕上全部外星人的信息了。如何管理成群结队的外星人呢？一种办法是创建一个外星人列表，其中每个外星人都是一个字典，包含有关该外星人的各种信息。例如，下面的代码创建一个包含三个外星人的列表：
+
+**aliens.py**
+
+```
+  alien_0 = {'color': 'green', 'points': 5}
+  alien_1 = {'color': 'yellow', 'points': 10}
+  alien_2 = {'color': 'red', 'points': 15}
+
+❶ aliens = [alien_0, alien_1, alien_2]
+
+  for alien in aliens:
+      print(alien)
+```
+
+我们首先创建了三个字典，其中每个字典都表示一个外星人。在❶处，我们将这些字典都放到一个名为`aliens`的列表中。最后，我们遍历这个列表，并将每个外星人都打印出来：
+
+```
+{'color': 'green', 'points': 5}
+{'color': 'yellow', 'points': 10}
+{'color': 'red', 'points': 15}
+```
+
+更符合现实的情形是，外星人不止三个，且每个外星人都是使用代码自动生成的。在下面的示例中，我们使用`range()`生成了30个外星人：
+
+```
+  # 创建一个用于存储外星人的空列表
+  aliens = []
+
+  # 创建30个绿色的外星人
+❶ for alien_number in range(30):
+❷     new_alien = {'color': 'green', 'points': 5, 'speed': 'slow'}
+❸     aliens.append(new_alien)
+
+  # 显示前五个外星人
+❹ for alien in aliens[:5]:
+      print(alien)
+  print("...")
+
+  # 显示创建了多少个外星人
+❺ print("Total number of aliens: " + str(len(aliens)))
+```
+
+在这个示例中，首先创建了一个空列表，用于存储接下来将创建的所有外星人。在❶处，`range()`返回一系列数字，其唯一的用途是告诉 Python 我们要重复这个循环多少次。每次执行这个循环时，都创建一个外星人（见❷），并将其附加到列表`aliens`末尾（见❸）。在❹处，使用一个切片来打印前五个外星人；在❺处，打印列表的长度，以证明确实创建了30个外星人：
+
+```
+{'speed': 'slow', 'color': 'green', 'points': 5}
+{'speed': 'slow', 'color': 'green', 'points': 5}
+{'speed': 'slow', 'color': 'green', 'points': 5}
+{'speed': 'slow', 'color': 'green', 'points': 5}
+{'speed': 'slow', 'color': 'green', 'points': 5}
+...
+
+Total number of aliens: 30
+```
+
+这些外星人都具有相同的特征，但在 Python 看来，每个外星人都是独立的，这让我们能够独立地修改每个外星人。
+
+在什么情况下需要处理成群结队的外星人呢？想象一下，可能随着游戏的进行，有些外星人会变色且移动速度会加快。必要时，我们可以使用`for`循环和`if`语句来修改某些外星人的颜色。例如，要将前三个外星人修改为黄色的、速度为中等且值10个点，可以这样做：
+
+```
+# 创建一个用于存储外星人的空列表
+aliens = []
+
+# 创建30个绿色的外星人
+for alien_number in range (0,30):
+    new_alien = {'color': 'green', 'points': 5, 'speed': 'slow'}
+    aliens.append(new_alien)
+
+for alien in aliens[0:3]:
+    if alien['color'] == 'green':
+        alien['color'] = 'yellow'
+        alien['speed'] = 'medium'
+        alien['points'] = 10
+
+# 显示前五个外星人
+for alien in aliens[0:5]:
+    print(alien)
+print("...")
+```
+
+鉴于我们要修改前三个外星人，需要遍历一个只包含这些外星人的切片。当前，所有外星人都是绿色的，但情况并非总是如此，因此我们编写了一条`if`语句来确保只修改绿色外星人。如果外星人是绿色的，我们就将其颜色改为`'yellow'`，将其速度改为`'medium'`，并将其点数改为`10`，如下面的输出所示：
+
+```
+{'speed': 'medium', 'color': 'yellow', 'points': 10}
+{'speed': 'medium', 'color': 'yellow', 'points': 10}
+{'speed': 'medium', 'color': 'yellow', 'points': 10}
+{'speed': 'slow', 'color': 'green', 'points': 5}
+{'speed': 'slow', 'color': 'green', 'points': 5}
+...
+```
+
+你可以进一步扩展这个循环，在其中添加一个`elif`代码块，将黄色外星人改为移动速度快且值15个点的红色外星人，如下所示（这里只列出了循环，而没有列出整个程序）：
+
+```
+for alien in aliens[0:3]:
+    if alien['color'] == 'green':
+        alien['color'] = 'yellow'
+        alien['speed'] = 'medium'
+        alien['points'] = 10
+    elif alien['color'] == 'yellow':
+        alien['color'] = 'red'
+        alien['speed'] = 'fast'
+        alien['points'] = 15
+```
+
+经常需要在列表中包含大量的字典，而其中每个字典都包含特定对象的众多信息。例如，你可能需要为网站的每个用户创建一个字典（就像6.3.1节的 user.py 中那样），并将这些字典存储在一个名为`users`的列表中。在这个列表中，所有字典的结构都相同，因此你可以遍历这个列表，并以相同的方式处理其中的每个字典。
+
+#### **6.4.2　在字典中存储列表**
+
+有时候，需要将列表存储在字典中，而不是将字典存储在列表中。例如，你如何描述顾客点的比萨呢？如果使用列表，只能存储要添加的比萨配料；但如果使用字典，就不仅可在其中包含配料列表，还可包含其他有关比萨的描述。
+
+在下面的示例中，存储了比萨的两方面信息：外皮类型和配料列表。其中的配料列表是一个与键`'toppings'`相关联的值。要访问该列表，我们使用字典名和键`'toppings'`，就像访问字典中的其他值一样。这将返回一个配料列表，而不是单个值：
+
+**pizza.py**
+
+```
+  # 存储所点比萨的信息
+❶ pizza = {
+      'crust': 'thick',
+      'toppings': ['mushrooms', 'extra cheese'],
+      }
+
+  # 概述所点的比萨
+❷ print("You ordered a " + pizza['crust'] + "-crust pizza " +
+      "with the following toppings:")
+
+❸ for topping in pizza['toppings']:
+      print("\t" + topping)
+```
+
+我们首先创建了一个字典，其中存储了有关顾客所点比萨的信息（见❶）。在这个字典中，一个键是`'crust'`，与之相关联的值是字符串`'thick'`；下一个键是`'toppings'`，与之相关联的值是一个列表，其中存储了顾客要求添加的所有配料。制作前我们概述了顾客所点的比萨（见❷）。为打印配料，我们编写了一个`for`循环（见❸）。为访问配料列表，我们使用了键`'toppings'`，这样 Python 将从字典中提取配料列表。
+
+下面的输出概述了要制作的比萨：
+
+```
+You ordered a thick-crust pizza with the following toppings:
+    mushrooms
+    extra cheese
+```
+
+每当需要在字典中将一个键关联到多个值时，都可以在字典中嵌套一个列表。在本章前面有关喜欢的编程语言的示例中，如果将每个人的回答都存储在一个列表中，被调查者就可选择多种喜欢的语言。在这种情况下，当我们遍历字典时，与每个被调查者相关联的都是一个语言列表，而不是一种语言；因此，在遍历该字典的`for`循环中，我们需要再使用一个`for`循环来遍历与被调查者相关联的语言列表：
+
+**favorite_languages.py**
+
+```
+❶ favorite_languages = {
+      'jen': ['python', 'ruby'],
+      'sarah': ['c'],
+      'edward': ['ruby', 'go'],
+      'phil': ['python', 'haskell'],
+      }
+
+❷ for name, languages in favorite_languages.items():
+      print("\n" + name.title() + "'s favorite languages are:")
+❸     for language in languages:
+          print("\t" + language.title())
+```
+
+正如你看到的，现在与每个名字相关联的值都是一个列表（见❶）。请注意，有些人喜欢的语言只有一种，而有些人有多种。遍历字典时（见❷），我们使用了变量`languages`来依次存储字典中的每个值，因为我们知道这些值都是列表。在遍历字典的主循环中，我们又使用了一个`for`循环来遍历每个人喜欢的语言列表（见❸）。现在，每个人想列出多少种喜欢的语言都可以：
+
+```
+Jen's favorite languages are:
+    Python
+    Ruby
+
+Sarah's favorite languages are:
+    C
+
+Phil's favorite languages are:
+    Python
+    Haskell
+
+Edward's favorite languages are:
+    Ruby
+    Go
+```
+
+为进一步改进这个程序，可在遍历字典的`for`循环开头添加一条`if`语句，通过查看`len(languages)`的值来确定当前的被调查者喜欢的语言是否有多种。如果他喜欢的语言有多种，就像以前一样显示输出；如果只有一种，就相应修改输出的措辞，如显示`Sarah's favorite language is C`。
+
+> **注意**　
+>
+> 列表和字典的嵌套层级不应太多。如果嵌套层级比前面的示例多得多，很可能有更简单的解决问题的方案。
+
+#### **6.4.3　在字典中存储字典**
+
+可在字典中嵌套字典，但这样做时，代码可能很快复杂起来。例如，如果有多个网站用户，每个都有独特的用户名，可在字典中将用户名作为键，然后将每位用户的信息存储在一个字典中，并将该字典作为与用户名相关联的值。在下面的程序中，对于每位用户，我们都存储了其三项信息：名、姓和居住地；为访问这些信息，我们遍历所有的用户名，并访问与每个用户名相关联的信息字典：
+
+**many_users.py**
+
+```
+  users = {
+      'aeinstein': {
+          'first': 'albert',
+          'last': 'einstein',
+          'location': 'princeton',
+          },
+
+      'mcurie': {
+          'first': 'marie',
+          'last': 'curie',
+          'location': 'paris',
+          },
+
+      }
+
+❶ for username, user_info in users.items():
+❷     print("\nUsername: " + username)
+❸     full_name = user_info['first'] + " " + user_info['last']
+      location = user_info['location']
+
+❹     print("\tFull name: " + full_name.title())
+      print("\tLocation: " + location.title())
+```
+
+我们首先定义了一个名为`users`的字典，其中包含两个键：用户名`'aeinstein'`和`'mcurie'`；与每个键相关联的值都是一个字典，其中包含用户的名、姓和居住地。在❶处，我们遍历字典`users`，让 Python 依次将每个键存储在变量`username`中，并依次将与当前键相关联的字典存储在变量`user_info`中。在主循环内部的❷处，我们将用户名打印出来。
+
+在❸处，我们开始访问内部的字典。变量`user_info`包含用户信息字典，而该字典包含三个键：`'first'`、`'last'`和`'location'`；对于每位用户，我们都使用这些键来生成整洁的姓名和居住地，然后打印有关用户的简要信息（见❹）：
+
+```
+Username: aeinstein
+    Full name: Albert Einstein
+    Location: Princeton
+
+Username: mcurie
+    Full name: Marie Curie
+    Location: Paris
+```
+
+请注意，表示每位用户的字典的结构都相同，虽然 Python 并没有这样的要求，但这使得嵌套的字典处理起来更容易。倘若表示每位用户的字典都包含不同的键，`for`循环内部的代码将更复杂。
+
+> **动手试一试**
+>
+> **6-7 人**：在为完成练习6-1而编写的程序中，再创建两个表示人的字典，然后将这三个字典都存储在一个名为`people`的列表中。遍历这个列表，将其中每个人的所有信息都打印出来。
+>
+> **6-8 宠物**：创建多个字典，对于每个字典，都使用一个宠物的名称来给它命名；在每个字典中，包含宠物的类型及其主人的名字。将这些字典存储在一个名为`pets`的列表中，再遍历该列表，并将宠物的所有信息都打印出来。
+>
+> **6-9 喜欢的地方**：创建一个名为`favorite_places`的字典。在这个字典中，将三个人的名字用作键；对于其中的每个人，都存储他喜欢的1~3个地方。为让这个练习更有趣些，可让一些朋友指出他们喜欢的几个地方。遍历这个字典，并将其中每个人的名字及其喜欢的地方打印出来。
+>
+> **6-10 喜欢的数字**：修改为完成练习6-2而编写的程序，让每个人都可以有多个喜欢的数字，然后将每个人的名字及其喜欢的数字打印出来。
+>
+> **6-11 城市**：创建一个名为`cities`的字典，其中将三个城市名用作键；对于每座城市，都创建一个字典，并在其中包含该城市所属的国家、人口约数以及一个有关该城市的事实。在表示每座城市的字典中，应包含`country`、`population`和`fact`等键。将每座城市的名字以及有关它们的信息都打印出来。
+>
+> **6-12 扩展**：本章的示例足够复杂，可以以很多方式进行扩展了。请对本章的一个示例进行扩展：添加键和值、调整程序要解决的问题或改进输出的格式。
+
+### **6.5　小结**
+
+在本章中，你学习了：如何定义字典，以及如何使用存储在字典中的信息；如何访问和修改字典中的元素，以及如何遍历字典中的所有信息；如何遍历字典中所有的键-值对、所有的键和所有的值；如何在列表中嵌套字典、在字典中嵌套列表以及在字典中嵌套字典。
+
+在下一章中，你将学习`while`循环以及如何从用户那里获取输入。这是激动人心的一章，让你知道如何将程序变成交互性的——能够对用户输入作出响应。
+
+------
+
+
+
+## 第7章　用户输入和 while 循环
+
+### **老齐导读**
+
+input 是用于接收键盘输入的函数，为了更深刻理解书中的操作，建议使用 help（input）查看官方文档，并且与操作对照，理解其使用技巧。
+
+while 循环是 Python 中的另外一种循环语句（前面学过 for 循环）。除了要掌握 while 循环的基本结构之外，建议参考书中代码，自己写一个 while 循环的示例。
+
+认真实践书中的案例，并且修改相关代码，实现自己的想法，这是提升自己编程能力的有效途径。
+
+![enter image description here](https://images.gitbook.cn/937f0030-8817-11e9-b1c9-d994bc31f268)
+
+> 大多数程序都旨在解决最终用户的问题，为此通常需要从用户那里获取一些信息。例如，假设有人要判断自己是否到了投票的年龄，要编写回答这个问题的程序，就需要知道用户的年龄，这样才能给出答案。因此，这种程序需要让用户**输入**其年龄，再将其与投票年龄进行比较，以判断用户是否到了投票的年龄，再给出结果。
+>
+> 在本章中，你将学习如何接受用户输入，让程序能够对其进行处理。在程序需要一个名字时，你需要提示用户输入该名字；程序需要一个名单时，你需要提示用户输入一系列名字。为此，你需要使用函数`input()`。
+>
+> 你还将学习如何让程序不断地运行，让用户能够根据需要输入信息，并在程序中使用这些信息。为此，你需要使用`while`循环让程序不断地运行，直到指定的条件不满足为止。
+>
+> 通过获取用户输入并学会控制程序的运行时间，可编写出交互式程序。
+
+### **7.1　函数 input() 的工作原理**
+
+函数`input()`让程序暂停运行，等待用户输入一些文本。获取用户输入后，Python 将其存储在一个变量中，以方便你使用。
+
+例如，下面的程序让用户输入一些文本，再将这些文本呈现给用户：
+
+**parrot.py**
+
+```
+message = input("Tell me something, and I will repeat it back to you: ")
+print(message)
+```
+
+函数`input()`接受一个参数：即要向用户显示的**提示**或说明，让用户知道该如何做。在这个示例中，Python 运行第1行代码时，用户将看到提示`Tell me something, and I will repeat it back to you:`。程序等待用户输入，并在用户按回车键后继续运行。输入存储在变量`message`中，接下来的`print(message)`将输入呈现给用户：
+
+```
+Tell me something, and I will repeat it back to you: Hello everyone!
+Hello everyone!
+```
+
+> **注意**　
+>
+> Sublime Text 不能运行提示用户输入的程序。你可以使用 Sublime Text 来编写提示用户输入的程序，但必须从终端运行它们。详情请参阅1.4节。
+
+#### **7.1.1　编写清晰的程序**
+
+每当你使用函数`input()`时，都应指定清晰而易于明白的提示，准确地指出你希望用户提供什么样的信息——指出用户该输入任何信息的提示都行，如下所示：
+
+**greeter.py**
+
+```
+name = input("Please enter your name: ")
+print("Hello, " + name + "!")
+```
+
+通过在提示末尾（这里是冒号后面）包含一个空格，可将提示与用户输入分开，让用户清楚地知道其输入始于何处，如下所示：
+
+```
+Please enter your name: Eric
+Hello, Eric!
+```
+
+有时候，提示可能超过一行，例如，你可能需要指出获取特定输入的原因。在这种情况下，可将提示存储在一个变量中，再将该变量传递给函数`input()`。这样，即便提示超过一行，`input()`语句也非常清晰。
+
+**greeter.py**
+
+```
+prompt = "If you tell us who you are, we can personalize the messages you see."
+prompt += "\nWhat is your first name? "
+
+name = input(prompt)
+print("\nHello, " + name + "!")
+```
+
+这个示例演示了一种创建多行字符串的方式。第1行将消息的前半部分存储在变量`prompt`中；在第2行中，运算符`+=`在存储在`prompt`中的字符串末尾附加一个字符串。
+
+最终的提示横跨两行，并在问号后面包含一个空格，这也是出于清晰考虑：
+
+```
+If you tell us who you are, we can personalize the messages you see.
+What is your first name? Eric
+
+Hello, Eric!
+```
+
+#### **7.1.2　使用 int() 来获取数值输入**
+
+使用函数`input()`时，Python 将用户输入解读为字符串。请看下面让用户输入其年龄的解释器会话：
+
+```
+>>> age = input("How old are you? ")
+How old are you? 21
+>>> age
+'21'
+```
+
+用户输入的是数字21，但我们请求 Python 提供变量`age`的值时，它返回的是`'21'`——用户输入的数值的字符串表示。我们怎么知道 Python 将输入解读成了字符串呢？因为这个数字用引号括起了。如果我们只想打印输入，这一点问题都没有；但如果你试图将输入作为数字使用，就会引发错误：
+
+```
+  >>> age = input("How old are you? ")
+  How old are you? 21
+❶ >>> age >= 18
+  Traceback (most recent call last):
+    File "", line 1, in 
+❷ TypeError: unorderable types: str() >= int()
+```
+
+你试图将输入用于数值比较时（见❶），Python 会引发错误，因为它无法将字符串和整数进行比较：不能将存储在`age`中的字符串`'21'`与数值`18`进行比较（见❷）。
+
+为解决这个问题，可使用函数`int()`，它让 Python 将输入视为数值。函数`int()`将数字的字符串表示转换为数值表示，如下所示：
+
+```
+  >>> age = input("How old are you? ")
+  How old are you? 21
+❶ >>> age = int(age)
+  >>> age >= 18
+  True
+```
+
+在这个示例中，我们在提示时输入`21`后，Python 将这个数字解读为字符串，但随后`int()`将这个字符串转换成了数值表示（见❶）。这样 Python 就能运行条件测试了：将变量`age`（它现在包含数值21）同`18`进行比较，看它是否大于或等于18。测试结果为`True`。
+
+如何在实际程序中使用函数`int()`呢？请看下面的程序，它判断一个人是否满足坐过山车的身高要求：
+
+**rollercoaster.py**
+
+```
+height = input("How tall are you, in inches? ")
+height = int(height)
+
+if height >= 36:
+    print("\nYou're tall enough to ride!")
+else:
+    print("\nYou'll be able to ride when you're a little older.")
+```
+
+在这个程序中，为何可以将`height`同`36`进行比较呢？因为在比较前，`height=int(height)`将输入转换成了数值表示。如果输入的数字大于或等于36，我们就告诉用户他满足身高条件：
+
+```
+How tall are you, in inches? 71
+
+You're tall enough to ride!
+```
+
+将数值输入用于计算和比较前，务必将其转换为数值表示。
+
+#### **7.1.3　求模运算符**
+
+处理数值信息时，**求模运算符**（%）是一个很有用的工具，它将两个数相除并返回余数：
+
+```
+>>> 4 % 3
+1
+>>> 5 % 3
+2
+>>> 6 % 3
+0
+>>> 7 % 3
+1
+```
+
+求模运算符不会指出一个数是另一个数的多少倍，而只指出余数是多少。
+
+如果一个数可被另一个数整除，余数就为0，因此求模运算符将返回0。你可利用这一点来判断一个数是奇数还是偶数：
+
+**evenorodd.py**
+
+```
+number = input("Enter a number, and I'll tell you if it's even or odd: ")
+number = int(number)
+
+if number % 2 == 0:
+    print("\nThe number " + str(number) + " is even.")
+else:
+    print("\nThe number " + str(number) + " is odd.")
+```
+
+偶数都能被2整除，因此对一个数（`number`）和2执行求模运算的结果为零，即`number%2==0`，那么这个数就是偶数；否则就是奇数。
+
+```
+Enter a number, and I'll tell you if it's even or odd: 42
+
+The number 42 is even.
+```
+
+#### **7.1.4　在 Python 2.7 中获取输入**
+
+如果你使用的是 Python 2.7，应使用函数`raw_input()`来提示用户输入。这个函数与 Python 3 中的`input()`一样，也将输入解读为字符串。
+
+Python 2.7 也包含函数`input()`，但它将用户输入解读为 Python 代码，并尝试运行它们。因此，最好的结果是出现错误，指出 Python 不明白输入的代码；而最糟的结果是，将运行你原本无意运行的代码。如果你使用的是 Python 2.7，请使用`raw_input()`而不是`input()`来获取输入。
+
+> **动手试一试**
+>
+> **7-1 汽车租赁**：编写一个程序，询问用户要租赁什么样的汽车，并打印一条消息，如“Let me see if I can find you a Subaru”。
+>
+> **7-2 餐馆订位**：编写一个程序，询问用户有多少人用餐。如果超过8人，就打印一条消息，指出没有空桌；否则指出有空桌。
+>
+> **7-3 10的整数倍**：让用户输入一个数字，并指出这个数字是否是10的整数倍。
+
+### **7.2　while 循环简介**
+
+`for`循环用于针对集合中的每个元素的一个代码块，而`while`循环不断地运行，直到指定的条件不满足为止。
+
+#### **7.2.1　使用 while 循环**
+
+你可以使用`while`循环来数数，例如，下面的`while`循环从1数到5：
+
+**counting.py**
+
+```
+current_number = 1
+while current_number <= 5:
+    print(current_number)
+    current_number += 1
+```
+
+在第1行，我们将`current_number`设置为1，从而指定从1开始数。接下来的`while`循环被设置成这样：只要`current_number`小于或等于5，就接着运行这个循环。循环中的代码打印`current_number`的值，再使用代码`current_number+=1`（代码`current_number=current_number+1`的简写）将其值加1。
+
+只要满足条件`current_number<=5`，Python 就接着运行这个循环。由于1小于5，因此 Python 打印`1`，并将`current_number`加1，使其为`2`；由于2小于5，因此 Python 打印`2`，并将`current_number`加`1`，使其为`3`，以此类推。一旦`current_number`大于5，循环将停止，整个程序也将到此结束：
+
+```
+1
+2
+3
+4
+5
+```
+
+你每天使用的程序很可能就包含`while`循环。例如，游戏使用`while`循环，确保在玩家想玩时不断运行，并在玩家想退出时停止运行。如果程序在用户没有让它停止时停止运行，或者在用户要退出时还继续运行，那就太没有意思了；有鉴于此，`while`循环很有用。
+
+#### **7.2.2　让用户选择何时退出**
+
+可使用`while`循环让程序在用户愿意时不断地运行，如下面的程序 parrot.py 所示。我们在其中定义了一个退出值，只要用户输入的不是这个值，程序就接着运行：
+
+**parrot.py**
+
+```
+❶ prompt = "\nTell me something, and I will repeat it back to you:"
+  prompt += "\nEnter 'quit' to end the program. "
+❷ message = ""
+❸ while message != 'quit':
+      message = input(prompt)
+      print(message)
+```
+
+在❶处，我们定义了一条提示消息，告诉用户他有两个选择：要么输入一条消息，要么输入退出值（这里为`'quit'`）。接下来，我们创建了一个变量——`message`（见❷），用于存储用户输入的值。我们将变量`message`的初始值设置为空字符串`""`，让 Python 首次执行`while`代码行时有可供检查的东西。Python 首次执行`while`语句时，需要将`message`的值与`'quit'`进行比较，但此时用户还没有输入。如果没有可供比较的东西，Python 将无法继续运行程序。为解决这个问题，我们必须给变量`message`指定一个初始值。虽然这个初始值只是一个空字符串，但符合要求，让 Python 能够执行`while`循环所需的比较。只要`message`的值不是`'quit'`，这个循环（见❸）就会不断运行。
+
+首次遇到这个循环时，`message`是一个空字符串，因此 Python 进入这个循环。执行到代码行`message=input(prompt)`时，Python 显示提示消息，并等待用户输入。不管用户输入是什么，都将存储到变量`message`中并打印出来；接下来，Python 重新检查`while`语句中的条件。只要用户输入的不是单词`'quit'`，Python 就会再次显示提示消息并等待用户输入。等到用户终于输入`'quit'`后，Python 停止执行`while`循环，而整个程序也到此结束：
+
+```
+Tell me something, and I will repeat it back to you:
+Enter 'quit' to end the program. Hello everyone!
+Hello everyone!
+
+Tell me something, and I will repeat it back to you:
+Enter 'quit' to end the program. Hello again.
+Hello again.
+
+Tell me something, and I will repeat it back to you:
+Enter 'quit' to end the program. quit
+quit
+```
+
+这个程序很好，唯一美中不足的是，它将单词`'quit'`也作为一条消息打印了出来。为修复这种问题，只需使用一个简单的`if`测试：
+
+```
+prompt = "\nTell me something, and I will repeat it back to you:"
+prompt += "\nEnter 'quit' to end the program. "
+
+message = ""
+while message != 'quit':
+    message = input(prompt)
+
+    if message != 'quit':
+        print(message)
+```
+
+现在，程序在显示消息前将做简单的检查，仅在消息不是退出值时才打印它：
+
+```
+Tell me something, and I will repeat it back to you:
+Enter 'quit' to end the program. Hello everyone!
+Hello everyone!
+
+Tell me something, and I will repeat it back to you:
+Enter 'quit' to end the program. Hello again.
+Hello again.
+
+Tell me something, and I will repeat it back to you:
+Enter 'quit' to end the program. quit
+```
+
+#### **7.2.3　使用标志**
+
+在前一个示例中，我们让程序在满足指定条件时就执行特定的任务。但在更复杂的程序中，很多不同的事件都会导致程序停止运行；在这种情况下，该怎么办呢？
+
+例如，在游戏中，多种事件都可能导致游戏结束，如玩家一艘飞船都没有了或要保护的城市都被摧毁了。导致程序结束的事件有很多时，如果在一条`while`语句中检查所有这些条件，将既复杂又困难。
+
+在要求很多条件都满足才继续运行的程序中，可定义一个变量，用于判断整个程序是否处于活动状态。这个变量被称为**标志**，充当了程序的交通信号灯。你可让程序在标志为`True`时继续运行，并在任何事件导致标志的值为`False`时让程序停止运行。这样，在`while`语句中就只需检查一个条件——标志的当前值是否为`True`，并将所有测试（是否发生了应将标志设置为`False`的事件）都放在其他地方，从而让程序变得更为整洁。
+
+下面来在前一节的程序 parrot.py 中添加一个标志。我们把这个标志命名为`active`（可给它指定任何名称），它将用于判断程序是否应继续运行：
+
+```
+  prompt = "\nTell me something, and I will repeat it back to you:"
+  prompt += "\nEnter 'quit' to end the program. "
+
+❶ active = True
+❷ while active:
+      message = input(prompt)
+
+❸     if message == 'quit':
+          active = False
+❹     else:
+          print(message)
+```
+
+我们将变量`active`设置成了`True`（见❶），让程序最初处于活动状态。这样做简化了`while`语句，因为不需要在其中做任何比较——相关的逻辑由程序的其他部分处理。只要变量`active`为`True`，循环就将继续运行（见❷）。
+
+在`while`循环中，我们在用户输入后使用一条`if`语句来检查变量`message`的值。如果用户输入的是`'quit'`（见❸），我们就将变量`active`设置为`False`，这将导致`while`循环不再继续执行。如果用户输入的不是`'quit'`（见❹），我们就将输入作为一条消息打印出来。
+
+这个程序的输出与前一个示例相同。在前一个示例中，我们将条件测试直接放在了`while`语句中，而在这个程序中，我们使用了一个标志来指出程序是否处于活动状态，这样如果要添加测试（如`elif`语句）以检查是否发生了其他导致`active`变为`False`的事件，将很容易。在复杂的程序中，如很多事件都会导致程序停止运行的游戏中，标志很有用：在其中的任何一个事件导致活动标志变成`False`时，主游戏循环将退出，此时可显示一条游戏结束消息，并让用户选择是否要重新玩。
+
+#### **7.2.4　使用 break 退出循环**
+
+要立即退出`while`循环，不再运行循环中余下的代码，也不管条件测试的结果如何，可使用`break`语句。`break`语句用于控制程序流程，可使用它来控制哪些代码行将执行，哪些代码行不执行，从而让程序按你的要求执行你要执行的代码。
+
+例如，来看一个让用户指出他到过哪些地方的程序。在这个程序中，我们可以在用户输入`'quit'`后使用`break`语句立即退出`while`循环：
+
+**cities.py**
+
+```
+  prompt = "\nPlease enter the name of a city you have visited:"
+  prompt += "\n(Enter 'quit' when you are finished.) "
+
+❶ while True:
+      city = input(prompt)
+
+      if city == 'quit':
+          break
+      else:
+          print("I'd love to go to " + city.title() + "!")
+```
+
+以`while True`打头的循环（见❶）将不断运行，直到遇到`break`语句。这个程序中的循环不断输入用户到过的城市的名字，直到他输入`'quit'`为止。用户输入`'quit'`后，将执行`break`语句，导致 Python 退出循环：
+
+```
+Please enter the name of a city you have visited:
+(Enter 'quit' when you are finished.) New York
+I'd love to go to New York!
+
+Please enter the name of a city you have visited:
+(Enter 'quit' when you are finished.) San Francisco
+I'd love to go to San Francisco!
+
+Please enter the name of a city you have visited:
+(Enter 'quit' when you are finished.) quit
+```
+
+> **注意**　
+>
+> 在任何 Python 循环中都可使用`break`语句。例如，可使用`break`语句来退出遍历列表或字典的`for`循环。
+
+#### **7.2.5　在循环中使用 continue**
+
+要返回到循环开头，并根据条件测试结果决定是否继续执行循环，可使用`continue`语句，它不像`break`语句那样不再执行余下的代码并退出整个循环。例如，来看一个从1数到10，但只打印其中奇数的循环：
+
+**counting.py**
+
+```
+  current_number = 0
+  while current_number < 10:
+❶     current_number += 1
+      if current_number % 2 == 0:
+          continue
+
+      print(current_number)
+```
+
+我们首先将`current_number`设置成了0，由于它小于10，Python 进入`while`循环。进入循环后，我们以步长1的方式往上数（见❶），因此`current_number`为1。接下来，`if`语句检查`current_number`与2的求模运算结果。如果结果为0（意味着`current_number`可被2整除），就执行`continue`语句，让 Python 忽略余下的代码，并返回到循环的开头。如果当前的数字不能被2整除，就执行循环中余下的代码，Python 将这个数字打印出来：
+
+```
+1
+3
+5
+7
+9
+```
+
+#### **7.2.6　避免无限循环**
+
+每个`while`循环都必须有停止运行的途径，这样才不会没完没了地执行下去。例如，下面的循环从1数到5：
+
+**counting.py**
+
+```
+x = 1
+while x <= 5:
+    print(x)
+    x += 1
+```
+
+但如果你像下面这样不小心遗漏了代码行`x+=1`，这个循环将没完没了地运行：
+
+```
+# 这个循环将没完没了地运行！
+x = 1
+while x <= 5:
+    print(x)
+```
+
+在这里，`x`的初始值为`1`，但根本不会变，因此条件测试`x<=5`始终为`True`，导致`while`循环没完没了地打印`1`，如下所示：
+
+```
+1
+1
+1
+1
+--snip--
+```
+
+每个程序员都会偶尔因不小心而编写出无限循环，在循环的退出条件比较微妙时尤其如此。如果程序陷入无限循环，可按 Ctrl+C，也可关闭显示程序输出的终端窗口。
+
+要避免编写无限循环，务必对每个`while`循环进行测试，确保它按预期那样结束。如果你希望程序在用户输入特定值时结束，可运行程序并输入这样的值；如果在这种情况下程序没有结束，请检查程序处理这个值的方式，确认程序至少有一个这样的地方能让循环条件为`False`或让`break`语句得以执行。
+
+> **注意**　
+>
+> 有些编辑器（如 Sublime Text）内嵌了输出窗口，这可能导致难以结束无限循环，因此不得不关闭编辑器来结束无限循环。
+
+> **动手试一试**
+>
+> **7-4 比萨配料**：编写一个循环，提示用户输入一系列的比萨配料，并在用户输入`'quit'`时结束循环。每当用户输入一种配料后，都打印一条消息，说我们会在比萨中添加这种配料。
+>
+> **7-5 电影票**：有家电影院根据观众的年龄收取不同的票价：不到3岁的观众免费；3~12岁的观众为10美元；超过12岁的观众为15美元。请编写一个循环，在其中询问用户的年龄，并指出其票价。
+>
+> **7-6 三个出口**：以另一种方式完成练习7-4或练习7-5，在程序中采取如下所有做法。
+>
+> - 在`while`循环中使用条件测试来结束循环。
+> - 使用变量`active`来控制循环结束的时机。
+> - 使用`break`语句在用户输入`'quit'`时退出循环。
+>
+> **7-7 无限循环**：编写一个没完没了的循环，并运行它（要结束该循环，可按 Ctrl+C，也可关闭显示输出的窗口）。
+
+### **7.3　使用 while 循环来处理列表和字典**
+
+到目前为止，我们每次都只处理了一项用户信息：获取用户的输入，再将输入打印出来或作出应答；循环再次运行时，我们获悉另一个输入值并作出响应。然而，要记录大量的用户和信息，需要在`while`循环中使用列表和字典。
+
+`for`循环是一种遍历列表的有效方式，但在`for`循环中不应修改列表，否则将导致 Python 难以跟踪其中的元素。要在遍历列表的同时对其进行修改，可使用`while`循环。通过将`while`循环同列表和字典结合起来使用，可收集、存储并组织大量输入，供以后查看和显示。
+
+#### **7.3.1　在列表之间移动元素**
+
+假设有一个列表，其中包含新注册但还未验证的网站用户；验证这些用户后，如何将他们移到另一个已验证用户列表中呢？一种办法是使用一个`while`循环，在验证用户的同时将其从未验证用户列表中提取出来，再将其加入到另一个已验证用户列表中。代码可能类似于下面这样：
+
+**confirmed_users.py**
+
+```
+  # 首先，创建一个待验证用户列表
+  #  和一个用于存储已验证用户的空列表
+❶ unconfirmed_users = ['alice', 'brian', 'candace']
+  confirmed_users = []
+
+  # 验证每个用户，直到没有未验证用户为止
+  #  将每个经过验证的列表都移到已验证用户列表中
+❷ while unconfirmed_users:
+❸     current_user = unconfirmed_users.pop()
+
+      print("Verifying user: " + current_user.title())
+❹     confirmed_users.append(current_user)
+
+  # 显示所有已验证的用户
+  print("\nThe following users have been confirmed:")
+  for confirmed_user in confirmed_users:
+      print(confirmed_user.title())
+```
+
+我们首先创建了一个未验证用户列表（见❶），其中包含用户 Alice、Brian 和 Candace，还创建了一个空列表，用于存储已验证的用户。❷处的`while`循环将不断地运行，直到列表`unconfirmed_users`变成空的。在这个循环中，❸处的函数`pop()`以每次一个的方式从列表`unconfirmed_users`末尾删除未验证的用户。由于 Candace 位于列表`unconfirmed_users`末尾，因此其名字将首先被删除、存储到变量`current_user`中并加入到列表`confirmed_users`中（见❹）。接下来是 Brian，然后是 Alice。
+
+为模拟用户验证过程，我们打印一条验证消息并将用户加入到已验证用户列表中。未验证用户列表越来越短，而已验证用户列表越来越长。未验证用户列表为空后结束循环，再打印已验证用户列表：
+
+```
+Verifying user: Candace
+Verifying user: Brian
+Verifying user: Alice
+
+The following users have been confirmed:
+Candace
+Brian
+Alice
+```
+
+#### **7.3.2　删除包含特定值的所有列表元素**
+
+在第3章中，我们使用函数`remove()`来删除列表中的特定值，这之所以可行，是因为要删除的值在列表中只出现了一次。如果要删除列表中所有包含特定值的元素，该怎么办呢？
+
+假设你有一个宠物列表，其中包含多个值为`'cat'`的元素。要删除所有这些元素，可不断运行一个`while`循环，直到列表中不再包含值`'cat'`，如下所示：
+
+**pets.py**
+
+```
+pets = ['dog', 'cat', 'dog', 'goldfish', 'cat', 'rabbit', 'cat']
+print(pets)
+
+while 'cat' in pets:
+    pets.remove('cat')
+
+print(pets)
+```
+
+我们首先创建了一个列表，其中包含多个值为`'cat'`的元素。打印这个列表后，Python 进入`while`循环，因为它发现`'cat'`在列表中至少出现了一次。进入这个循环后，Python 删除第一个`'cat'`并返回到`while`代码行，然后发现`'cat'`还包含在列表中，因此再次进入循环。它不断删除`'cat'`，直到这个值不再包含在列表中，然后退出循环并再次打印列表：
+
+```
+['dog', 'cat', 'dog', 'goldfish', 'cat', 'rabbit', 'cat']
+['dog', 'dog', 'goldfish', 'rabbit']
+```
+
+#### **7.3.3　使用用户输入来填充字典**
+
+可使用 while 循环提示用户输入任意数量的信息。下面来创建一个调查程序，其中的循环每次执行时都提示输入被调查者的名字和回答。我们将收集的数据存储在一个字典中，以便将回答同被调查者关联起来：
+
+**mountain_poll.py**
+
+```
+  responses = {}
+
+  # 设置一个标志，指出调查是否继续
+  polling_active = True
+
+  while polling_active:
+      # 提示输入被调查者的名字和回答
+❶     name = input("\nWhat is your name? ")
+      response = input("Which mountain would you like to climb someday? ")
+
+      # 将答卷存储在字典中
+❷     responses[name] = response
+
+      # 看看是否还有人要参与调查
+❸     repeat = input("Would you like to let another person respond? (yes/ no) ")
+      if repeat == 'no':
+          polling_active = False
+
+  # 调查结束，显示结果
+  print("\n--- Poll Results ---")
+❹ for name, response in responses.items():
+      print(name + " would like to climb " + response + ".")
+```
+
+这个程序首先定义了一个空字典（`responses`），并设置了一个标志（`polling_active`），用于指出调查是否继续。只要`polling_active`为`True`，Python 就运行`while`循环中的代码。
+
+在这个循环中，提示用户输入其用户名及其喜欢爬哪座山（见❶）。将这些信息存储在字典`responses`中（见❷），然后询问用户调查是否继续（见❸）。如果用户输入`yes`，程序将再次进入`while`循环；如果用户输入`no`，标志`polling_active`将被设置为`False`，而`while`循环将就此结束。最后一个代码块（见❹）显示调查结果。
+
+如果你运行这个程序，并输入一些名字和回答，输出将类似于下面这样：
+
+```
+What is your name? Eric
+Which mountain would you like to climb someday? Denali
+Would you like to let another person respond? (yes/ no) yes
+
+What is your name? Lynn
+Which mountain would you like to climb someday? Devil's Thumb
+Would you like to let another person respond? (yes/ no) no
+
+--- Poll Results ---
+Lynn would like to climb Devil's Thumb.
+Eric would like to climb Denali.
+```
+
+> **动手试一试**
+>
+> **7-8 熟食店**：创建一个名为`sandwich_orders`的列表，在其中包含各种三明治的名字；再创建一个名为`finished_sandwiches`的空列表。遍历列表`sandwich_orders`，对于其中的每种三明治，都打印一条消息，如`I made your tuna sandwich`，并将其移到列表`finished_sandwiches`。所有三明治都制作好后，打印一条消息，将这些三明治列出来。
+>
+> **7-9 五香烟熏牛肉（pastrami）卖完了**：使用为完成练习7-8而创建的列表`sandwich_orders`，并确保`'pastrami'`在其中至少出现了三次。在程序开头附近添加这样的代码：打印一条消息，指出熟食店的五香烟熏牛肉卖完了；再使用一个`while`循环将列表`sandwich_orders`中的`'pastrami'`都删除。确认最终的列表`finished_sandwiches`中不包含`'pastrami'`。
+>
+> **7-10 梦想的度假胜地**：编写一个程序，调查用户梦想的度假胜地。使用类似于“If you could visit one place in the world, where would you go?”的提示，并编写一个打印调查结果的代码块。
+
+### **7.4　小结**
+
+在本章中，你学习了：如何在程序中使用`input()`来让用户提供信息；如何处理文本和数字输入，以及如何使用`while`循环让程序按用户的要求不断地运行；多种控制`while`循环流程的方式：设置活动标志、使用`break`语句以及使用`continue`语句；如何使用`while`循环在列表之间移动元素，以及如何从列表中删除所有包含特定值的元素；如何结合使用`while`循环和字典。
+
+在第8章中，你将学习函数。函数让你能够将程序分成多个很小的部分，其中每部分都负责完成一项具体任务。你可以根据需要调用同一个函数任意次，还可将函数存储在独立的文件中。使用函数可让你编写的代码效率更高，更容易维护和排除故障，还可在众多不同的程序中重用。
+
+------
+
+
+
+## 第8章　函数
+
+### **老齐导读**
+
+在学习本章的时候，请特别认同如下观点：
+
+- 函数是 Python 中的重点技能
+- Python 中的函数是对象
+
+然后，把本章所有代码敲一遍，并对照图中总结的知识体系，自己体会每一部分的知识，特别是下图中橙色拓展的部分，建议读者通过“前言”中推荐的资料补充上，这部分是重点。
+
+![enter image description here](https://images.gitbook.cn/d5730b70-8818-11e9-b6f4-77ea8c81f44e)
+
+> 在本章中，你将学习编写**函数**。函数是带名字的代码块，用于完成具体的工作。
+>
+> 要执行函数定义的特定任务，可调用该函数。需要在程序中多次执行同一项任务时，你无需反复编写完成该任务的代码，而只需调用执行该任务的函数，让 Python 运行其中的代码。你将发现，通过使用函数，程序的编写、阅读、测试和修复都将更容易。
+>
+> 在本章中，你还会学习向函数传递信息的方式。你将学习如何编写主要任务是显示信息的函数，还有用于处理数据并返回一个或一组值的函数。最后，你将学习如何将函数存储在被称为**模块**的独立文件中，让主程序文件的组织更为有序。
+
+### **8.1　定义函数**
+
+下面是一个打印问候语的简单函数，名为`greet_user()`：
+
+**greeter.py**
+
+```
+❶ def greet_user():
+❷     """显示简单的问候语"""
+❸     print("Hello!")
+
+❹ greet_user()
+```
+
+这个示例演示了最简单的函数结构。❶处的代码行使用关键字`def`来告诉 Python 你要定义一个函数。这是**函数定义**，向 Python 指出了函数名，还可能在括号内指出函数为完成其任务需要什么样的信息。在这里，函数名为`greet_user()`，它不需要任何信息就能完成其工作，因此括号是空的（即便如此，括号也必不可少）。最后，定义以冒号结尾。
+
+紧跟在`def greet_user():`后面的所有缩进行构成了函数体。❷处的文本是被称为**文档字符串**（docstring）的注释，描述了函数是做什么的。文档字符串用三引号括起，Python 使用它们来生成有关程序中函数的文档。
+
+代码行`print("Hello!")`（见❸）是函数体内的唯一一行代码，`greet_user()`只做一项工作：打印`Hello!`。
+
+要使用这个函数，可调用它。**函数调用**让 Python 执行函数的代码。要**调用**函数，可依次指定函数名以及用括号括起的必要信息，如❹处所示。由于这个函数不需要任何信息，因此调用它时只需输入`greet_user()`即可。和预期的一样，它打印`Hello!`：
+
+```
+Hello!
+```
+
+#### **8.1.1　向函数传递信息**
+
+只需稍作修改，就可以让函数`greet_user()`不仅向用户显示`Hello!`，还将用户的名字用作抬头。为此，可在函数定义`def greet_user()`的括号内添加`username`。通过在这里添加`username`，就可让函数接受你给`username`指定的任何值。现在，这个函数要求你调用它时给`username`指定一个值。调用`greet_user()`时，可将一个名字传递给它，如下所示：
+
+```
+def greet_user(username):
+    """显示简单的问候语"""
+    print("Hello, " + username.title() + "!")
+
+greet_user('jesse')
+```
+
+代码`greet_user('jesse')`调用函数`greet_user()`，并向它提供执行`print`语句所需的信息。这个函数接受你传递给它的名字，并向这个人发出问候：
+
+```
+Hello, Jesse!
+```
+
+同样，`greet_user('sarah')`调用函数`greet_user()`并向它传递`'sarah'`，打印`Hello, Sarah!`。你可以根据需要调用函数`greet_user()`任意次，调用时无论传入什么样的名字，都会生成相应的输出。
+
+#### **8.1.2　实参和形参**
+
+前面定义函数`greet_user()`时，要求给变量`username`指定一个值。调用这个函数并提供这种信息（人名）时，它将打印相应的问候语。
+
+在函数`greet_user()`的定义中，变量`username`是一个**形参**——函数完成其工作所需的一项信息。在代码`greet_user('jesse')`中，值`'jesse'`是一个**实参**。实参是调用函数时传递给函数的信息。我们调用函数时，将要让函数使用的信息放在括号内。在`greet_user('jesse')`中，将实参`'jesse'`传递给了函数`greet_user()`，这个值被存储在形参`username`中。
+
+> **注意**　
+>
+> 大家有时候会形参、实参不分，因此如果你看到有人将函数定义中的变量称为实参或将函数调用中的变量称为形参，不要大惊小怪。
+
+> **动手试一试**
+>
+> **8-1 消息**：编写一个名为`display_message()`的函数，它打印一个句子，指出你在本章学的是什么。调用这个函数，确认显示的消息正确无误。
+>
+> **8-2 喜欢的图书**：编写一个名为`favorite_book()`的函数，其中包含一个名为`title`的形参。这个函数打印一条消息，如`One of my favorite books is Alice in Wonderland`。调用这个函数，并将一本图书的名称作为实参传递给它。
+
+### **8.2　传递实参**
+
+鉴于函数定义中可能包含多个形参，因此函数调用中也可能包含多个实参。向函数传递实参的方式很多，可使用**位置实参**，这要求实参的顺序与形参的顺序相同；也可使用**关键字实参**，其中每个实参都由变量名和值组成；还可使用列表和字典。下面来依次介绍这些方式。
+
+#### **8.2.1　位置实参**
+
+你调用函数时，Python 必须将函数调用中的每个实参都关联到函数定义中的一个形参。为此，最简单的关联方式是基于实参的顺序。这种关联方式被称为**位置实参**。
+
+为明白其中的工作原理，来看一个显示宠物信息的函数。这个函数指出一个宠物属于哪种动物以及它叫什么名字，如下所示：
+
+**pets.py**
+
+```
+❶ def describe_pet(animal_type, pet_name):
+      """显示宠物的信息"""
+      print("\nI have a " + animal_type + ".")
+      print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+❷ describe_pet('hamster', 'harry')
+```
+
+这个函数的定义表明，它需要一种动物类型和一个名字（见❶）。调用`describe_pet()`时，需要按顺序提供一种动物类型和一个名字。例如，在前面的函数调用中，实参`'hamster'`存储在形参`animal_type`中，而实参`'harry'`存储在形参`pet_name`中（见❷）。在函数体内，使用了这两个形参来显示宠物的信息。
+
+输出描述了一只名为 Harry 的仓鼠：
+
+```
+I have a hamster.
+My hamster's name is Harry.
+```
+
+**1. 调用函数多次**
+
+你可以根据需要调用函数任意次。要再描述一个宠物，只需再次调用`describe_pet()`即可：
+
+```
+def describe_pet(animal_type, pet_name):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet('hamster', 'harry')
+describe_pet('dog', 'willie')
+```
+
+第二次调用`describe_pet()`函数时，我们向它传递了实参`'dog'`和`'willie'`。与第一次调用时一样，Python 将实参`'dog'`关联到形参`animal_type`，并将实参`'willie'`关联到形参`pet_name`。与前面一样，这个函数完成其任务，但打印的是一条名为 Willie 的小狗的信息。至此，我们有一只名为 Harry 的仓鼠，还有一条名为 Willie 的小狗：
+
+```
+I have a hamster.
+My hamster's name is Harry.
+
+I have a dog.
+My dog's name is Willie.
+```
+
+调用函数多次是一种效率极高的工作方式。我们只需在函数中编写描述宠物的代码一次，然后每当需要描述新宠物时，都可调用这个函数，并向它提供新宠物的信息。即便描述宠物的代码增加到了10行，你依然只需使用一行调用函数的代码，就可描述一个新宠物。
+
+在函数中，可根据需要使用任意数量的位置实参，Python 将按顺序将函数调用中的实参关联到函数定义中相应的形参。
+
+**2. 位置实参的顺序很重要**
+
+使用位置实参来调用函数时，如果实参的顺序不正确，结果可能出乎意料：
+
+```
+def describe_pet(animal_type, pet_name):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet('harry', 'hamster')
+```
+
+在这个函数调用中，我们先指定名字，再指定动物类型。由于实参`'harry'`在前，这个值将存储到形参`animal_type`中；同理，`'hamster'`将存储到形参`pet_name`中。结果是我们得到了一个名为`Hamster`的`harry`：
+
+```
+I have a harry.
+My harry's name is Hamster.
+```
+
+如果结果像上面一样搞笑，请确认函数调用中实参的顺序与函数定义中形参的顺序一致。
+
+#### **8.2.2　关键字实参**
+
+**关键字实参**是传递给函数的名称—值对。你直接在实参中将名称和值关联起来了，因此向函数传递实参时不会混淆（不会得到名为 Hamster 的 harry 这样的结果）。关键字实参让你无需考虑函数调用中的实参顺序，还清楚地指出了函数调用中各个值的用途。
+
+下面来重新编写 pets.py，在其中使用关键字实参来调用`describe_pet()`：
+
+```
+def describe_pet(animal_type, pet_name):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet(animal_type='hamster', pet_name='harry')
+```
+
+函数`describe_pet()`还是原来那样，但调用这个函数时，我们向 Python 明确地指出了各个实参对应的形参。看到这个函数调用时，Python 知道应该将实参`'hamster'`和`'harry'`分别存储在形参`animal_type`和`pet_name`中。输出正确无误，它指出我们有一只名为 Harry 的仓鼠。
+
+关键字实参的顺序无关紧要，因为 Python 知道各个值该存储到哪个形参中。下面两个函数调用是等效的：
+
+```
+describe_pet(animal_type='hamster', pet_name='harry')
+describe_pet(pet_name='harry', animal_type='hamster')
+```
+
+> **注意**　
+>
+> 使用关键字实参时，务必准确地指定函数定义中的形参名。
+
+#### **8.2.3　默认值**
+
+编写函数时，可给每个形参指定**默认值**。在调用函数中给形参提供了实参时，Python 将使用指定的实参值；否则，将使用形参的默认值。因此，给形参指定默认值后，可在函数调用中省略相应的实参。使用默认值可简化函数调用，还可清楚地指出函数的典型用法。
+
+例如，如果你发现调用`describe_pet()`时，描述的大都是小狗，就可将形参`animal_type`的默认值设置为`'dog'`。这样，调用`describe_pet()`来描述小狗时，就可不提供这种信息：
+
+```
+def describe_pet(pet_name, animal_type='dog'):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet(pet_name='willie')
+```
+
+这里修改了函数`describe_pet()`的定义，在其中给形参`animal_type`指定了默认值`'dog'`。这样，调用这个函数时，如果没有给`animal_type`指定值，Python 将把这个形参设置为`'dog'`：
+
+```
+I have a dog.
+My dog's name is Willie.
+```
+
+请注意，在这个函数的定义中，修改了形参的排列顺序。由于给`animal_type`指定了默认值，无需通过实参来指定动物类型，因此在函数调用中只包含一个实参——宠物的名字。然而，Python 依然将这个实参视为位置实参，因此如果函数调用中只包含宠物的名字，这个实参将关联到函数定义中的第一个形参。这就是需要将`pet_name`放在形参列表开头的原因所在。
+
+现在，使用这个函数的最简单的方式是，在函数调用中只提供小狗的名字：
+
+```
+describe_pet('willie')
+```
+
+这个函数调用的输出与前一个示例相同。只提供了一个实参——`'willie'`，这个实参将关联到函数定义中的第一个形参——`pet_name`。由于没有给`animal_type`提供实参，因此 Python 使用其默认值`'dog'`。
+
+如果要描述的动物不是小狗，可使用类似于下面的函数调用：
+
+```
+describe_pet(pet_name='harry', animal_type='hamster')
+```
+
+由于显式地给`animal_type`提供了实参，因此 Python 将忽略这个形参的默认值。
+
+> **注意**　
+>
+> 使用默认值时，在形参列表中必须先列出没有默认值的形参，再列出有默认值的形参。这让 Python 依然能够正确地解读位置实参。
+
+#### **8.2.4　等效的函数调用**
+
+鉴于可混合使用位置实参、关键字实参和默认值，通常有多种等效的函数调用方式。请看下面的函数`describe_pet()`的定义，其中给一个形参提供了默认值：
+
+```
+def describe_pet(pet_name, animal_type='dog'):
+```
+
+基于这种定义，在任何情况下都必须给`pet_name`提供实参；指定该实参时可以使用位置方式，也可以使用关键字方式。如果要描述的动物不是小狗，还必须在函数调用中给`animal_type`提供实参；同样，指定该实参时可以使用位置方式，也可以使用关键字方式。
+
+下面对这个函数的所有调用都可行：
+
+```
+# 一条名为 Willie 的小狗
+describe_pet('willie')
+describe_pet(pet_name='willie')
+
+# 一只名为 Harry 的仓鼠
+describe_pet('harry', 'hamster')
+describe_pet(pet_name='harry', animal_type='hamster')
+describe_pet(animal_type='hamster', pet_name='harry')
+```
+
+这些函数调用的输出与前面的示例相同。
+
+> **注意**　
+>
+> 使用哪种调用方式无关紧要，只要函数调用能生成你希望的输出就行。使用对你来说最容易理解的调用方式即可。
+
+#### **8.2.5　避免实参错误**
+
+等你开始使用函数后，如果遇到实参不匹配错误，不要大惊小怪。你提供的实参多于或少于函数完成其工作所需的信息时，将出现实参不匹配错误。例如，如果调用函数`describe_pet()`时没有指定任何实参，结果将如何呢？
+
+```
+def describe_pet(animal_type, pet_name):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet()
+```
+
+Python 发现该函数调用缺少必要的信息，而 traceback 指出了这一点：
+
+```
+  Traceback (most recent call last):
+❶   File "pets.py", line 6, in <module>
+❷     describe_pet()
+❸ TypeError: describe_pet() missing 2 required positional arguments: 'animal_
+  type' and 'pet_name'
+```
+
+在❶处，traceback 指出了问题出在什么地方，让我们能够回过头去找出函数调用中的错误。在❷处，指出了导致问题的函数调用。在❸处，traceback 指出该函数调用少两个实参，并指出了相应形参的名称。如果这个函数存储在一个独立的文件中，我们也许无需打开这个文件并查看函数的代码，就能重新正确地编写函数调用。
+
+Python 读取函数的代码，并指出我们需要为哪些形参提供实参，这提供了极大的帮助。这也是应该给变量和函数指定描述性名称的另一个原因；如果你这样做了，那么无论对于你，还是可能使用你编写的代码的其他任何人来说，Python 提供的错误消息都将更有帮助。
+
+如果提供的实参太多，将出现类似的 traceback，帮助你确保函数调用和函数定义匹配。
+
+> **动手试一试**
+>
+> **8-3 T 恤**：编写一个名为`make_shirt()`的函数，它接受一个尺码以及要印到 T 恤上的字样。这个函数应打印一个句子，概要地说明 T 恤的尺码和字样。
+>
+> 使用位置实参调用这个函数来制作一件 T 恤；再使用关键字实参来调用这个函数。
+>
+> **8-4 大号 T 恤**：修改函数`make_shirt()`，使其在默认情况下制作一件印有字样“I love Python”的大号 T 恤。调用这个函数来制作如下 T 恤：一件印有默认字样的大号 T 恤、一件印有默认字样的中号 T 恤和一件印有其他字样的 T 恤（尺码无关紧要）。
+>
+> **8-5 城市**：编写一个名为`describe_city()`的函数，它接受一座城市的名字以及该城市所属的国家。这个函数应打印一个简单的句子，如`Reykjavik is in Iceland`。给用于存储国家的形参指定默认值。为三座不同的城市调用这个函数，且其中至少有一座城市不属于默认国家。
+
+### **8.3　返回值**
+
+函数并非总是直接显示输出，相反，它可以处理一些数据，并返回一个或一组值。函数返回的值被称为**返回值**。在函数中，可使用`return`语句将值返回到调用函数的代码行。返回值让你能够将程序的大部分繁重工作移到函数中去完成，从而简化主程序。
+
+#### **8.3.1　返回简单值**
+
+下面来看一个函数，它接受名和姓并返回整洁的姓名：
+
+**formatted_name.py**
+
+```
+❶ def get_formatted_name(first_name, last_name):
+      """返回整洁的姓名"""
+❷     full_name = first_name + ' ' + last_name
+❸     return full_name.title()
+
+❹ musician = get_formatted_name('jimi', 'hendrix')
+  print(musician)
+```
+
+函数`get_formatted_name()`的定义通过形参接受名和姓（见❶）。它将姓和名合而为一，在它们之间加上一个空格，并将结果存储在变量`full_name`中（见❷）。然后，将`full_name`的值转换为首字母大写格式，并将结果返回到函数调用行（见❸）。
+
+调用返回值的函数时，需要提供一个变量，用于存储返回的值。在这里，将返回值存储在了变量`musician`中（见❹）。输出为整洁的姓名：
+
+```
+Jimi Hendrix
+```
+
+我们原本只需编写下面的代码就可输出整洁的姓名，相比于此，前面做的工作好像太多了：
+
+```
+print("Jimi Hendrix")
+```
+
+但在需要分别存储大量名和姓的大型程序中，像`get_formatted_name()`这样的函数非常有用。你分别存储名和姓，每当需要显示姓名时都调用这个函数。
+
+#### **8.3.2　让实参变成可选的**
+
+有时候，需要让实参变成可选的，这样使用函数的人就只需在必要时才提供额外的信息。可使用默认值来让实参变成可选的。
+
+例如，假设我们要扩展函数`get_formatted_name()`，使其还处理中间名。为此，可将其修改成类似于下面这样：
+
+```
+def get_formatted_name(first_name, middle_name, last_name):
+    """返回整洁的姓名"""
+    full_name = first_name + ' ' + middle_name + ' ' + last_name
+    return full_name.title()
+
+musician = get_formatted_name('john', 'lee', 'hooker')
+print(musician)
+```
+
+只要同时提供名、中间名和姓，这个函数就能正确地运行。它根据这三部分创建一个字符串，在适当的地方加上空格，并将结果转换为首字母大写格式：
+
+```
+John Lee Hooker
+```
+
+然而，并非所有的人都有中间名，但如果你调用这个函数时只提供了名和姓，它将不能正确地运行。为让中间名变成可选的，可给实参`middle_name`指定一个默认值——空字符串，并在用户没有提供中间名时不使用这个实参。为让`get_formatted_name()`在没有提供中间名时依然可行，可给实参`middle_name`指定一个默认值——空字符串，并将其移到形参列表的末尾：
+
+```
+❶ def get_formatted_name(first_name, last_name, middle_name=''):
+      """返回整洁的姓名"""
+❷     if middle_name:
+          full_name = first_name + ' ' + middle_name + ' ' + last_name
+❸     else:
+          full_name = first_name + ' ' + last_name
+      return full_name.title()
+
+  musician = get_formatted_name('jimi', 'hendrix')
+  print(musician)
+
+❹ musician = get_formatted_name('john', 'hooker', 'lee')
+  print(musician)
+```
+
+在这个示例中，姓名是根据三个可能提供的部分创建的。由于人都有名和姓，因此在函数定义中首先列出了这两个形参。中间名是可选的，因此在函数定义中最后列出该形参，并将其默认值设置为空字符串（见❶）。
+
+在函数体中，我们检查是否提供了中间名。Python 将非空字符串解读为`True`，因此如果函数调用中提供了中间名，`if middle_name`将为`True`（见❷）。如果提供了中间名，就将名、中间名和姓合并为姓名，然后将其修改为首字母大写格式，并返回到函数调用行。在函数调用行，将返回的值存储在变量`musician`中；然后将这个变量的值打印出来。如果没有提供中间名，`middle_name`将为空字符串，导致`if`测试未通过，进而执行`else`代码块（见❸）：只使用名和姓来生成姓名，并将设置好格式的姓名返回给函数调用行。在函数调用行，将返回的值存储在变量`musician`中；然后将这个变量的值打印出来。
+
+调用这个函数时，如果只想指定名和姓，调用起来将非常简单。如果还要指定中间名，就必须确保它是最后一个实参，这样 Python 才能正确地将位置实参关联到形参（见❹）。
+
+这个修改后的版本适用于只有名和姓的人，也适用于还有中间名的人：
+
+```
+Jimi Hendrix
+John Lee Hooker
+```
+
+可选值让函数能够处理各种不同情形的同时，确保函数调用尽可能简单。
+
+#### **8.3.3　返回字典**
+
+函数可返回任何类型的值，包括列表和字典等较复杂的数据结构。例如，下面的函数接受姓名的组成部分，并返回一个表示人的字典：
+
+**person.py**
+
+```
+  def build_person(first_name, last_name):
+      """返回一个字典，其中包含有关一个人的信息"""
+❶     person = {'first': first_name, 'last': last_name}
+❷     return person
+
+  musician = build_person('jimi', 'hendrix')
+❸ print(musician)
+```
+
+函数`build_person()`接受名和姓，并将这些值封装到字典中（见❶）。存储`first_name`的值时，使用的键为`'first'`，而存储`last_name`的值时，使用的键为`'last'`。最后，返回表示人的整个字典（见❷）。在❸处，打印这个返回的值，此时原来的两项文本信息存储在一个字典中：
+
+```
+{'first': 'jimi', 'last': 'hendrix'}
+```
+
+这个函数接受简单的文本信息，将其放在一个更合适的数据结构中，让你不仅能打印这些信息，还能以其他方式处理它们。当前，字符串`'jimi'`和`'hendrix'`被标记为名和姓。你可以轻松地扩展这个函数，使其接受可选值，如中间名、年龄、职业或你要存储的其他任何信息。例如，下面的修改让你还能存储年龄：
+
+```
+def build_person(first_name, last_name, age=''):
+    """返回一个字典，其中包含有关一个人的信息"""
+    person = {'first': first_name, 'last': last_name}
+    if age:
+        person['age'] = age
+    return person
+
+musician = build_person('jimi', 'hendrix', age=27)
+print(musician)
+```
+
+在函数定义中，我们新增了一个可选形参`age`，并将其默认值设置为空字符串。如果函数调用中包含这个形参的值，这个值将存储到字典中。在任何情况下，这个函数都会存储人的姓名，但可对其进行修改，使其也存储有关人的其他信息。
+
+#### **8.3.4　结合使用函数和 while 循环**
+
+可将函数同本书前面介绍的任何 Python 结构结合起来使用。例如，下面将结合使用函数`get_formatted_name()`和`while`循环，以更正规的方式问候用户。下面尝试使用名和姓跟用户打招呼：
+
+**greeter.py**
+
+```
+  def get_formatted_name(first_name, last_name):
+      """返回整洁的姓名"""
+      full_name = first_name + ' ' + last_name
+      return full_name.title()
+
+  # 这是一个无限循环!
+  while True:
+❶      print("\nPlease tell me your name:")
+       f_name = input("First name: ")
+       l_name = input("Last name: ")
+
+       formatted_name = get_formatted_name(f_name, l_name)
+       print("\nHello, " + formatted_name + "!")
+```
+
+在这个示例中，我们使用的是`get_formatted_name()`的简单版本，不涉及中间名。其中的`while`循环让用户输入姓名：依次提示用户输入名和姓（见❶）。
+
+但这个`while`循环存在一个问题：没有定义退出条件。请用户提供一系列输入时，该在什么地方提供退出条件呢？我们要让用户能够尽可能容易地退出，因此每次提示用户输入时，都应提供退出途径。每次提示用户输入时，都使用`break`语句提供了退出循环的简单途径：
+
+```
+def get_formatted_name(first_name, last_name):
+    """返回整洁的姓名"""
+    full_name = first_name + ' ' + last_name
+    return full_name.title()
+
+while True:
+    print("\nPlease tell me your name:")
+    print("(enter 'q' at any time to quit)")
+
+    f_name = input("First name: ")
+    if f_name == 'q':
+        break
+
+    l_name = input("Last name: ")
+    if l_name == 'q':
+        break
+
+    formatted_name = get_formatted_name(f_name, l_name)
+    print("\nHello, " + formatted_name + "!")
+```
+
+我们添加了一条消息来告诉用户如何退出，然后在每次提示用户输入时，都检查他输入的是否是退出值，如果是，就退出循环。现在，这个程序将不断地问候，直到用户输入的姓或名为`'q'`为止：
+
+```
+Please tell me your name:
+(enter 'q' at any time to quit)
+First name: eric
+Last name: matthes
+
+Hello, Eric Matthes!
+
+Please tell me your name:
+(enter 'q' at any time to quit)
+First name: q
+```
+
+> **动手试一试**
+>
+> **8-6 城市名**：编写一个名为`city_country()`的函数，它接受城市的名称及其所属的国家。这个函数应返回一个格式类似于下面这样的字符串：
+>
+> ```
+> "Santiago, Chile"
+> ```
+>
+> 至少使用三个城市-国家对调用这个函数，并打印它返回的值。
+>
+> **8-7 专辑**：编写一个名为`make_album()`的函数，它创建一个描述音乐专辑的字典。这个函数应接受歌手的名字和专辑名，并返回一个包含这两项信息的字典。使用这个函数创建三个表示不同专辑的字典，并打印每个返回的值，以核实字典正确地存储了专辑的信息。
+>
+> 给函数`make_album()`添加一个可选形参，以便能够存储专辑包含的歌曲数。如果调用这个函数时指定了歌曲数，就将这个值添加到表示专辑的字典中。调用这个函数，并至少在一次调用中指定专辑包含的歌曲数。
+>
+> **8-8 用户的专辑**：在为完成练习8-7编写的程序中，编写一个`while`循环，让用户输入一个专辑的歌手和名称。获取这些信息后，使用它们来调用函数`make_album()`，并将创建的字典打印出来。在这个`while`循环中，务必要提供退出途径。
+
+### **8.4　传递列表**
+
+你经常会发现，向函数传递列表很有用，这种列表包含的可能是名字、数字或更复杂的对象（如字典）。将列表传递给函数后，函数就能直接访问其内容。下面使用函数来提高处理列表的效率。
+
+假设有一个用户列表，我们要问候其中的每位用户。下面的示例将一个名字列表传递给一个名为`greet_users()`的函数，这个函数问候列表中的每个人：
+
+**greet_users.py**
+
+```
+  def greet_users(names):
+      """向列表中的每位用户都发出简单的问候"""
+      for name in names:
+          msg = "Hello, " + name.title() + "!"
+          print(msg)
+
+❶ usernames = ['hannah', 'ty', 'margot']
+  greet_users(usernames)
+```
+
+我们将`greet_users()`定义成接受一个名字列表，并将其存储在形参`names`中。这个函数遍历收到的列表，并对其中的每位用户都打印一条问候语。在❶处，我们定义了一个用户列表——`usernames`，然后调用`greet_users()`，并将这个列表传递给它：
+
+```
+Hello, Hannah!
+Hello, Ty!
+Hello, Margot!
+```
+
+输出完全符合预期，每位用户都看到了一条个性化的问候语。每当你要问候一组用户时，都可调用这个函数。
+
+#### **8.4.1　在函数中修改列表**
+
+将列表传递给函数后，函数就可对其进行修改。在函数中对这个列表所做的任何修改都是永久性的，这让你能够高效地处理大量的数据。
+
+来看一家为用户提交的设计制作 3D 打印模型的公司。需要打印的设计存储在一个列表中，打印后移到另一个列表中。下面是在不使用函数的情况下模拟这个过程的代码：
+
+**printing_models.py**
+
+```
+# 首先创建一个列表，其中包含一些要打印的设计
+unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+
+# 模拟打印每个设计，直到没有未打印的设计为止
+#  打印每个设计后，都将其移到列表 completed_models 中
+while unprinted_designs:
+    current_design = unprinted_designs.pop()
+
+    #模拟根据设计制作 3D 打印模型的过程
+    print("Printing model: " + current_design)
+    completed_models.append(current_design)
+
+# 显示打印好的所有模型
+print("\nThe following models have been printed:")
+for completed_model in completed_models:
+    print(completed_model)
+```
+
+这个程序首先创建一个需要打印的设计列表，还创建一个名为`completed_models`的空列表，每个设计打印都将移到这个列表中。只要列表`unprinted_designs`中还有设计，`while`循环就模拟打印设计的过程：从该列表末尾删除一个设计，将其存储到变量`current_design`中，并显示一条消息，指出正在打印当前的设计，再将该设计加入到列表`completed_models`中。循环结束后，显示已打印的所有设计：
+
+```
+Printing model: dodecahedron
+Printing model: robot pendant
+Printing model: iphone case
+
+The following models have been printed:
+dodecahedron
+robot pendant
+iphone case
+```
+
+为重新组织这些代码，我们可编写两个函数，每个都做一件具体的工作。大部分代码都与原来相同，只是效率更高。第一个函数将负责处理打印设计的工作，而第二个将概述打印了哪些设计：
+
+```
+❶ def print_models(unprinted_designs, completed_models):
+      """
+      模拟打印每个设计，直到没有未打印的设计为止
+      打印每个设计后，都将其移到列表 completed_models 中
+      """
+      while unprinted_designs:
+          current_design = unprinted_designs.pop()
+
+          # 模拟根据设计制作 3D 打印模型的过程
+          print("Printing model: " + current_design)
+          completed_models.append(current_design)
+
+❷ def show_completed_models(completed_models):
+      """显示打印好的所有模型"""
+      print("\nThe following models have been printed:")
+      for completed_model in completed_models:
+          print(completed_model)
+
+  unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+  completed_models = []
+
+  print_models(unprinted_designs, completed_models)
+  show_completed_models(completed_models)
+```
+
+在❶处，我们定义了函数`print_models()`，它包含两个形参：一个需要打印的设计列表和一个打印好的模型列表。给定这两个列表，这个函数模拟打印每个设计的过程：将设计逐个地从未打印的设计列表中取出，并加入到打印好的模型列表中。在❷处，我们定义了函数`show_completed_models()`，它包含一个形参：打印好的模型列表。给定这个列表，函数`show_completed_models()`显示打印出来的每个模型的名称。
+
+这个程序的输出与未使用函数的版本相同，但组织更为有序。完成大部分工作的代码都移到了两个函数中，让主程序更容易理解。只要看看主程序，你就知道这个程序的功能容易看清得多：
+
+```
+unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+
+print_models(unprinted_designs, completed_models)
+show_completed_models(completed_models)
+```
+
+我们创建了一个未打印的设计列表，还创建了一个空列表，用于存储打印好的模型。接下来，由于我们已经定义了两个函数，因此只需调用它们并传入正确的实参即可。我们调用`print_models()`并向它传递两个列表；像预期的一样，`print_models()`模拟打印设计的过程。接下来，我们调用`show_completed_models()`，并将打印好的模型列表传递给它，让其能够指出打印了哪些模型。描述性的函数名让别人阅读这些代码时也能明白，虽然其中没有任何注释。
+
+相比于没有使用函数的版本，这个程序更容易扩展和维护。如果以后需要打印其他设计，只需再次调用`print_models()`即可。如果我们发现需要对打印代码进行修改，只需修改这些代码一次，就能影响所有调用该函数的地方；与必须分别修改程序的多个地方相比，这种修改的效率更高。
+
+这个程序还演示了这样一种理念，即每个函数都应只负责一项具体的工作。第一个函数打印每个设计，而第二个显示打印好的模型；这优于使用一个函数来完成两项工作。编写函数时，如果你发现它执行的任务太多，请尝试将这些代码划分到两个函数中。别忘了，总是可以在一个函数中调用另一个函数，这有助于将复杂的任务划分成一系列的步骤。
+
+#### **8.4.2　禁止函数修改列表**
+
+有时候，需要禁止函数修改列表。例如，假设像前一个示例那样，你有一个未打印的设计列表，并编写了一个将这些设计移到打印好的模型列表中的函数。你可能会做出这样的决定：即便打印所有设计后，也要保留原来的未打印的设计列表，以供备案。但由于你将所有的设计都移出了`unprinted_designs`，这个列表变成了空的，原来的列表没有了。为解决这个问题，可向函数传递列表的副本而不是原件；这样函数所做的任何修改都只影响副本，而丝毫不影响原件。
+
+要将列表的副本传递给函数，可以像下面这样做：
+
+```
+function_name(list_name[:])
+```
+
+切片表示法`[:]`创建列表的副本。在 print_models.py 中，如果不想清空未打印的设计列表，可像下面这样调用`print_models()`：
+
+```
+print_models(unprinted_designs[:], completed_models)
+```
+
+这样函数`print_models()`依然能够完成其工作，因为它获得了所有未打印的设计的名称，但它使用的是列表`unprinted_designs`的副本，而不是列表`unprinted_designs`本身。像以前一样，列表`completed_models`也将包含打印好的模型的名称，但函数所做的修改不会影响到列表`unprinted_designs`。
+
+虽然向函数传递列表的副本可保留原始列表的内容，但除非有充分的理由需要传递副本，否则还是应该将原始列表传递给函数，因为让函数使用现成列表可避免花时间和内存创建副本，从而提高效率，在处理大型列表时尤其如此。
+
+> **动手试一试**
+>
+> **8-9 魔术师**：创建一个包含魔术师名字的列表，并将其传递给一个名为`show_magicians()`的函数，这个函数打印列表中每个魔术师的名字。
+>
+> **8-10 了不起的魔术师**：在你为完成练习8-9而编写的程序中，编写一个名为`make_great()`的函数，对魔术师列表进行修改，在每个魔术师的名字中都加入字样“the Great”。调用函数`show_magicians()`，确认魔术师列表确实变了。
+>
+> **8-11 不变的魔术师**：修改你为完成练习8-10而编写的程序，在调用函数`make_great()`时，向它传递魔术师列表的副本。由于不想修改原始列表，请返回修改后的列表，并将其存储到另一个列表中。分别使用这两个列表来调用`show_magicians()`，确认一个列表包含的是原来的魔术师名字，而另一个列表包含的是添加了字样“the Great”的魔术师名字。
+
+### **8.5　传递任意数量的实参**
+
+有时候，你预先不知道函数需要接受多少个实参，好在 Python 允许函数从调用语句中收集任意数量的实参。
+
+例如，来看一个制作比萨的函数，它需要接受很多配料，但你无法预先确定顾客要多少种配料。下面的函数只有一个形参`*toppings`，但不管调用语句提供了多少实参，这个形参都将它们统统收入囊中：
+
+**pizza.py**
+
+```
+def make_pizza(*toppings):
+    """打印顾客点的所有配料"""
+    print(toppings)
+
+make_pizza('pepperoni')
+make_pizza('mushrooms', 'green peppers', 'extra cheese')
+```
+
+形参名`*toppings`中的星号让 Python 创建一个名为`toppings`的空元组，并将收到的所有值都封装到这个元组中。函数体内的`print`语句通过生成输出来证明 Python 能够处理使用一个值调用函数的情形，也能处理使用三个值来调用函数的情形。它以类似的方式处理不同的调用，注意，Python 将实参封装到一个元组中，即便函数只收到一个值也如此：
+
+```
+('pepperoni',)
+('mushrooms', 'green peppers', 'extra cheese')
+```
+
+现在，我们可以将这条`print`语句替换为一个循环，对配料列表进行遍历，并对顾客点的比萨进行描述：
+
+```
+def make_pizza(*toppings):
+    """概述要制作的比萨"""
+    print("\nMaking a pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+
+make_pizza('pepperoni')
+make_pizza('mushrooms', 'green peppers', 'extra cheese')
+```
+
+不管收到的是一个值还是三个值，这个函数都能妥善地处理：
+
+```
+Making a pizza with the following toppings:
+- pepperoni
+
+Making a pizza with the following toppings:
+- mushrooms
+- green peppers
+- extra cheese
+```
+
+不管函数收到的实参是多少个，这种语法都管用。
+
+#### **8.5.1　结合使用位置实参和任意数量实参**
+
+如果要让函数接受不同类型的实参，必须在函数定义中将接纳任意数量实参的形参放在最后。Python 先匹配位置实参和关键字实参，再将余下的实参都收集到最后一个形参中。
+
+例如，如果前面的函数还需要一个表示比萨尺寸的实参，必须将该形参放在形参`*toppings`的前面：
+
+```
+def make_pizza(size, *toppings):
+    """概述要制作的比萨"""
+    print("\nMaking a " + str(size) +
+          "-inch pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+基于上述函数定义，Python 将收到的第一个值存储在形参`size`中，并将其他的所有值都存储在元组`toppings`中。在函数调用中，首先指定表示比萨尺寸的实参，然后根据需要指定任意数量的配料。
+
+现在，每个比萨都有了尺寸和一系列配料，这些信息按正确的顺序打印出来了——首先是尺寸，然后是配料：
+
+```
+Making a 16-inch pizza with the following toppings:
+- pepperoni
+
+Making a 12-inch pizza with the following toppings:
+- mushrooms
+- green peppers
+- extra cheese
+```
+
+#### **8.5.2　使用任意数量的关键字实参**
+
+有时候，需要接受任意数量的实参，但预先不知道传递给函数的会是什么样的信息。在这种情况下，可将函数编写成能够接受任意数量的键—值对——调用语句提供了多少就接受多少。一个这样的示例是创建用户简介：你知道你将收到有关用户的信息，但不确定会是什么样的信息。在下面的示例中，函数`build_profile()`接受名和姓，同时还接受任意数量的关键字实参：
+
+**user_profile.py**
+
+```
+  def build_profile(first, last, **user_info):
+      """创建一个字典，其中包含我们知道的有关用户的一切"""
+      profile = {}
+❶     profile['first_name'] = first
+      profile['last_name'] = last
+❷     for key, value in user_info.items():
+          profile[key] = value
+      return profile
+
+  user_profile = build_profile('albert', 'einstein',
+                               location='princeton',
+                               field='physics')
+  print(user_profile)
+```
+
+函数`build_profile()`的定义要求提供名和姓，同时允许用户根据需要提供任意数量的名称—值对。形参`**user_info`中的两个星号让 Python 创建一个名为`user_info`的空字典，并将收到的所有名称—值对都封装到这个字典中。在这个函数中，可以像访问其他字典那样访问`user_info`中的名称—值对。
+
+在`build_profile()`的函数体内，我们创建了一个名为`profile`的空字典，用于存储用户简介。在❶处，我们将名和姓加入到这个字典中，因为我们总是会从用户那里收到这两项信息。在❷处，我们遍历字典`user_info`中的键—值对，并将每个键—值对都加入到字典`profile`中。最后，我们将字典`profile`返回给函数调用行。
+
+我们调用`build_profile()`，向它传递名（`'albert'`）、姓（`'einstein'`）和两个键—值对（`location='princeton'`和`field='physics'`），并将返回的`profile`存储在变量`user_profile`中，再打印这个变量：
+
+```
+{'first_name': 'albert', 'last_name': 'einstein',
+'location': 'princeton', 'field': 'physics'}
+```
+
+在这里，返回的字典包含用户的名和姓，还有求学的地方和所学专业。调用这个函数时，不管额外提供了多少个键—值对，它都能正确地处理。
+
+编写函数时，你可以以各种方式混合使用位置实参、关键字实参和任意数量的实参。知道这些实参类型大有裨益，因为阅读别人编写的代码时经常会见到它们。要正确地使用这些类型的实参并知道它们的使用时机，需要经过一定的练习。就目前而言，牢记使用最简单的方法来完成任务就好了。你继续往下阅读，就会知道在各种情况下哪种方法的效率是最高的。
+
+> **动手试一试**
+>
+> **8-12 三明治**：编写一个函数，它接受顾客要在三明治中添加的一系列食材。这个函数只有一个形参（它收集函数调用中提供的所有食材），并打印一条消息，对顾客点的三明治进行概述。调用这个函数三次，每次都提供不同数量的实参。
+>
+> **8-13 用户简介**：复制前面的程序 user_profile.py，在其中调用`build_profile()`来创建有关你的简介；调用这个函数时，指定你的名和姓，以及三个描述你的键-值对。
+>
+> **8-14 汽车**：编写一个函数，将一辆汽车的信息存储在一个字典中。这个函数总是接受制造商和型号，还接受任意数量的关键字实参。这样调用这个函数：提供必不可少的信息，以及两个名称—值对，如颜色和选装配件。这个函数必须能够像下面这样进行调用：
+>
+> ```
+> car = make_car('subaru', 'outback', color='blue', tow_package=True)
+> ```
+>
+> 打印返回的字典，确认正确地处理了所有的信息。
+
+### **8.6　将函数存储在模块中**
+
+函数的优点之一是，使用它们可将代码块与主程序分离。通过给函数指定描述性名称，可让主程序容易理解得多。你还可以更进一步，将函数存储在被称为**模块**的独立文件中，再将模块**导入**到主程序中。`import`语句允许在当前运行的程序文件中使用模块中的代码。
+
+通过将函数存储在独立的文件中，可隐藏程序代码的细节，将重点放在程序的高层逻辑上。这还能让你在众多不同的程序中重用函数。将函数存储在独立文件中后，可与其他程序员共享这些文件而不是整个程序。知道如何导入函数还能让你使用其他程序员编写的函数库。
+
+导入模块的方法有多种，下面对每种都作简要的介绍。
+
+#### **8.6.1　导入整个模块**
+
+要让函数是可导入的，得先创建模块。**模块**是扩展名为.py 的文件，包含要导入到程序中的代码。下面来创建一个包含函数`make_pizza()`的模块。为此，我们将文件 pizza.py 中除函数`make_pizza()`之外的其他代码都删除：
+
+**pizza.py**
+
+```
+def make_pizza(size, *toppings):
+    """概述要制作的比萨"""
+    print("\nMaking a " + str(size) +
+          "-inch pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+```
+
+接下来，我们在 pizza.py 所在的目录中创建另一个名为 making_pizzas.py 的文件，这个文件导入刚创建的模块，再调用`make_pizza()`两次：
+
+**making_pizzas.py**
+
+```
+  import pizza
+
+❶ pizza.make_pizza(16, 'pepperoni')
+  pizza.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+Python 读取这个文件时，代码行`import pizza`让 Python 打开文件 pizza.py，并将其中的所有函数都复制到这个程序中。你看不到复制的代码，因为这个程序运行时，Python 在幕后复制这些代码。你只需知道，在 making_pizzas.py 中，可以使用 pizza.py 中定义的所有函数。
+
+要调用被导入的模块中的函数，可指定导入的模块的名称`pizza`和函数名`make_pizza()`，并用句点分隔它们（见❶）。这些代码的输出与没有导入模块的原始程序相同：
+
+```
+Making a 16-inch pizza with the following toppings:
+- pepperoni
+
+Making a 12-inch pizza with the following toppings:
+- mushrooms
+- green peppers
+- extra cheese
+```
+
+这就是一种导入方法：只需编写一条`import`语句并在其中指定模块名，就可在程序中使用该模块中的所有函数。如果你使用这种`import`语句导入了名为`module_name.py`的整个模块，就可使用下面的语法来使用其中任何一个函数：
+
+```
+module_name.function_name()
+```
+
+#### **8.6.2　导入特定的函数**
+
+你还可以导入模块中的特定函数，这种导入方法的语法如下：
+
+```
+from module_name import function_name
+```
+
+通过用逗号分隔函数名，可根据需要从模块中导入任意数量的函数：
+
+```
+from module_name import function_0, function_1, function_2
+```
+
+对于前面的 making_pizzas.py 示例，如果只想导入要使用的函数，代码将类似于下面这样：
+
+```
+from pizza import make_pizza
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+若使用这种语法，调用函数时就无需使用句点。由于我们在`import`语句中显式地导入了函数`make_pizza()`，因此调用它时只需指定其名称。
+
+#### **8.6.3　使用 as 给函数指定别名**
+
+如果要导入的函数的名称可能与程序中现有的名称冲突，或者函数的名称太长，可指定简短而独一无二的**别名**——函数的另一个名称，类似于外号。要给函数指定这种特殊外号，需要在导入它时这样做。
+
+下面给函数`make_pizza()`指定了别名`mp()`。这是在`import`语句中使用`make_pizza as mp`实现的，关键字`as`将函数重命名为你提供的别名：
+
+```
+from pizza import make_pizza as mp
+
+mp(16, 'pepperoni')
+mp(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+上面的`import`语句将函数`make_pizza()`重命名为`mp()`；在这个程序中，每当需要调用`make_pizza()`时，都可简写成`mp()`，而 Python 将运行`make_pizza()`中的代码，这可避免与这个程序可能包含的函数`make_pizza()`混淆。
+
+指定别名的通用语法如下：
+
+```
+from module_name import function_name as fn
+```
+
+#### **8.6.4　使用 as 给模块指定别名**
+
+你还可以给模块指定别名。通过给模块指定简短的别名（如给模块`pizza`指定别名`p`），让你能够更轻松地调用模块中的函数。相比于`pizza.make_pizza()`，`p.make_pizza()`更为简洁：
+
+```
+import pizza as p
+
+p.make_pizza(16, 'pepperoni')
+p.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+上述`import`语句给模块`pizza`指定了别名`p`，但该模块中所有函数的名称都没变。调用函数`make_pizza()`时，可编写代码`p.make_pizza()`而不是`pizza.make_pizza()`，这样不仅能使代码更简洁，还可以让你不再关注模块名，而专注于描述性的函数名。这些函数名明确地指出了函数的功能，对理解代码而言，它们比模块名更重要。
+
+给模块指定别名的通用语法如下：
+
+```
+import module_name as mn
+```
+
+#### **8.6.5　导入模块中的所有函数**
+
+使用星号（`*`）运算符可让 Python 导入模块中的所有函数：
+
+```
+from pizza import *
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+`import`语句中的星号让 Python 将模块`pizza`中的每个函数都复制到这个程序文件中。由于导入了每个函数，可通过名称来调用每个函数，而无需使用句点表示法。然而，使用并非自己编写的大型模块时，最好不要采用这种导入方法：如果模块中有函数的名称与你的项目中使用的名称相同，可能导致意想不到的结果：Python 可能遇到多个名称相同的函数或变量，进而覆盖函数，而不是分别导入所有的函数。
+
+最佳的做法是，要么只导入你需要使用的函数，要么导入整个模块并使用句点表示法。这能让代码更清晰，更容易阅读和理解。这里之所以介绍这种导入方法，只是想让你在阅读别人编写的代码时，如果遇到类似于下面的`import`语句，能够理解它们：
+
+```
+from module_name import *
+```
+
+### **8.7　函数编写指南**
+
+编写函数时，需要牢记几个细节。应给函数指定描述性名称，且只在其中使用小写字母和下划线。描述性名称可帮助你和别人明白代码想要做什么。给模块命名时也应遵循上述约定。
+
+每个函数都应包含简要地阐述其功能的注释，该注释应紧跟在函数定义后面，并采用文档字符串格式。文档良好的函数让其他程序员只需阅读文档字符串中的描述就能够使用它：他们完全可以相信代码如描述的那样运行；只要知道函数的名称、需要的实参以及返回值的类型，就能在自己的程序中使用它。
+
+给形参指定默认值时，等号两边不要有空格：
+
+```
+def function_name(parameter_0, parameter_1='default value')
+```
+
+对于函数调用中的关键字实参，也应遵循这种约定：
+
+```
+function_name(value_0, parameter_1='value')
+```
+
+PEP 8（<https://www.python.org/dev/peps/pep-0008/>）建议代码行的长度不要超过79字符，这样只要编辑器窗口适中，就能看到整行代码。如果形参很多，导致函数定义的长度超过了79字符，可在函数定义中输入左括号后按回车键，并在下一行按两次 Tab 键，从而将形参列表和只缩进一层的函数体区分开来。
+
+大多数编辑器都会自动对齐后续参数列表行，使其缩进程度与你给第一个参数列表行指定的缩进程度相同：
+
+```
+def function_name(
+        parameter_0, parameter_1, parameter_2,
+        parameter_3, parameter_4, parameter_5):
+    function body...
+```
+
+如果程序或模块包含多个函数，可使用两个空行将相邻的函数分开，这样将更容易知道前一个函数在什么地方结束，下一个函数从什么地方开始。
+
+所有的`import`语句都应放在文件开头，唯一例外的情形是，在文件开头使用了注释来描述整个程序。
+
+> **动手试一试**
+>
+> **8-15 打印模型**：将示例 print_models.py 中的函数放在另一个名为 printing_functions.py 的文件中；在 print_models.py 的开头编写一条`import`语句，并修改这个文件以使用导入的函数。
+>
+> **8-16 导入**：选择一个你编写的且只包含一个函数的程序，并将这个函数放在另一个文件中。在主程序文件中，使用下述各种方法导入这个函数，再调用它：
+>
+> ```
+> import module_name
+> from module_name import function_name
+> from module_name import function_name as fn
+> import module_name as mn
+> from module_name import *
+> ```
+>
+> **8-17 函数编写指南**：选择你在本章中编写的三个程序，确保它们遵循了本节介绍的函数编写指南。
+
+### **8.8　小结**
+
+在本章中，你学习了：如何编写函数，以及如何传递实参，让函数能够访问完成其工作所需的信息；如何使用位置实参和关键字实参，以及如何接受任意数量的实参；显示输出的函数和返回值的函数；如何将函数同列表、字典、`if`语句和`while`循环结合起来使用。你还知道了如何将函数存储在被称为**模块**的独立文件中，让程序文件更简单、更易于理解。最后，你学习了函数编写指南，遵循这些指南可让程序始终结构良好，并对你和其他人来说易于阅读。
+
+程序员的目标之一是，编写简单的代码来完成任务，而函数有助于你实现这样的目标。它们让你编写好代码块并确定其能够正确运行后，就可置之不理。确定函数能够正确地完成其工作后，你就可以接着投身于下一个编码任务。
+
+函数让你编写代码一次后，想重用它们多少次就重用多少次。需要运行函数中的代码时，只需编写一行函数调用代码，就可让函数完成其工作。需要修改函数的行为时，只需修改一个代码块，而所做的修改将影响调用这个函数的每个地方。
+
+使用函数让程序更容易阅读，而良好的函数名概述了程序各个部分的作用。相对于阅读一系列的代码块，阅读一系列函数调用让你能够更快地明白程序的作用。
+
+函数还让代码更容易测试和调试。如果程序使用一系列的函数来完成其任务，而其中的每个函数都完成一项具体的工作，测试和维护起来将容易得多：你可编写分别调用每个函数的程序，并测试每个函数是否在它可能遇到的各种情形下都能正确地运行。经过这样的测试后你就能信心满满，深信你每次调用这些函数时，它们都将正确地运行。
+
+在第 9 章，你将学习编写类。类将函数和数据整洁地封装起来，让你能够灵活而高效地使用它们。
+
+------
+
+
+
+## 第9章　类
+
+### **老齐导读**
+
+本章的重要程度与函数同等。
+
+首先，请同学一定要把书中关于定义类和通过类创建实例（也称为实例化）的代码全部自己敲过，并且将程序调试成功，因为这是本章最基础的内容。
+
+在了解了定义一个最通常类，并实现实例化的基础上，理解关于继承（单继承）的知识，方法还是跟着书敲代码、调试程序。
+
+以上过程中难免遇到问题，请使用以下方法解决各种报错：
+
+- 首先用网上搜索。注意，搜索有技巧，使用哪个搜索引擎搜索什么内容，也是有讲究的。
+- 其次可以在群里面提问，但是，群里提问，应该是在搜索并尝试多种解决方案之后未遂才有的行为。如果见到错误就提问，即使得到了解决，下次遇到同样问题还是不知道怎么办。
+- 第三，根据网上或者别人的帮助，再思考代码，做一些新的尝试修改，验证自己的理解。
+
+以上是应对报错的方法，是得“渔”之道。
+
+此外，在学习本章的时候，特别建议使用前面推荐的图书对比阅读。通过比较，不同图书各有各的侧重点，能够帮助你形成比较全面的对类的认识。当然，最好还是要多做一些练习题，熟能生巧。
+
+![enter image description here](https://images.gitbook.cn/b7241fc0-882b-11e9-b6f4-77ea8c81f44e)
+
+> **面向对象编程**是最有效的软件编写方法之一。在面向对象编程中，你编写表示现实世界中的事物和情景的类，并基于这些类来创建对象。编写类时，你定义一大类对象都有的通用行为。基于类创建**对象**时，每个对象都自动具备这种通用行为，然后可根据需要赋予每个对象独特的个性。使用面向对象编程可模拟现实情景，其逼真程度达到了令你惊讶的地步。
+>
+> 根据类来创建对象被称为**实例化**，这让你能够使用类的实例。在本章中，你将编写一些类并创建其实例。你将指定可在实例中存储什么信息，定义可对这些实例执行哪些操作。你还将编写一些类来扩展既有类的功能，让相似的类能够高效地共享代码。你将把自己编写的类存储在模块中，并在自己的程序文件中导入其他程序员编写的类。
+>
+> 理解面向对象编程有助于你像程序员那样看世界，还可以帮助你真正明白自己编写的代码：不仅是各行代码的作用，还有代码背后更宏大的概念。了解类背后的概念可培养逻辑思维，让你能够通过编写程序来解决遇到的几乎任何问题。
+>
+> 随着面临的挑战日益严峻，类还能让你以及与你合作的其他程序员的生活更轻松。如果你与其他程序员基于同样的逻辑来编写代码，你们就能明白对方所做的工作；你编写的程序将能被众多合作者所理解，每个人都能事半功倍。
+
+### **9.1　创建和使用类**
+
+使用类几乎可以模拟任何东西。下面来编写一个表示小狗的简单类`Dog`——它表示的不是特定的小狗，而是任何小狗。对于大多数宠物狗，我们都知道些什么呢？它们都有名字和年龄；我们还知道，大多数小狗还会蹲下和打滚。由于大多数小狗都具备上述两项信息（名字和年龄）和两种行为（蹲下和打滚），我们的`Dog`类将包含它们。这个类让 Python 知道如何创建表示小狗的对象。编写这个类后，我们将使用它来创建表示特定小狗的实例。
+
+#### **9.1.1　创建 Dog 类**
+
+根据`Dog`类创建的每个实例都将存储名字和年龄。我们赋予了每条小狗蹲下（`sit()`）和打滚（`roll_over()`）的能力：
+
+**dog.py**
+
+```
+❶ class Dog():
+❷     """一次模拟小狗的简单尝试"""
+
+❸     def __init__(self, name, age):
+          """初始化属性 name 和 age"""
+❹         self.name = name
+          self.age = age
+
+❺     def sit(self):
+          """模拟小狗被命令时蹲下"""
+          print(self.name.title() + " is now sitting.")
+
+      def roll_over(self):
+          """模拟小狗被命令时打滚"""
+          print(self.name.title() + " rolled over!")
+```
+
+这里需要注意的地方很多，但你也不用担心，本章充斥着这样的结构，你有大把的机会熟悉它。在❶处，我们定义了一个名为`Dog`的类。根据约定，在 Python 中，首字母大写的名称指的是类。这个类定义中的括号是空的，因为我们要从空白创建这个类。在❷处，我们编写了一个文档字符串，对这个类的功能作了描述。
+
+**1. 方法__init__()**
+
+类中的函数称为**方法**；你前面学到的有关函数的一切都适用于方法，就目前而言，唯一重要的差别是调用方法的方式。❸处的方法`__init__()`是一个特殊的方法，每当你根据`Dog`类创建新实例时，Python 都会自动运行它。在这个方法的名称中，开头和末尾各有两个下划线，这是一种约定，旨在避免 Python 默认方法与普通方法发生名称冲突。
+
+我们将方法`__init__()`定义成了包含三个形参：`self`、`name`和`age`。在这个方法的定义中，形参`self`必不可少，还必须位于其他形参的前面。为何必须在方法定义中包含形参`self`呢？因为 Python 调用这个`__init__()`方法来创建`Dog`实例时，将自动传入实参`self`。每个与类相关联的方法调用都自动传递实参`self`，它是一个指向实例本身的引用，让实例能够访问类中的属性和方法。我们创建`Dog`实例时，Python 将调用`Dog`类的方法`__init__()`。我们将通过实参向`Dog()`传递名字和年龄；`self`会自动传递，因此我们不需要传递它。每当我们根据`Dog`类创建实例时，都只需给最后两个形参（`name`和`age`）提供值。
+
+❹处定义的两个变量都有前缀`self`。以`self`为前缀的变量都可供类中的所有方法使用，我们还可以通过类的任何实例来访问这些变量。`self.name=name`获取存储在形参`name`中的值，并将其存储到变量`name`中，然后该变量被关联到当前创建的实例。`self.age=age`的作用与此类似。像这样可通过实例访问的变量称为**属性**。
+
+`Dog`类还定义了另外两个方法：`sit()`和`roll_over()`（见❺）。由于这些方法不需要额外的信息，如名字或年龄，因此它们只有一个形参`self`。我们后面将创建的实例能够访问这些方法，换句话说，它们都会蹲下和打滚。当前，`sit()`和`roll_over()`所做的有限，它们只是打印一条消息，指出小狗正蹲下或打滚。但可以扩展这些方法以模拟实际情况：如果这个类包含在一个计算机游戏中，这些方法将包含创建小狗蹲下和打滚动画效果的代码。如果这个类是用于控制机器狗的，这些方法将引导机器狗做出蹲下和打滚的动作。
+
+**2. 在 Python 2.7 中创建类**
+
+在 Python 2.7 中创建类时，需要做细微的修改——在括号内包含单词`object`：
+
+```
+class ClassName(object):
+    --snip--
+```
+
+这让 Python 2.7 类的行为更像 Python 3 类，从而简化了你的工作。
+
+在 Python 2.7 中定义`Dog`类时，代码类似于下面这样：
+
+```
+class Dog(object):
+    --snip--
+```
+
+#### **9.1.2　根据类创建实例**
+
+可将类视为有关如何创建实例的说明。`Dog`类是一系列说明，让 Python 知道如何创建表示特定小狗的实例。
+
+下面来创建一个表示特定小狗的实例：
+
+```
+  class Dog():
+      --snip--
+
+❶ my_dog = Dog('willie', 6)
+
+❷ print("My dog's name is " + my_dog.name.title() + ".")
+❸ print("My dog is " + str(my_dog.age) + " years old.")
+```
+
+这里使用的是前一个示例中编写的`Dog`类。在❶处，我们让 Python 创建一条名字为`'willie'`、年龄为`6`的小狗。遇到这行代码时，Python 使用实参`'willie'`和`6`调用`Dog`类中的方法`__init__()`。方法`__init__()`创建一个表示特定小狗的示例，并使用我们提供的值来设置属性`name`和`age`。方法`__init__()`并未显式地包含`return`语句，但 Python 自动返回一个表示这条小狗的实例。我们将这个实例存储在变量`my_dog`中。在这里，命名约定很有用：我们通常可以认为首字母大写的名称（如`Dog`）指的是类，而小写的名称（如`my_dog`）指的是根据类创建的实例。
+
+**1. 访问属性**
+
+要访问实例的属性，可使用句点表示法。在❷处，我们编写了如下代码来访问`my_dog`的属性`name`的值：
+
+```
+my_dog.name
+```
+
+句点表示法在 Python 中很常用，这种语法演示了 Python 如何获悉属性的值。在这里，Python 先找到实例`my_dog`，再查找与这个实例相关联的属性`name`。在`Dog`类中引用这个属性时，使用的是`self.name`。在❸处，我们使用同样的方法来获取属性`age`的值。在前面的第1条`print`语句中，`my_dog.name.title()`将`my_dog`的属性`name`的值`'willie'`改为首字母大写的；在第2条`print`语句中，`str(my_dog.age)`将`my_dog`的属性`age`的值`6`转换为字符串。
+
+输出是有关`my_dog`的摘要：
+
+```
+My dog's name is Willie.
+My dog is 6 years old.
+```
+
+**2. 调用方法**
+
+根据`Dog`类创建实例后，就可以使用句点表示法来调用`Dog`类中定义的任何方法。下面来让小狗蹲下和打滚：
+
+```
+class Dog():
+    --snip--
+
+my_dog = Dog('willie', 6)
+my_dog.sit()
+my_dog.roll_over()
+```
+
+要调用方法，可指定实例的名称（这里是`my_dog`）和要调用的方法，并用句点分隔它们。遇到代码`my_dog.sit()`时，Python 在类`Dog`中查找方法`sit()`并运行其代码。Python 以同样的方式解读代码`my_dog.roll_over()`。
+
+Willie 按我们的命令做了：
+
+```
+Willie is now sitting.
+Willie rolled over!
+```
+
+这种语法很有用。如果给属性和方法指定了合适的描述性名称，如`name`、`age`、`sit()`和`roll_over()`，即便是从未见过的代码块，我们也能够轻松地推断出它是做什么的。
+
+**3. 创建多个实例**
+
+可按需求根据类创建任意数量的实例。下面再创建一个名为`your_dog`的实例：
+
+```
+class Dog():
+    --snip--
+
+my_dog = Dog('willie', 6)
+your_dog = Dog('lucy', 3)
+
+print("My dog's name is " + my_dog.name.title() + ".")
+print("My dog is " + str(my_dog.age) + " years old.")
+my_dog.sit()
+
+print("\nYour dog's name is " + your_dog.name.title() + ".")
+print("Your dog is " + str(your_dog.age) + " years old.")
+your_dog.sit()
+```
+
+在这个实例中，我们创建了两条小狗，它们分别名为 Willie 和 Lucy。每条小狗都是一个独立的实例，有自己的一组属性，能够执行相同的操作：
+
+```
+My dog's name is Willie.
+My dog is 6 years old.
+Willie is now sitting.
+
+Your dog's name is Lucy.
+Your dog is 3 years old.
+Lucy is now sitting.
+```
+
+就算我们给第二条小狗指定同样的名字和年龄，Python 依然会根据`Dog`类创建另一个实例。你可按需求根据一个类创建任意数量的实例，条件是将每个实例都存储在不同的变量中，或占用列表或字典的不同位置。
+
+> **动手试一试**
+>
+> **9-1 餐馆**：创建一个名为`Restaurant`的类，其方法`__init__()`设置两个属性：`restaurant_name`和`cuisine_type`。创建一个名为`describe_restaurant()`的方法和一个名为`open_restaurant()`的方法，其中前者打印前述两项信息，而后者打印一条消息，指出餐馆正在营业。
+>
+> 根据这个类创建一个名为`restaurant`的实例，分别打印其两个属性，再调用前述两个方法。
+>
+> **9-2 三家餐馆**：根据你为完成练习9-1而编写的类创建三个实例，并对每个实例调用方法`describe_restaurant()`。
+>
+> **9-3 用户**：创建一个名为`User`的类，其中包含属性`first_name`和`last_name`，还有用户简介通常会存储的其他几个属性。在类`User`中定义一个名为`describe_user()`的方法，它打印用户信息摘要；再定义一个名为`greet_user()`的方法，它向用户发出个性化的问候。
+>
+> 创建多个表示不同用户的实例，并对每个实例都调用上述两个方法。
+
+### **9.2　使用类和实例**
+
+你可以使用类来模拟现实世界中的很多情景。类编写好后，你的大部分时间都将花在使用根据类创建的实例上。你需要执行的一个重要任务是修改实例的属性。你可以直接修改实例的属性，也可以编写方法以特定的方式进行修改。
+
+#### **9.2.1　Car 类**
+
+下面来编写一个表示汽车的类，它存储了有关汽车的信息，还有一个汇总这些信息的方法：
+
+**car.py**
+
+```
+  class Car():
+      """一次模拟汽车的简单尝试"""
+
+❶     def __init__(self, make, model, year):
+          """初始化描述汽车的属性"""
+          self.make = make
+          self.model = model
+          self.year = year
+
+❷     def get_descriptive_name(self):
+          """返回整洁的描述性信息"""
+          long_name = str(self.year) + ' ' + self.make + ' ' + self.model
+          return long_name.title()
+
+❸ my_new_car = Car('audi', 'a4', 2016)
+  print(my_new_car.get_descriptive_name())
+```
+
+在❶处，我们定义了方法`__init__()`。与前面的`Dog`类中一样，这个方法的第一个形参为`self`；我们还在这个方法中包含了另外三个形参：`make`、`model`和`year`。方法`__init__()`接受这些形参的值，并将它们存储在根据这个类创建的实例的属性中。创建新的`Car`实例时，我们需要指定其制造商、型号和生产年份。
+
+在❷处，我们定义了一个名为`get_descriptive_name()`的方法，它使用属性`year`、`make`和`model`创建一个对汽车进行描述的字符串，让我们无需分别打印每个属性的值。为在这个方法中访问属性的值，我们使用了`self.make`、`self.model`和`self.year`。在❸处，我们根据`Car`类创建了一个实例，并将其存储到变量`my_new_car`中。接下来，我们调用方法`get_descriptive_name()`，指出我们拥有的是一辆什么样的汽车：
+
+```
+2016 Audi A4
+```
+
+为让这个类更有趣，下面给它添加一个随时间变化的属性，它存储汽车的总里程。
+
+#### **9.2.2　给属性指定默认值**
+
+类中的每个属性都必须有初始值，哪怕这个值是0或空字符串。在有些情况下，如设置默认值时，在方法`__init__()`内指定这种初始值是可行的；如果你对某个属性这样做了，就无需包含为它提供初始值的形参。
+
+下面来添加一个名为`odometer_reading`的属性，其初始值总是为0。我们还添加了一个名为`read_odometer()`的方法，用于读取汽车的里程表：
+
+```
+  class Car():
+
+      def __init__(self, make, model, year):
+          """初始化描述汽车的属性"""
+          self.make = make
+          self.model = model
+          self.year = year
+❶         self.odometer_reading = 0
+
+      def get_descriptive_name(self):
+          --snip--
+
+❷     def read_odometer(self):
+          """打印一条指出汽车里程的消息"""
+          print("This car has " + str(self.odometer_reading) + " miles on it.")
+
+  my_new_car = Car('audi', 'a4', 2016)
+  print(my_new_car.get_descriptive_name())
+  my_new_car.read_odometer()
+```
+
+现在，当 Python 调用方法`__init__()`来创建新实例时，将像前一个示例一样以属性的方式存储制造商、型号和生产年份。接下来，Python 将创建一个名为`odometer_reading`的属性，并将其初始值设置为0（见❶）。在❷处，我们还定义了一个名为`read_odometer()`的方法，它让你能够轻松地获悉汽车的里程。
+
+一开始汽车的里程为0：
+
+```
+2016 Audi A4
+This car has 0 miles on it.
+```
+
+出售时里程表读数为0的汽车并不多，因此我们需要一个修改该属性的值的途径。
+
+#### **9.2.3　修改属性的值**
+
+可以以三种不同的方式修改属性的值：直接通过实例进行修改；通过方法进行设置；通过方法进行递增（增加特定的值）。下面依次介绍这些方法。
+
+**1. 直接修改属性的值**
+
+要修改属性的值，最简单的方式是通过实例直接访问它。下面的代码直接将里程表读数设置为23：
+
+```
+  class Car():
+      --snip--
+
+  my_new_car = Car('audi', 'a4', 2016)
+  print(my_new_car.get_descriptive_name())
+
+❶ my_new_car.odometer_reading = 23
+  my_new_car.read_odometer()
+```
+
+在❶处，我们使用句点表示法来直接访问并设置汽车的属性`odometer_reading`。这行代码让 Python 在实例`my_new_car`中找到属性`odometer_reading`，并将该属性的值设置为23：
+
+```
+2016 Audi A4
+This car has 23 miles on it.
+```
+
+有时候需要像这样直接访问属性，但其他时候需要编写对属性进行更新的方法。
+
+**2. 通过方法修改属性的值**
+
+如果有替你更新属性的方法，将大有裨益。这样，你就无需直接访问属性，而可将值传递给一个方法，由它在内部进行更新。
+
+下面的示例演示了一个名为`update_odometer()`的方法：
+
+```
+  class Car():
+      --snip--
+
+❶     def update_odometer(self, mileage):
+          """将里程表读数设置为指定的值"""
+          self.odometer_reading = mileage
+
+  my_new_car = Car('audi', 'a4', 2016)
+  print(my_new_car.get_descriptive_name())
+
+❷ my_new_car.update_odometer(23)
+  my_new_car.read_odometer()
+```
+
+对`Car`类所做的唯一修改是在❶处添加了方法`update_odometer()`。这个方法接受一个里程值，并将其存储到`self.odometer_reading`中。在❷处，我们调用了`update_odometer()`，并向它提供了实参23（该实参对应于方法定义中的形参`mileage`）。它将里程表读数设置为23；而方法`read_odometer()`打印该读数：
+
+```
+2016 Audi A4
+This car has 23 miles on it.
+```
+
+可对方法`update_odometer()`进行扩展，使其在修改里程表读数时做些额外的工作。下面来添加一些逻辑，禁止任何人将里程表读数往回调：
+
+```
+  class Car():
+      --snip--
+
+      def update_odometer(self, mileage):
+          """
+          将里程表读数设置为指定的值
+          禁止将里程表读数往回调
+          """
+❶         if mileage >= self.odometer_reading:
+              self.odometer_reading = mileage
+          else:
+❷             print("You can't roll back an odometer!")
+```
+
+现在，`update_odometer()`在修改属性前检查指定的读数是否合理。如果新指定的里程（`mileage`）大于或等于原来的里程（`self.odometer_reading`），就将里程表读数改为新指定的里程（见❶）；否则就发出警告，指出不能将里程表往回拨（见❷）。
+
+**3. 通过方法对属性的值进行递增**
+
+有时候需要将属性值递增特定的量，而不是将其设置为全新的值。假设我们购买了一辆二手车，且从购买到登记期间增加了100英里的里程，下面的方法让我们能够传递这个增量，并相应地增加里程表读数：
+
+```
+  class Car():
+      --snip--
+
+      def update_odometer(self, mileage):
+          --snip--
+
+❶     def increment_odometer(self, miles):
+          """将里程表读数增加指定的量"""
+          self.odometer_reading += miles
+
+❷ my_used_car = Car('subaru', 'outback', 2013)
+  print(my_used_car.get_descriptive_name())
+
+❸ my_used_car.update_odometer(23500)
+  my_used_car.read_odometer()
+
+❹ my_used_car.increment_odometer(100)
+  my_used_car.read_odometer()
+```
+
+在❶处，新增的方法`increment_odometer()`接受一个单位为英里的数字，并将其加入到`self.odometer_reading`中。在❷处，我们创建了一辆二手车——`my_used_car`。在❸处，我们调用方法`update_odometer()`并传入`23500`，将这辆二手车的里程表读数设置为23500。在❹处，我们调用`increment_odometer()`并传入`100`，以增加从购买到登记期间行驶的100英里：
+
+```
+2013 Subaru Outback
+This car has 23500 miles on it.
+This car has 23600 miles on it.
+```
+
+你可以轻松地修改这个方法，以禁止增量为负值，从而防止有人利用它来回拨里程表。
+
+> **注意**　
+>
+> 你可以使用类似于上面的方法来控制用户修改属性值（如里程表读数）的方式，但能够访问程序的人都可以通过直接访问属性来将里程表修改为任何值。要确保安全，除了进行类似于前面的基本检查外，还需特别注意细节。
+
+> **动手试一试**
+>
+> **9-4 就餐人数**：在为完成练习9-1而编写的程序中，添加一个名为`number_served`的属性，并将其默认值设置为0。根据这个类创建一个名为`restaurant`的实例；打印有多少人在这家餐馆就餐过，然后修改这个值并再次打印它。
+>
+> 添加一个名为`set_number_served()`的方法，它让你能够设置就餐人数。调用这个方法并向它传递一个值，然后再次打印这个值。
+>
+> 添加一个名为`increment_number_served()`的方法，它让你能够将就餐人数递增。调用这个方法并向它传递一个这样的值：你认为这家餐馆每天可能接待的就餐人数。
+>
+> **9-5 尝试登录次数**：在为完成练习9-3而编写的`User`类中，添加一个名为`login_attempts` 的属性。编写一个名为`increment_login_attempts()`的方法，它将属性`login_attempts`的值加1。再编写一个名为`reset_login_attempts()`的方法，它将属性`login_attempts`的值重置为0。
+>
+> 根据`User`类创建一个实例，再调用方法`increment_login_attempts()`多次。打印属性`login_attempts`的值，确认它被正确地递增；然后，调用方法`reset_login_attempts()`，并再次打印属性`login_attempts`的值，确认它被重置为0。
+
+### **9.3　继承**
+
+编写类时，并非总是要从空白开始。如果你要编写的类是另一个现成类的特殊版本，可使用**继承**。一个类**继承**另一个类时，它将自动获得另一个类的所有属性和方法；原有的类称为**父类**，而新类称为**子类**。子类继承了其父类的所有属性和方法，同时还可以定义自己的属性和方法。
+
+#### **9.3.1　子类的方法__init__()**
+
+创建子类的实例时，Python 首先需要完成的任务是给父类的所有属性赋值。为此，子类的方法`__init__()`需要父类施以援手。
+
+例如，下面来模拟电动汽车。电动汽车是一种特殊的汽车，因此我们可以在前面创建的`Car`类的基础上创建新类`ElectricCar`，这样我们就只需为电动汽车特有的属性和行为编写代码。
+
+下面来创建一个简单的`ElectricCar`类版本，它具备`Car`类的所有功能：
+
+**electric_car.py**
+
+```
+❶ class Car():
+      """一次模拟汽车的简单尝试"""
+
+      def __init__(self, make, model, year):
+          self.make = make
+          self.model = model
+          self.year = year
+          self.odometer_reading = 0
+
+      def get_descriptive_name(self):
+          long_name = str(self.year) + ' ' + self.make + ' ' + self.model
+          return long_name.title()
+
+      def read_odometer(self):
+          print("This car has " + str(self.odometer_reading) + " miles on it.")
+
+      def update_odometer(self, mileage):
+          if mileage >= self.odometer_reading:
+              self.odometer_reading = mileage
+          else:
+              print("You can't roll back an odometer!")
+
+      def increment_odometer(self, miles):
+          self.odometer_reading += miles
+
+❷ class ElectricCar(Car):
+      """电动汽车的独特之处"""
+
+❸     def __init__(self, make, model, year):
+          """初始化父类的属性"""
+❹         super().__init__(make, model, year)
+
+
+❺ my_tesla = ElectricCar('tesla', 'model s', 2016)
+  print(my_tesla.get_descriptive_name())
+```
+
+首先是`Car`类的代码（见❶）。创建子类时，父类必须包含在当前文件中，且位于子类前面。在❷处，我们定义了子类`ElectricCar`。定义子类时，必须在括号内指定父类的名称。方法`__init__()`接受创建`Car`实例所需的信息（见❸）。
+
+❹处的`super()`是一个特殊函数，帮助 Python 将父类和子类关联起来。这行代码让 Python 调用`ElectricCar`的父类的方法`__init__()`，让`ElectricCar`实例包含父类的所有属性。父类也称为**超类**（superclass），名称 super 因此而得名。
+
+为测试继承是否能够正确地发挥作用，我们尝试创建一辆电动汽车，但提供的信息与创建普通汽车时相同。在❺处，我们创建`ElectricCar`类的一个实例，并将其存储在变量`my_tesla`中。这行代码调用`ElectricCar`类中定义的方法`__init__()`，后者让 Python 调用父类`Car`中定义的方法`__init__()`。我们提供了实参`'tesla'`、`'model s'`和`2016`。
+
+除方法`__init__()`外，电动汽车没有其他特有的属性和方法。当前，我们只想确认电动汽车具备普通汽车的行为：
+
+```
+2016 Tesla Model S
+```
+
+`ElectricCar`实例的行为与`Car`实例一样，现在可以开始定义电动汽车特有的属性和方法了。
+
+#### **9.3.2　Python 2.7 中的继承**
+
+在 Python 2.7 中，继承语法稍有不同，`ElectricCar`类的定义类似于下面这样：
+
+```
+class Car(object):
+    def __init__(self, make, model, year):
+        --snip--
+
+class ElectricCar(Car):
+    def __init__(self, make, model, year):
+        super(ElectricCar, self).__init__(make, model, year)
+        --snip--
+```
+
+函数`super()`需要两个实参：子类名和对象`self`。为帮助 Python 将父类和子类关联起来，这些实参必不可少。另外，在 Python 2.7 中使用继承时，务必在定义父类时在括号内指定`object`。
+
+#### **9.3.3　给子类定义属性和方法**
+
+让一个类继承另一个类后，可添加区分子类和父类所需的新属性和方法。
+
+下面来添加一个电动汽车特有的属性（电瓶），以及一个描述该属性的方法。我们将存储电瓶容量，并编写一个打印电瓶描述的方法：
+
+```
+  class Car():
+      --snip--
+
+  class ElectricCar(Car):
+      """Represent aspects of a car, specific to electric vehicles."""
+
+      def __init__(self, make, model, year):
+          """
+          电动汽车的独特之处
+          初始化父类的属性，再初始化电动汽车特有的属性
+          """
+          super().__init__(make, model, year)
+❶         self.battery_size = 70
+
+❷     def describe_battery(self):
+          """打印一条描述电瓶容量的消息"""
+          print("This car has a " + str(self.battery_size) + "-kWh battery.")
+
+  my_tesla = ElectricCar('tesla', 'model s', 2016)
+  print(my_tesla.get_descriptive_name())
+  my_tesla.describe_battery()
+```
+
+在❶处，我们添加了新属性`self.battery_size`，并设置其初始值（如`70`）。根据`ElectricCar` 类创建的所有实例都将包含这个属性，但所有`Car`实例都不包含它。在❷处，我们还添加了一个名为`describe_battery()`的方法，它打印有关电瓶的信息。我们调用这个方法时，将看到一条电动汽车特有的描述：
+
+```
+2016 Tesla Model S
+This car has a 70-kWh battery.
+```
+
+对于`ElectricCar`类的特殊化程度没有任何限制。模拟电动汽车时，你可以根据所需的准确程度添加任意数量的属性和方法。如果一个属性或方法是任何汽车都有的，而不是电动汽车特有的，就应将其加入到`Car`类而不是`ElectricCar`类中。这样，使用`Car`类的人将获得相应的功能，而`ElectricCar`类只包含处理电动汽车特有属性和行为的代码。
+
+#### **9.3.4　重写父类的方法**
+
+对于父类的方法，只要它不符合子类模拟的实物的行为，都可对其进行重写。为此，可在子类中定义一个这样的方法，即它与要重写的父类方法同名。这样，Python 将不会考虑这个父类方法，而只关注你在子类中定义的相应方法。
+
+假设`Car`类有一个名为`fill_gas_tank()`的方法，它对全电动汽车来说毫无意义，因此你可能想重写它。下面演示了一种重写方式：
+
+```
+class ElectricCar(Car):
+    --snip--
+
+    def fill_gas_tank():
+        """电动汽车没有油箱"""
+        print("This car doesn't need a gas tank!")
+```
+
+现在，如果有人对电动汽车调用方法`fill_gas_tank()`，Python 将忽略`Car`类中的方法`fill_gas_tank()`，转而运行上述代码。使用继承时，可让子类保留从父类那里继承而来的精华，并剔除不需要的糟粕。
+
+#### **9.3.5　将实例用作属性**
+
+使用代码模拟实物时，你可能会发现自己给类添加的细节越来越多：属性和方法清单以及文件都越来越长。在这种情况下，可能需要将类的一部分作为一个独立的类提取出来。你可以将大型类拆分成多个协同工作的小类。
+
+例如，不断给`ElectricCar`类添加细节时，我们可能会发现其中包含很多专门针对汽车电瓶的属性和方法。在这种情况下，我们可将这些属性和方法提取出来，放到另一个名为`Battery`的类中，并将一个`Battery`实例用作`ElectricCar`类的一个属性：
+
+```
+  class Car():
+      --snip--
+
+❶ class Battery():
+      """一次模拟电动汽车电瓶的简单尝试"""
+
+❷     def __init__(self, battery_size=70):
+          """初始化电瓶的属性"""
+          self.battery_size = battery_size
+
+❸     def describe_battery(self):
+          """打印一条描述电瓶容量的消息"""
+          print("This car has a " + str(self.battery_size) + "-kWh battery.")
+
+
+  class ElectricCar(Car):
+      """电动汽车的独特之处"""
+
+      def __init__(self, make, model, year):
+          """
+          初始化父类的属性，再初始化电动汽车特有的属性
+          """
+          super().__init__(make, model, year)
+❹         self.battery = Battery()
+
+
+  my_tesla = ElectricCar('tesla', 'model s', 2016)
+
+  print(my_tesla.get_descriptive_name())
+  my_tesla.battery.describe_battery()
+```
+
+在❶处，我们定义了一个名为`Battery`的新类，它没有继承任何类。❷处的方法`__init__()`除`self`外，还有另一个形参`battery_size`。这个形参是可选的：如果没有给它提供值，电瓶容量将被设置为70。方法`describe_battery()`也移到了这个类中（见❸）。
+
+在`ElectricCar`类中，我们添加了一个名为`self.battery`的属性（见❹）。这行代码让 Python 创建一个新的`Battery`实例（由于没有指定尺寸，因此为默认值`70`），并将该实例存储在属性`self.battery`中。每当方法`__init__()`被调用时，都将执行该操作；因此现在每个`ElectricCar`实例都包含一个自动创建的`Battery`实例。
+
+我们创建一辆电动汽车，并将其存储在变量`my_tesla`中。要描述电瓶时，需要使用电动汽车的属性`battery`：
+
+```
+my_tesla.battery.describe_battery()
+```
+
+这行代码让 Python 在实例`my_tesla`中查找属性`battery`，并对存储在该属性中的`Battery`实例调用方法`describe_battery()`。
+
+输出与我们前面看到的相同：
+
+```
+2016 Tesla Model S
+This car has a 70-kWh battery.
+```
+
+这看似做了很多额外的工作，但现在我们想多详细地描述电瓶都可以，且不会导致`ElectricCar`类混乱不堪。下面再给`Battery`类添加一个方法，它根据电瓶容量报告汽车的续航里程：
+
+```
+  class Car():
+      --snip--
+
+  class Battery():
+      --snip--
+
+❶     def get_range(self):
+          """打印一条消息，指出电瓶的续航里程"""
+         if self.battery_size == 70:
+              range = 240
+          elif self.battery_size == 85:
+              range = 270
+
+          message = "This car can go approximately " + str(range)
+          message += " miles on a full charge."
+          print(message)
+
+  class ElectricCar(Car):
+      --snip--
+
+  my_tesla = ElectricCar('tesla', 'model s', 2016)
+  print(my_tesla.get_descriptive_name())
+  my_tesla.battery.describe_battery()
+❷ my_tesla.battery.get_range()
+```
+
+❶处新增的方法`get_range()`做了一些简单的分析：如果电瓶的容量为 70kWh，它就将续航里程设置为240英里；如果容量为 85kWh，就将续航里程设置为270英里，然后报告这个值。为使用这个方法，我们也通过汽车的属性`battery`来调用它（见❷）。
+
+输出指出了汽车的续航里程（这取决于电瓶的容量）：
+
+```
+2016 Tesla Model S
+This car has a 70-kWh battery.
+This car can go approximately 240 miles on a full charge.
+```
+
+#### **9.3.6　模拟实物**
+
+模拟较复杂的物件（如电动汽车）时，需要解决一些有趣的问题。续航里程是电瓶的属性还是汽车的属性呢？如果我们只需描述一辆汽车，那么将方法`get_range()`放在`Battery`类中也许是合适的；但如果要描述一家汽车制造商的整个产品线，也许应该将方法`get_range()`移到`ElectricCar`类中。在这种情况下，`get_range()`依然根据电瓶容量来确定续航里程，但报告的是一款汽车的续航里程。我们也可以这样做：将方法`get_range()`还留在`Battery`类中，但向它传递一个参数，如`car_model`；在这种情况下，方法`get_range()`将根据电瓶容量和汽车型号报告续航里程。
+
+这让你进入了程序员的另一个境界：解决上述问题时，你从较高的逻辑层面（而不是语法层面）考虑；你考虑的不是 Python，而是如何使用代码来表示实物。到达这种境界后，你经常会发现，现实世界的建模方法并没有对错之分。有些方法的效率更高，但要找出效率最高的表示法，需要经过一定的实践。只要代码像你希望的那样运行，就说明你做得很好！即便你发现自己不得不多次尝试使用不同的方法来重写类，也不必气馁；要编写出高效、准确的代码，都得经过这样的过程。
+
+> **动手试一试**
+>
+> **9-6 冰淇淋小店**：冰淇淋小店是一种特殊的餐馆。编写一个名为`IceCreamStand`的类，让它继承你为完成练习9-1或练习9-4而编写的`Restaurant`类。这两个版本的`Restaurant`类都可以，挑选你更喜欢的那个即可。添加一个名为`flavors`的属性，用于存储一个由各种口味的冰淇淋组成的列表。编写一个显示这些冰淇淋的方法。创建一个`IceCreamStand`实例，并调用这个方法。
+>
+> **9-7 管理员**：管理员是一种特殊的用户。编写一个名为`Admin`的类，让它继承你为完成练习9-3或练习9-5而编写的`User`类。添加一个名为`privileges`的属性，用于存储一个由字符串（如`"can add post"`、`"can delete post"`、`"can ban user"`等）组成的列表。编写一个名为`show_privileges()`的方法，它显示管理员的权限。创建一个`Admin`实例，并调用这个方法。
+>
+> **9-8 权限**：编写一个名为`Privileges`的类，它只有一个属性——`privileges`，其中存储了练习`9-7`所说的字符串列表。将方法`show_privileges()`移到这个类中。在`Admin`类中，将一个`Privileges`实例用作其属性。创建一个`Admin`实例，并使用方法`show_privileges()`来显示其权限。
+>
+> **9-9 电瓶升级**：在本节最后一个 electric_car.py 版本中，给`Battery`类添加一个名为`upgrade_battery()`的方法。这个方法检查电瓶容量，如果它不是85，就将它设置为85。创建一辆电瓶容量为默认值的电动汽车，调用方法`get_range()`，然后对电瓶进行升级，并再次调用`get_range()`。你会看到这辆汽车的续航里程增加了。
+
+### **9.4　导入类**
+
+随着你不断地给类添加功能，文件可能变得很长，即便你妥善地使用了继承亦如此。为遵循 Python 的总体理念，应让文件尽可能整洁。为在这方面提供帮助，Python 允许你将类存储在模块中，然后在主程序中导入所需的模块。
+
+#### **9.4.1　导入单个类**
+
+下面来创建一个只包含`Car`类的模块。这让我们面临一个微妙的命名问题：在本章中，已经有一个名为 car.py 的文件，但这个模块也应命名为 car.py，因为它包含表示汽车的代码。我们将这样解决这个命名问题：将`Car`类存储在一个名为 car.py 的模块中，该模块将覆盖前面使用的文件 car.py。从现在开始，使用该模块的程序都必须使用更具体的文件名，如 my_car.py。下面是模块 car.py，其中只包含`Car`类的代码：
+
+**car.py**
+
+```
+❶ """一个可用于表示汽车的类"""
+
+  class Car():
+      """一次模拟汽车的简单尝试"""
+
+      def __init__(self, make, model, year):
+          """初始化描述汽车的属性"""
+          self.make = make
+          self.model = model
+          self.year = year
+          self.odometer_reading = 0
+
+      def get_descriptive_name(self):
+          """返回整洁的描述性名称"""
+          long_name = str(self.year) + ' ' + self.make + ' ' + self.model
+          return long_name.title()
+
+      def read_odometer(self):
+          """打印一条消息，指出汽车的里程"""
+          print("This car has " + str(self.odometer_reading) + " miles on it.")
+
+      def update_odometer(self, mileage):
+          """
+          将里程表读数设置为指定的值
+          拒绝将里程表往回拨
+          """
+          if mileage >= self.odometer_reading:
+              self.odometer_reading = mileage
+          else:
+              print("You can't roll back an odometer!")
+
+      def increment_odometer(self, miles):
+          """将里程表读数增加指定的量"""
+          self.odometer_reading += miles
+```
+
+在❶处，我们包含了一个模块级文档字符串，对该模块的内容做了简要的描述。你应为自己创建的每个模块都编写文档字符串。
+
+下面来创建另一个文件——my_car.py，在其中导入`Car`类并创建其实例：
+
+**my_car.py**
+
+```
+❶ from car import Car
+
+  my_new_car = Car('audi', 'a4', 2016)
+  print(my_new_car.get_descriptive_name())
+
+  my_new_car.odometer_reading = 23
+  my_new_car.read_odometer()
+```
+
+❶处的`import`语句让 Python 打开模块`car`，并导入其中的`Car`类。这样我们就可以使用`Car`类了，就像它是在这个文件中定义的一样。输出与我们在前面看到的一样：
+
+```
+2016 Audi A4
+This car has 23 miles on it.
+```
+
+导入类是一种有效的编程方式。如果在这个程序中包含了整个`Car`类，它该有多长呀！通过将这个类移到一个模块中，并导入该模块，你依然可以使用其所有功能，但主程序文件变得整洁而易于阅读了。这还能让你将大部分逻辑存储在独立的文件中；确定类像你希望的那样工作后，你就可以不管这些文件，而专注于主程序的高级逻辑了。
+
+#### **9.4.2　在一个模块中存储多个类**
+
+虽然同一个模块中的类之间应存在某种相关性，但可根据需要在一个模块中存储任意数量的类。类`Battery`和`ElectricCar`都可帮助模拟汽车，因此下面将它们都加入模块 car.py 中：
+
+**car.py**
+
+```
+"""一组用于表示燃油汽车和电动汽车的类"""
+
+class Car():
+    --snip--
+
+class Battery():
+    """一次模拟电动汽车电瓶的简单尝试"""
+
+    def __init__(self, battery_size=70):
+        """初始化电瓶的属性"""
+        self.battery_size = battery_size
+
+    def describe_battery(self):
+        """打印一条描述电瓶容量的消息"""
+        print("This car has a " + str(self.battery_size) + "-kWh battery.")
+
+    def get_range(self):
+        """打印一条描述电瓶续航里程的消息"""
+        if self.battery_size == 70:
+            range = 240
+        elif self.battery_size == 85:
+            range = 270
+
+        message = "This car can go approximately " + str(range)
+        message += " miles on a full charge."
+        print(message)
+
+class ElectricCar(Car):
+    """模拟电动汽车的独特之处"""
+
+    def __init__(self, make, model, year):
+        """
+        初始化父类的属性，再初始化电动汽车特有的属性
+        """
+        super().__init__(make, model, year)
+        self.battery = Battery()
+```
+
+现在，可以新建一个名为 my_electric_car.py 的文件，导入`ElectricCar`类，并创建一辆电动汽车了：
+
+**my_electric_car.py**
+
+```
+from car import ElectricCar
+
+my_tesla = ElectricCar('tesla', 'model s', 2016)
+
+print(my_tesla.get_descriptive_name())
+my_tesla.battery.describe_battery()
+my_tesla.battery.get_range()
+```
+
+输出与我们前面看到的相同，但大部分逻辑都隐藏在一个模块中：
+
+```
+2016 Tesla Model S
+This car has a 70-kWh battery.
+This car can go approximately 240 miles on a full charge.
+```
+
+#### **9.4.3　从一个模块中导入多个类**
+
+可根据需要在程序文件中导入任意数量的类。如果我们要在同一个程序中创建普通汽车和电动汽车，就需要将`Car`和`ElectricCar`类都导入：
+
+**my_cars.py**
+
+```
+❶ from car import Car, ElectricCar
+
+❷ my_beetle = Car('volkswagen', 'beetle', 2016)
+  print(my_beetle.get_descriptive_name())
+
+❸ my_tesla = ElectricCar('tesla', 'roadster', 2016)
+  print(my_tesla.get_descriptive_name())
+```
+
+在❶处从一个模块中导入多个类时，用逗号分隔了各个类。导入必要的类后，就可根据需要创建每个类的任意数量的实例。
+
+在这个示例中，我们在❷处创建了一辆大众甲壳虫普通汽车，并在❸处创建了一辆特斯拉 Roadster 电动汽车：
+
+```
+2016 Volkswagen Beetle
+2016 Tesla Roadster
+```
+
+#### **9.4.4　导入整个模块**
+
+你还可以导入整个模块，再使用句点表示法访问需要的类。这种导入方法很简单，代码也易于阅读。由于创建类实例的代码都包含模块名，因此不会与当前文件使用的任何名称发生冲突。
+
+下面的代码导入整个`car`模块，并创建一辆普通汽车和一辆电动汽车：
+
+**my_cars.py**
+
+```
+❶ import car
+
+❷ my_beetle = car.Car('volkswagen', 'beetle', 2016)
+  print(my_beetle.get_descriptive_name())
+
+❸ my_tesla = car.ElectricCar('tesla', 'roadster', 2016)
+  print(my_tesla.get_descriptive_name())
+```
+
+在❶处，我们导入了整个`car`模块。接下来，我们使用语法*module_name.class_name*访问需要的类。像前面一样，我们在❷处创建了一辆大众甲壳虫汽车，并在❸处创建了一辆特斯拉 Roadster 汽车。
+
+#### **9.4.5　导入模块中的所有类**
+
+要导入模块中的每个类，可使用下面的语法：
+
+```
+from module_name import *
+```
+
+不推荐使用这种导入方式，其原因有二。首先，如果只要看一下文件开头的`import`语句，就能清楚地知道程序使用了哪些类，将大有裨益；但这种导入方式没有明确地指出你使用了模块中的哪些类。这种导入方式还可能引发名称方面的困惑。如果你不小心导入了一个与程序文件中其他东西同名的类，将引发难以诊断的错误。这里之所以介绍这种导入方式，是因为虽然不推荐使用这种方式，但你可能会在别人编写的代码中见到它。
+
+需要从一个模块中导入很多类时，最好导入整个模块，并使用*module_name.class_name*语法来访问类。这样做时，虽然文件开头并没有列出用到的所有类，但你清楚地知道在程序的哪些地方使用了导入的模块；你还避免了导入模块中的每个类可能引发的名称冲突。
+
+#### **9.4.6　在一个模块中导入另一个模块**
+
+有时候，需要将类分散到多个模块中，以免模块太大，或在同一个模块中存储不相关的类。将类存储在多个模块中时，你可能会发现一个模块中的类依赖于另一个模块中的类。在这种情况下，可在前一个模块中导入必要的类。
+
+例如，下面将`Car`类存储在一个模块中，并将`ElectricCar`和`Battery`类存储在另一个模块中。我们将第二个模块命名为`electric_car.py`（这将覆盖前面创建的文件 electric_car.py），并将`Battery`和`ElectricCar`类复制到这个模块中：
+
+**electric_car.py**
+
+```
+  """一组可用于表示电动汽车的类"""
+
+❶ from car import Car
+
+  class Battery():
+      --snip--
+
+  class ElectricCar(Car):
+      --snip--
+```
+
+`ElectricCar`类需要访问其父类`Car`，因此在❶处，我们直接将`Car`类导入该模块中。如果我们忘记了这行代码，Python 将在我们试图创建`ElectricCar`实例时引发错误。我们还需要更新模块`car`，使其包含`Car`类：
+
+**car.py**
+
+```
+"""一个可用于表示汽车的类"""
+
+class Car():
+    --snip--
+```
+
+现在可以分别从每个模块中导入类，以根据需要创建任何类型的汽车了：
+
+**my_cars.py**
+
+```
+❶ from car import Car
+  from electric_car import ElectricCar
+
+  my_beetle = Car('volkswagen', 'beetle', 2016)
+  print(my_beetle.get_descriptive_name())
+
+  my_tesla = ElectricCar('tesla', 'roadster', 2016)
+  print(my_tesla.get_descriptive_name())
+```
+
+在❶处，我们从模块`car`中导入了`Car`类，并从模块`electric_car`中导入`ElectricCar`类。接下来，我们创建了一辆普通汽车和一辆电动汽车。这两种汽车都得以正确地创建：
+
+```
+2016 Volkswagen Beetle
+2016 Tesla Roadster
+```
+
+#### **9.4.7　自定义工作流程**
+
+正如你看到的，在组织大型项目的代码方面，Python 提供了很多选项。熟悉所有这些选项很重要，这样你才能确定哪种项目组织方式是最佳的，并能理解别人开发的项目。
+
+一开始应让代码结构尽可能简单。先尽可能在一个文件中完成所有的工作，确定一切都能正确运行后，再将类移到独立的模块中。如果你喜欢模块和文件的交互方式，可在项目开始时就尝试将类存储到模块中。先找出让你能够编写出可行代码的方式，再尝试让代码更为组织有序。
+
+> **动手试一试**
+>
+> **9-10 导入Restaurant类**：将最新的`Restaurant`类存储在一个模块中。在另一个文件中，导入`Restaurant`类，创建一个`Restaurant`实例，并调用`Restaurant`的一个方法，以确认`import`语句正确无误。
+>
+> **9-11 导入Admin类**：以为完成练习9-8而做的工作为基础，将`User`、`Privileges`和`Admin`类存储在一个模块中，再创建一个文件，在其中创建一个`Admin`实例并对其调用方法`show_privileges()`，以确认一切都能正确地运行。
+>
+> **9-12 多个模块**：将`User`类存储在一个模块中，并将`Privileges`和`Admin`类存储在另一个模块中。再创建一个文件，在其中创建一个`Admin`实例，并对其调用方法`show_privileges()`，以确认一切都依然能够正确地运行。
+
+### **9.5　Python 标准库**
+
+Python **标准库**是一组模块，安装的 Python 都包含它。你现在对类的工作原理已有大致的了解，可以开始使用其他程序员编写好的模块了。可使用标准库中的任何函数和类，为此只需在程序开头包含一条简单的`import`语句。下面来看模块`collections`中的一个类——`OrderedDict`。
+
+字典让你能够将信息关联起来，但它们不记录你添加键—值对的顺序。要创建字典并记录其中的键—值对的添加顺序，可使用模块`collections`中的`OrderedDict`类。`OrderedDict`实例的行为几乎与字典相同，区别只在于记录了键—值对的添加顺序。
+
+我们再来看一看第6章的 favorite_languages.py 示例，但这次将记录被调查者参与调查的顺序：
+
+**favorite_languages.py**
+
+```
+❶ from collections import OrderedDict
+
+❷ favorite_languages = OrderedDict()
+
+❸ favorite_languages['jen'] = 'python'
+  favorite_languages['sarah'] = 'c'
+  favorite_languages['edward'] = 'ruby'
+  favorite_languages['phil'] = 'python'
+
+❹ for name, language in favorite_languages.items():
+      print(name.title() + "'s favorite language is " +
+          language.title() + ".")
+```
+
+我们首先从模块`collections`中导入了`OrderedDict`类（见❶）。在❷处，我们创建了`OrderedDict`类的一个实例，并将其存储到`favorite_languages`中。请注意，这里没有使用花括号，而是调用`OrderedDict()`来创建一个空的有序字典，并将其存储在`favorite_languages`中。接下来，我们以每次一对的方式添加名字—语言对（见❸）。在❹处，我们遍历`favorite_languages`，但知道将以添加的顺序获取调查结果：
+
+```
+Jen's favorite language is Python.
+Sarah's favorite language is C.
+Edward's favorite language is Ruby.
+Phil's favorite language is Python.
+```
+
+这是一个很不错的类，它兼具列表和字典的主要优点（在将信息关联起来的同时保留原来的顺序）。等你开始对关心的现实情形建模时，可能会发现有序字典正好能够满足需求。随着你对标准库的了解越来越深入，将熟悉大量可帮助你处理常见情形的模块。
+
+> **注意**　
+>
+> 你还可以从其他地方下载外部模块。本书第二部分的每个项目都需要使用外部模块，届时你将看到很多这样的示例。
+
+> **动手试一试**
+>
+> **9-13 使用OrderedDict**：在练习6-4中，你使用了一个标准字典来表示词汇表。请使用`OrderedDict`类来重写这个程序，并确认输出的顺序与你在字典中添加键—值对的顺序一致。
+>
+> **9-14 骰子**：模块`random`包含以各种方式生成随机数的函数，其中的`randint()`返回一个位于指定范围内的整数，例如，下面的代码返回一个1~6内的整数：
+>
+> ```
+> from random import randint
+> x = randint(1, 6)
+> ```
+>
+> 请创建一个`Die`类，它包含一个名为`sides`的属性，该属性的默认值为6。编写一个名为`roll_die()`的方法，它打印位于1和骰子面数之间的随机数。创建一个6面的骰子，再掷10次。 创建一个10面的骰子和一个20面的骰子，并将它们都掷10次。
+>
+> **9-15 Python Module of the Week**：要了解 Python 标准库，一个很不错的资源是网站 Python Module of the Week。请访问<http://pymotw.com/> 并查看其中的目录，在其中找一个你感兴趣的模块进行探索，或阅读模块`collections`和`random`的文档。
+
+### **9.6　类编码风格**
+
+你必须熟悉有些与类相关的编码风格问题，在你编写的程序较复杂时尤其如此。
+
+类名应采用**驼峰命名法**，即将类名中的每个单词的首字母都大写，而不使用下划线。实例名和模块名都采用小写格式，并在单词之间加上下划线。
+
+对于每个类，都应紧跟在类定义后面包含一个文档字符串。这种文档字符串简要地描述类的功能，并遵循编写函数的文档字符串时采用的格式约定。每个模块也都应包含一个文档字符串，对其中的类可用于做什么进行描述。
+
+可使用空行来组织代码，但不要滥用。在类中，可使用一个空行来分隔方法；而在模块中，可使用两个空行来分隔类。
+
+需要同时导入标准库中的模块和你编写的模块时，先编写导入标准库模块的`import`语句，再添加一个空行，然后编写导入你自己编写的模块的`import`语句。在包含多条`import`语句的程序中，这种做法让人更容易明白程序使用的各个模块都来自何方。
+
+### **9.7　小结**
+
+在本章中，你学习了：如何编写类；如何使用属性在类中存储信息，以及如何编写方法，以让类具备所需的行为；如何编写方法`__init__()`，以便根据类创建包含所需属性的实例。你见识了如何修改实例的属性——包括直接修改以及通过方法进行修改。你还了解了：使用继承可简化相关类的创建工作；将一个类的实例用作另一个类的属性可让类更简洁。
+
+你了解到，通过将类存储在模块中，并在需要使用这些类的文件中导入它们，可让项目组织有序。你学习了 Python 标准库，并见识了一个使用模块`collections`中的`OrderedDict`类的示例。最后，你学习了编写类时应遵循的 Python 约定。
+
+在第10章中，你将学习如何使用文件，这让你能够保存你在程序中所做的工作，以及你让用户做的工作。你还将学习**异常**，这是一种特殊的 Python 类，用于帮助你在发生错误时采取相应的措施。
+
+------
+

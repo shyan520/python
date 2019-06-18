@@ -3,7 +3,7 @@ def greet_user():
     print('Hello!')
 greet_user()
 print('8--8.1\n')
-
+'''
 # 8--8.1.1 向函数传递信息###########################################################
 # userName是形参；'yanshunhua'是实参
 def greet_user(userName):
@@ -91,9 +91,10 @@ while sign:
 for user in users:
     print(user)
 print('8--8.3.4\n')
-'''
 
+'''
 # 8--8.4.1 在函数中修改列表#########################################################
+# 方案一：
 # 首先创建一个列表，其中包含一些要打印的设计
 unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
 completed_models = []
@@ -111,5 +112,37 @@ while unprinted_designs:
 print("\nThe following models have been printed:")
 for completed_model in completed_models:
     print(completed_model)
+print('\n')
 
+# 方案二：
+def print_models(unprinted_designs,completed_models):
+    while unprinted_designs:
+        current_design = unprinted_designs.pop()
+        # 模拟根据设计制作 3D 打印模型的过程
+        print("Printing model: " + current_design)
+        completed_models.append(current_design)
 
+def show_completed_models(completed_models):
+    print("\nThe following models have been printed:")
+    for completed_model in completed_models:
+        print(completed_model)
+
+unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+print_models(unprinted_designs,completed_models)
+show_completed_models(completed_models)
+print('8--8.4.1\n')
+
+# 8--8.5 传递任意数量的实参#########################################################
+def make_pizza(*toppings):
+    return toppings
+
+print(make_pizza('pepperoni'))
+print(make_pizza('mushrooms', 'green peppers', 'extra cheese'))
+
+for v in make_pizza('mushrooms', 'green peppers', 'extra cheese'):
+    print(v)
+
+# 8--8.5.1 结合使用位置实参和任意数量实参#########################################################
+# 如果要让函数接受不同类型的实参，必须在函数定义中将接纳任意数量实参的形参放在最后
+def make_pizza(size,*toppings):

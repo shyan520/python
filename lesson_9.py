@@ -42,3 +42,122 @@ print('它的年龄是：' + str(your_dog.age) + '。')
 your_dog.sit()
 your_dog.roll_over()
 print('9--9.1.2\n')
+
+# 9--9.2 使用类和实例#################################################################
+class Car():
+    """给属性year定义默认值"""
+    def __init__(self, make, model, year=10, ):
+        """初始化汽车的属性"""
+        self.make = make
+        self.model = model
+        self.year = year
+        # 初始化初始公里数为0
+        self.odometer_reading = 0
+
+    def get_descriptive_name(self):
+        long_name = self.make + ' ' + self.model + ' ' + str(self.year)
+        return  long_name
+
+    def set_read_odometer(self, mdometer):
+        # 更新公里数为制定的数值
+        self.odometer_reading = mdometer
+
+    def get_read_odometer(self):
+        print('车辆行驶了' + str(self.odometer_reading) + '公里')
+
+my_car = Car('audi', 'a4', 8)
+print(my_car.get_descriptive_name())
+print('9--9.2\n')
+
+# 9--9.2.3 修改属性的值###############################################################
+# 对Car类中的make属性重新进行赋值
+my_car.make = 'BMW'
+print(my_car.get_descriptive_name())
+
+# 通过方法修改odometer_reading属性
+my_car.set_read_odometer(23)
+my_car.get_read_odometer()
+print('9--9.2.3\n')
+
+# 9--9.3 继承#########################################################################
+class Motor():
+    def __init__(self, make, model, year,):
+        self.make = make
+        self.model = model
+        self.year = year
+        # 行驶公里默认为0公里
+        self.odometer_reading = 0
+
+    def get_descriptive_name(self):
+        long_name = '这辆摩托车的牌子是：' + self.make + '； 型号是：'+ self.model + '； 车龄是：' + str(self.year) + '年'
+        return long_name
+
+    def get_read_odometer(self):
+        print('目前行驶公里数为：' + str(self.odometer_reading) + '公里')
+
+    def set_read_odometer(self, odometer):
+        if odometer >= self.odometer_reading:
+            self.odometer_reading = odometer
+        else:
+            print("您不能回滚里程数")
+
+    def fill_gas_tank(self):
+        print('这辆车每次使用需要加满油箱')
+
+class ElectricMotor(Motor):
+    """电动摩托车的独特之处"""
+    def __init__(self, make, model, year):
+        """初始化父类的属性"""
+        # 9--9.3.1 子类的方法__init__()
+        # super()`是一个特殊函数，帮助 Python 将父类和子类关联起来。
+        # 这行代码让 Python 调用`ElectricMotor`的父类的方法`__init__()`，让`ElectricMotor`实例包含父类的所有属性。
+        # 父类也称为**超类**（superclass），名称 super 因此而得名。
+        super().__init__(make, model, year)
+        # 9--9.3.3 给子类定义属性和方法=======初始化电动摩特车特有的属性'battery_size'
+        self.battery_size = 70000
+
+    # 9--9.3.3 给子类定义属性和方法=======电动摩托车特有的方法
+    def describe_battery(self):
+        print('这辆电动摩托车的电瓶容量是' + str(self.battery_size) + '安培')
+
+    # 9--9.3.4 重写父类的方法===========重写父类fill_gas_tank方法
+    def fill_gas_tank(self):
+        print('电动摩托车不需要加油')
+
+my_motor = Motor('哈雷', '800', 5)
+print(my_motor.get_descriptive_name())
+my_motor.fill_gas_tank()
+print('\n')
+my_electricmotor = ElectricMotor('雅马哈', 'T400', 1)
+print(my_electricmotor.get_descriptive_name())
+my_electricmotor.describe_battery()
+my_electricmotor.fill_gas_tank()
+print('\n')
+
+# 9--9.3.5 将实例用作属性######################################################################
+# 定义了一个名为`Battery`的新类，它没有继承任何类
+class Battery():
+    """第一次模拟电动摩托车电瓶的简单尝试"""
+    def __init__(self, battery_size=7000):
+        self.battery_size = battery_size
+
+    def describe_battery(self):
+        """打印一条描述电瓶容量的消息"""
+        print('这辆电动摩托车的电瓶容量是' + str(self.battery_size) + '安培')
+
+class ElectricMotor1(Motor):
+    """电动车的独特之处"""
+    def __init__(self, make, model, year):
+        super().__init__(make, model, year)
+        #  创建一个新的`Battery`实例（由于没有指定尺寸，因此为默认值`70`），并将该实例存储在属性`self.battery`中。
+        #  每当方法`__init__()`被调用时，都将执行该操作；因此现在每个`ElectricMotor`实例都包含一个自动创建的`Battery`实例。
+        self.battery = Battery()
+
+my_electricmotor = ElectricMotor1('太子', 'S1000', 0)
+print(my_electricmotor.get_descriptive_name())
+my_electricmotor.battery.describe_battery()
+# 对Battery()类中的battery_size属性进行重新赋值
+my_electricmotor.battery.battery_size = 10000
+my_electricmotor.battery.describe_battery()
+
+

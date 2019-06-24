@@ -7714,3 +7714,6203 @@ greet_user()
 在本章中，你学习了：如何使用文件；如何一次性读取整个文件，以及如何以每次一行的方式读取文件的内容；如何写入文件，以及如何将文本附加到文件末尾；什么是异常以及如何处理程序可能引发的异常；如何存储 Python 数据结构，以保存用户提供的信息，避免用户每次运行程序时都需要重新提供。
 
 在第11章中，你将学习高效的代码测试方式，这可帮助你确定代码正确无误，以及发现扩展现有程序时可能引入的 bug。
+
+------
+
+
+
+## 第11章　测试代码
+
+### **老齐导读**
+
+这一章里面说的“测试代码”，不是软件公司里面的测试人员写的代码，是程序员要写的。
+
+本章是本书的特色章节，因为一般的 Python 基础读物中都不会介绍此内容，这部分内容恰恰是工程上的一个重要环节。
+
+在工程上，有一种说法：单元测试驱动开发，即 Unit Test Driven Development，简称 UTDD，或者干脆说成 TDD。在阅读完书上内容，如果对此有兴趣，可以更深入探究相关的知识。
+
+![enter image description here](https://images.gitbook.cn/d36cf8e0-8831-11e9-b6f4-77ea8c81f44e)
+
+> 编写函数或类时，还可为其编写测试。通过测试，可确定代码面对各种输入都能够按要求的那样工作。测试让你信心满满，深信即便有更多的人使用你的程序，它也能正确地工作。在程序中添加新代码时，你也可以对其进行测试，确认它们不会破坏程序既有的行为。程序员都会犯错，因此每个程序员都必须经常测试其代码，在用户发现问题前找出它们。
+>
+> 在本章中，你将学习如何使用 Python 模块`unittest`中的工具来测试代码。你将学习编写测试用例，核实一系列输入都将得到预期的输出。你将看到测试通过了是什么样子，测试未通过又是什么样子，还将知道测试未通过如何有助于改进代码。你将学习如何测试函数和类，并将知道该为项目编写多少个测试。
+
+### **11.1　测试函数**
+
+要学习测试，得有要测试的代码。下面是一个简单的函数，它接受名和姓并返回整洁的姓名：
+
+**name_function.py**
+
+```
+def get_formatted_name(first, last):
+    """Generate a neatly formatted full name."""
+    full_name = first + ' ' + last
+    return full_name.title()
+```
+
+函数`get_formatted_name()`将名和姓合并成姓名，在名和姓之间加上一个空格，并将它们的首字母都大写，再返回结果。为核实`get_formatted_name()`像期望的那样工作，我们来编写一个使用这个函数的程序。程序 names.py 让用户输入名和姓，并显示整洁的全名：
+
+**names.py**
+
+```
+from name_function import get_formatted_name
+
+print("Enter 'q' at any time to quit.")
+while True:
+    first = input("\nPlease give me a first name: ")
+    if first == 'q':
+        break
+    last = input("Please give me a last name: ")
+    if last == 'q':
+        break
+
+    formatted_name = get_formatted_name(first, last)
+    print("\tNeatly formatted name: " + formatted_name + '.')
+```
+
+这个程序从 name_function.py 中导入`get_formatted_name()`。用户可输入一系列的名和姓，并看到格式整洁的全名：
+
+```
+Enter 'q' at any time to quit.
+
+Please give me a first name: janis
+Please give me a last name: joplin
+       Neatly formatted name: Janis Joplin.
+
+Please give me a first name: bob
+Please give me a last name: dylan
+       Neatly formatted name: Bob Dylan.
+
+Please give me a first name: q
+```
+
+从上述输出可知，合并得到的姓名正确无误。现在假设我们要修改`get_formatted_name()`，使其还能够处理中间名。这样做时，我们要确保不破坏这个函数处理只有名和姓的姓名的方式。为此，我们可以在每次修改`get_formatted_name()`后都进行测试：运行程序 names.py，并输入像`Janis Joplin`这样的姓名，但这太烦琐了。所幸 Python 提供了一种自动测试函数输出的高效方式。倘若我们对`get_formatted_name()`进行自动测试，就能始终信心满满，确信给这个函数提供我们测试过的姓名时，它都能正确地工作。
+
+#### **11.1.1　单元测试和测试用例**
+
+Python 标准库中的模块`unittest`提供了代码测试工具。**单元测试**用于核实函数的某个方面没有问题；**测试用例**是一组单元测试，这些单元测试一起核实函数在各种情形下的行为都符合要求。良好的测试用例考虑到了函数可能收到的各种输入，包含针对所有这些情形的测试。**全覆盖式测试**用例包含一整套单元测试，涵盖了各种可能的函数使用方式。对于大型项目，要实现全覆盖可能很难。通常，最初只要针对代码的重要行为编写测试即可，等项目被广泛使用时再考虑全覆盖。
+
+#### **11.1.2　可通过的测试**
+
+创建测试用例的语法需要一段时间才能习惯，但测试用例创建后，再添加针对函数的单元测试就很简单了。要为函数编写测试用例，可先导入模块`unittest`以及要测试的函数，再创建一个继承`unittest.TestCase`的类，并编写一系列方法对函数行为的不同方面进行测试。
+
+下面是一个只包含一个方法的测试用例，它检查函数`get_formatted_name()`在给定名和姓时能否正确地工作：
+
+**testnamefunction.py**
+
+```
+  import unittest
+  from name_function import get_formatted_name
+
+❶ class NamesTestCase(unittest.TestCase):
+      """测试 name_function.py"""
+
+      def test_first_last_name(self):
+          """能够正确地处理像 Janis Joplin 这样的姓名吗？"""
+❷         formatted_name = get_formatted_name('janis', 'joplin')
+❸         self.assertEqual(formatted_name, 'Janis Joplin')
+
+  unittest.main()
+```
+
+首先，我们导入了模块`unittest`和要测试的函数`get_formatted_name()`。在❶处，我们创建了一个名为`NamesTestCase`的类，用于包含一系列针对`get_formatted_name()`的单元测试。你可随便给这个类命名，但最好让它看起来与要测试的函数相关，并包含字样 Test。这个类必须继承`unittest.TestCase`类，这样 Python 才知道如何运行你编写的测试。
+
+`NamesTestCase`只包含一个方法，用于测试`get_formatted_name()`的一个方面。我们将这个方法命名为`test_first_last_name()`，因为我们要核实的是只有名和姓的姓名能否被正确地格式化。我们运行 test_name_function.py 时，所有以`test_`打头的方法都将自动运行。在这个方法中，我们调用了要测试的函数，并存储了要测试的返回值。在这个示例中，我们使用实参`'janis'`和`'joplin'`调用`get_formatted_name()`，并将结果存储到变量`formatted_name`中（见❷）。
+
+在❸处，我们使用了`unittest`类最有用的功能之一：一个**断言**方法。断言方法用来核实得到的结果是否与期望的结果一致。在这里，我们知道`get_formatted_name()`应返回这样的姓名，即名和姓的首字母为大写，且它们之间有一个空格，因此我们期望`formatted_name`的值为`Janis Joplin`。为检查是否确实如此，我们调用`unittest`的方法`assertEqual()`，并向它传递`formatted_name`和`'Janis Joplin'`。代码行`self.assertEqual(formatted_name, 'Janis Joplin')`的意思是说：“将`formatted_name`的值同字符串`'Janis Joplin'`进行比较，如果它们相等，就万事大吉，如果它们不相等，跟我说一声！”
+
+代码行`unittest.main()`让 Python 运行这个文件中的测试。运行 test_name_function.py 时，得到的输出如下：
+
+```
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+第1行的句点表明有一个测试通过了。接下来的一行指出 Python 运行了一个测试，消耗的时间不到0.001秒。最后的`OK`表明该测试用例中的所有单元测试都通过了。
+
+上述输出表明，给定包含名和姓的姓名时，函数`get_formatted_name()`总是能正确地处理。修改`get_formatted_name()`后，可再次运行这个测试用例。如果它通过了，我们就知道在给定`Janis Joplin`这样的姓名时，这个函数依然能够正确地处理。
+
+#### **11.1.3　不能通过的测试**
+
+测试未通过时结果是什么样的呢？我们来修改`get_formatted_name()`，使其能够处理中间名，但这样做时，故意让这个函数无法正确地处理像 Janis Joplin 这样只有名和姓的姓名。
+
+下面是函数`get_formatted_name()`的新版本，它要求通过一个实参指定中间名：
+
+**name_function.py**
+
+```
+def get_formatted_name(first, middle, last):
+    """生成整洁的姓名"""
+    full_name = first + ' ' + middle + ' ' + last
+    return full_name.title()
+```
+
+这个版本应该能够正确地处理包含中间名的姓名，但对其进行测试时，我们发现它再也不能正确地处理只有名和姓的姓名。这次运行程序 test_name_function.py 时，输出如下：
+
+```
+❶ E
+  ======================================================================
+❷ ERROR: test_first_last_name (__main__.NamesTestCase)
+  ----------------------------------------------------------------------
+❸ Traceback (most recent call last):
+    File "test_name_function.py", line 8, in test_first_last_name
+      formatted_name = get_formatted_name('janis', 'joplin')
+  TypeError: get_formatted_name() missing 1 required positional argument: 'last'
+
+  ----------------------------------------------------------------------
+❹ Ran 1 test in 0.000s
+
+❺ FAILED (errors=1)
+```
+
+其中包含的信息很多，因为测试未通过时，需要让你知道的事情可能有很多。第1行输出只有一个字母`E`（见❶），它指出测试用例中有一个单元测试导致了错误。接下来，我们看到`NamesTestCase`中的`test_first_last_name()`导致了错误（见❷）。测试用例包含众多单元测试时，知道哪个测试未通过至关重要。在❸处，我们看到了一个标准的 traceback，它指出函数调用`get_formatted_name('janis', 'joplin')`有问题，因为它缺少一个必不可少的位置实参。
+
+我们还看到运行了一个单元测试（见❹）。最后，还看到了一条消息，它指出整个测试用例都未通过，因为运行该测试用例时发生了一个错误（见❺）。这条消息位于输出末尾，让你一眼就能看到——你可不希望为获悉有多少测试未通过而翻阅长长的输出。
+
+#### **11.1.4　测试未通过时怎么办**
+
+测试未通过时怎么办呢？如果你检查的条件没错，测试通过了意味着函数的行为是对的，而测试未通过意味着你编写的新代码有错。因此，测试未通过时，不要修改测试，而应修复导致测试不能通过的代码：检查刚对函数所做的修改，找出导致函数行为不符合预期的修改。
+
+在这个示例中，`get_formatted_name()`以前只需要两个实参——名和姓，但现在它要求提供名、中间名和姓。新增的中间名参数是必不可少的，这导致`get_formatted_name()`的行为不符合预期。就这里而言，最佳的选择是让中间名变为可选的。这样做后，使用类似于 Janis Joplin 的姓名进行测试时，测试就会通过了，同时这个函数还能接受中间名。下面来修改`get_formatted_name()`，将中间名设置为可选的，然后再次运行这个测试用例。如果通过了，我们接着确认这个函数能够妥善地处理中间名。
+
+要将中间名设置为可选的，可在函数定义中将形参`middle`移到形参列表末尾，并将其默认值指定为一个空字符串。我们还要添加一个`if`测试，以便根据是否提供了中间名相应地创建姓名：
+
+**name_function.py**
+
+```
+def get_formatted_name(first, last, middle=''):
+    """生成整洁的姓名"""
+    if middle:
+        full_name = first + ' ' + middle + ' ' + last
+    else:
+        full_name = first + ' ' + last
+    return full_name.title()
+```
+
+在`get_formatted_name()`的这个新版本中，中间名是可选的。如果向这个函数传递了中间名（`if middle:`），姓名将包含名、中间名和姓，否则姓名将只包含名和姓。现在，对于两种不同的姓名，这个函数都应该能够正确地处理。为确定这个函数依然能够正确地处理像 Janis Joplin 这样的姓名，我们再次运行 test_name_function.py：
+
+```
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+现在，测试用例通过了。太好了，这意味着这个函数又能正确地处理像 Janis Joplin 这样的姓名了，而且我们无需手工测试这个函数。这个函数很容易就修复了，因为未通过的测试让我们得知新代码破坏了函数原来的行为。
+
+#### **11.1.5　添加新测试**
+
+确定`get_formatted_name()`又能正确地处理简单的姓名后，我们再编写一个测试，用于测试包含中间名的姓名。为此，我们在`NamesTestCase`类中再添加一个方法：
+
+```
+  import unittest
+  from name_function import get_formatted_name
+
+  class NamesTestCase(unittest.TestCase):
+      """测试 name_function.py """
+
+      def test_first_last_name(self):
+          """能够正确地处理像 Janis Joplin 这样的姓名吗？"""
+          formatted_name = get_formatted_name('janis', 'joplin')
+          self.assertEqual(formatted_name, 'Janis Joplin')
+
+      def test_first_last_middle_name(self):
+          """能够正确地处理像 Wolfgang Amadeus Mozart 这样的姓名吗？"""
+❶         formatted_name = get_formatted_name(
+              'wolfgang', 'mozart', 'amadeus')
+          self.assertEqual(formatted_name, 'Wolfgang Amadeus Mozart')
+
+  unittest.main()
+```
+
+我们将这个方法命名为`test_first_last_middle_name()`。方法名必须以 test_打头，这样它才会在我们运行 test_name_function.py 时自动运行。这个方法名清楚地指出了它测试的是`get_formatted_name()`的哪个行为，这样，如果该测试未通过，我们就会马上知道受影响的是哪种类型的姓名。在`TestCase`类中使用很长的方法名是可以的；这些方法的名称必须是描述性的，这才能让你明白测试未通过时的输出；这些方法由 Python 自动调用，你根本不用编写调用它们的代码。
+
+为测试函数`get_formatted_name()`，我们使用名、姓和中间名调用它（见❶），再使用`assertEqual()`检查返回的姓名是否与预期的姓名（名、中间名和姓）一致。我们再次运行 test_name_function.py 时，两个测试都通过了：
+
+```
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+```
+
+太好了！现在我们知道，这个函数又能正确地处理像 Janis Joplin 这样的姓名了，我们还深信它也能够正确地处理像 Wolfgang Amadeus Mozart 这样的姓名。
+
+> **动手试一试**
+>
+> **11-1 城市和国家**：编写一个函数，它接受两个形参：一个城市名和一个国家名。这个函数返回一个格式为`City, Country`的字符串，如`Santiago, Chile`。将这个函数存储在一个名为 city_functions.py 的模块中。
+>
+> 创建一个名为 test_cities.py 的程序，对刚编写的函数进行测试（别忘了，你需要导入模块`unittest`以及要测试的函数）。编写一个名为`test_city_country()`的方法，核实使用类似于`'santiago'`和`'chile'`这样的值来调用前述函数时，得到的字符串是正确的。运行`test_cities.py`，确认测试`test_city_country()`通过了。
+>
+> **11-2 人口数量**：修改前面的函数，使其包含第三个必不可少的形参`population`，并返回一个格式为`City,Country-population xxx`的字符串，如`Santiago,Chile-population 5000000`。运行 test_cities.py，确认测试`test_city_country()`未通过。
+>
+> 修改上述函数，将形参`population`设置为可选的。再次运行 test_cities.py，确认测试`test_city_country()`又通过了。
+>
+> 再编写一个名为`test_city_country_population()`的测试，核实可以使用类似于`'santiago'`、`'chile'`和`'population=5000000'`这样的值来调用这个函数。再次运行 test_cities.py，确认测试`test_city_country_population()`通过了。
+
+### **11.2　测试类**
+
+在本章前半部分，你编写了针对单个函数的测试，下面来编写针对类的测试。很多程序中都会用到类，因此能够证明你的类能够正确地工作会大有裨益。如果针对类的测试通过了，你就能确信对类所做的改进没有意外地破坏其原有的行为。
+
+#### **11.2.1　各种断言方法**
+
+Python 在`unittest.TestCase`类中提供了很多断言方法。前面说过，断言方法检查你认为应该满足的条件是否确实满足。如果该条件确实满足，你对程序行为的假设就得到了确认，你就可以确信其中没有错误。如果你认为应该满足的条件实际上并不满足，Python 将引发异常。
+
+表11-1描述了6个常用的断言方法。使用这些方法可核实返回的值等于或不等于预期的值、返回的值为`True`或`False`、返回的值在列表中或不在列表中。你只能在继承`unittest.TestCase`的类中使用这些方法，下面来看看如何在测试类时使用其中的一个。
+
+**表11-1　unittest Module 中的断言方法**
+
+| 方法                           | 用途                   |
+| :----------------------------- | :--------------------- |
+| `assertEqual(a,b)`             | 核实`a==b`             |
+| `assertNotEqual(a,b)`          | 核实`a!=b`             |
+| `assertTrue(x)`                | 核实`x`为`True`        |
+| `assertFalse(x)`               | 核实`x`为`False`       |
+| `assertIn(`*item*,*list*`)`    | 核实*item*在*list*中   |
+| `assertNotIn(`*item*,*list*`)` | 核实*item*不在*list*中 |
+
+#### **11.2.2　一个要测试的类**
+
+类的测试与函数的测试相似——你所做的大部分工作都是测试类中方法的行为，但存在一些不同之处，下面来编写一个类进行测试。来看一个帮助管理匿名调查的类：
+
+**survey.py**
+
+```
+  class AnonymousSurvey():
+      """收集匿名调查问卷的答案"""
+
+❶     def __init__(self, question):
+          """存储一个问题，并为存储答案做准备"""
+          self.question = question
+          self.responses = []
+
+❷     def show_question(self):
+          """显示调查问卷"""
+          print(self.question)
+
+❸     def store_response(self, new_response):
+          """存储单份调查答卷"""
+          self.responses.append(new_response)
+
+❹     def show_results(self):
+          """显示收集到的所有答卷"""
+          print("Survey results:")
+          for response in self.responses:
+              print('- ' + response)
+```
+
+这个类首先存储了一个你指定的调查问题（见❶），并创建了一个空列表，用于存储答案。这个类包含打印调查问题的方法（见❷）、在答案列表中添加新答案的方法（见❸）以及将存储在列表中的答案都打印出来的方法（见❹）。要创建这个类的实例，只需提供一个问题即可。有了表示调查的实例后，就可使用`show_question()`来显示其中的问题，可使用`store_response()`来存储答案，并使用`show_results()`来显示调查结果。
+
+为证明`AnonymousSurvey`类能够正确地工作，我们来编写一个使用它的程序：
+
+**language_survey.py**
+
+```
+from survey import AnonymousSurvey
+
+#定义一个问题，并创建一个表示调查的 AnonymousSurvey 对象
+question = "What language did you first learn to speak?"
+my_survey = AnonymousSurvey(question)
+
+#显示问题并存储答案
+my_survey.show_question()
+print("Enter 'q' at any time to quit.\n")
+while True:
+    response = input("Language: ")
+    if response == 'q':
+        break
+    my_survey.store_response(response)
+
+# 显示调查结果
+print("\nThank you to everyone who participated in the survey!")
+my_survey.show_results()
+```
+
+这个程序定义了一个问题（`"What language did you first learn to speak? "`），并使用这个问题创建了一个`AnonymousSurvey`对象。接下来，这个程序调用`show_question()`来显示问题，并提示用户输入答案。收到每个答案的同时将其存储起来。用户输入所有答案（输入`q`要求退出）后，调用`show_results()`来打印调查结果：
+
+```
+What language did you first learn to speak?
+Enter 'q' at any time to quit.
+
+Language: English
+Language: Spanish
+Language: English
+Language: Mandarin
+Language: q
+
+Thank you to everyone who participated in the survey!
+Survey results:
+- English
+- Spanish
+- English
+- Mandarin
+```
+
+`AnonymousSurvey`类可用于进行简单的匿名调查。假设我们将它放在了模块`survey`中，并想进行改进：让每位用户都可输入多个答案；编写一个方法，它只列出不同的答案，并指出每个答案出现了多少次；再编写一个类，用于管理非匿名调查。
+
+进行上述修改存在风险，可能会影响`AnonymousSurvey`类的当前行为。例如，允许每位用户输入多个答案时，可能不小心修改了处理单个答案的方式。要确认在开发这个模块时没有破坏既有行为，可以编写针对这个类的测试。
+
+#### **11.2.3　测试 AnonymousSurvey 类**
+
+下面来编写一个测试，对`AnonymousSurvey`类的行为的一个方面进行验证：如果用户面对调查问题时只提供了一个答案，这个答案也能被妥善地存储。为此，我们将在这个答案被存储后，使用方法`assertIn()`来核实它包含在答案列表中：
+
+**test_survey.py**
+
+```
+  import unittest
+  from survey import AnonymousSurvey
+
+❶ class TestAnonymousSurvey(unittest.TestCase):
+      """针对 AnonymousSurvey 类的测试"""
+
+❷     def test_store_single_response(self):
+          """测试单个答案会被妥善地存储"""
+          question = "What language did you first learn to speak?"
+❸         my_survey = AnonymousSurvey(question)
+          my_survey.store_response('English')
+
+❹         self.assertIn('English', my_survey.responses)
+
+  unittest.main()
+```
+
+我们首先导入了模块`unittest`以及要测试的类`AnonymousSurvey`。我们将测试用例命名为`TestAnonymousSurvey`，它也继承了`unittest.TestCase`（见❶）。第一个测试方法验证调查问题的单个答案被存储后，会包含在调查结果列表中。对于这个方法，一个不错的描述性名称是`test_store_single_response()`（见❷）。如果这个测试未通过，我们就能通过输出中的方法名得知，在存储单个调查答案方面存在问题。
+
+要测试类的行为，需要创建其实例。在❸处，我们使用问题`"What language did you first learn to speak?"`创建了一个名为`my_survey`的实例，然后使用方法`store_response()`存储了单个答案`English`。接下来，我们检查`English`是否包含在列表`my_survey.responses`中，以核实这个答案是否被妥善地存储了（见❹）。
+
+当我们运行 test_survey.py 时，测试通过了：
+
+```
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
+```
+
+这很好，但只能收集一个答案的调查用途不大。下面来核实用户提供三个答案时，它们也将被妥善地存储。为此，我们在`TestAnonymousSurvey`中再添加一个方法：
+
+```
+  import unittest
+  from survey import AnonymousSurvey
+
+  class TestAnonymousSurvey(unittest.TestCase):
+      """针对 AnonymousSurvey 类的测试"""
+
+      def test_store_single_response(self):
+          """测试单个答案会被妥善地存储"""
+          --snip--
+
+      def test_store_three_responses(self):
+          """测试三个答案会被妥善地存储"""
+          question = "What language did you first learn to speak?"
+          my_survey = AnonymousSurvey(question)
+❶         responses = ['English', 'Spanish', 'Mandarin']
+          for response in responses:
+              my_survey.store_response(response)
+
+❷         for response in responses:
+              self.assertIn(response, my_survey.responses)
+
+  unittest.main()
+```
+
+我们将这个方法命名为`test_store_three_responses()`，并像`test_store_single_response()`一样，在其中创建一个调查对象。我们定义了一个包含三个不同答案的列表（见❶），再对其中每个答案都调用`store_response()`。存储这些答案后，我们使用一个循环来确认每个答案都包含在`my_survey.responses`中（见❷）。
+
+我们再次运行 test_survey.py 时，两个测试（针对单个答案的测试和针对三个答案的测试）都通过了：
+
+```
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+```
+
+前述做法的效果很好，但这些测试有些重复的地方。下面使用`unittest`的另一项功能来提高它们的效率。
+
+#### **11.2.4　方法 setUp()**
+
+在前面的 test_survey.py 中，我们在每个测试方法中都创建了一个`AnonymousSurvey`实例，并在每个方法中都创建了答案。`unittest.TestCase`类包含方法`setUp()`，让我们只需创建这些对象一次，并在每个测试方法中使用它们。如果你在`TestCase`类中包含了方法`setUp()`，Python 将先运行它，再运行各个以 test_ 打头的方法。这样，在你编写的每个测试方法中都可使用在方法`setUp()`中创建的对象了。
+
+下面使用`setUp()`来创建一个调查对象和一组答案，供方法`test_store_single_response()`和`test_store_three_responses()`使用：
+
+```
+  import unittest
+  from survey import AnonymousSurvey
+
+  class TestAnonymousSurvey(unittest.TestCase):
+      """针对 AnonymousSurvey 类的测试"""
+
+      def setUp(self):
+          """
+          创建一个调查对象和一组答案，供使用的测试方法使用
+          """
+          question = "What language did you first learn to speak?"
+❶         self.my_survey = AnonymousSurvey(question)
+❷         self.responses = ['English', 'Spanish', 'Mandarin']
+
+      def test_store_single_response(self):
+          """测试单个答案会被妥善地存储"""
+          self.my_survey.store_response(self.responses[0])
+          self.assertIn(self.responses[0], self.my_survey.responses)
+
+      def test_store_three_responses(self):
+          """测试三个答案会被妥善地存储"""
+          for response in self.responses:
+              self.my_survey.store_response(response)
+          for response in self.responses:
+              self.assertIn(response, self.my_survey.responses)
+
+  unittest.main()
+```
+
+方法`setUp()`做了两件事情：创建一个调查对象（见❶）；创建一个答案列表（见❷）。存储这两样东西的变量名包含前缀`self`（即存储在属性中），因此可在这个类的任何地方使用。这让两个测试方法都更简单，因为它们都不用创建调查对象和答案。方法`test_store_single_response()`核实`self.responses`中的第一个答案——`self.responses[0]`——被妥善地存储，而方法`test_store_three_response()`核实`self.responses`中的全部三个答案都被妥善地存储。
+
+再次运行 test_survey.py 时，这两个测试也都通过了。如果要扩展`AnonymousSurvey`，使其允许每位用户输入多个答案，这些测试将很有用。修改代码以接受多个答案后，可运行这些测试，确认存储单个答案或一系列答案的行为未受影响。
+
+测试自己编写的类时，方法`setUp()`让测试方法编写起来更容易：可在`setUp()`方法中创建一系列实例并设置它们的属性，再在测试方法中直接使用这些实例。相比于在每个测试方法中都创建实例并设置其属性，这要容易得多。
+
+> **注意**　
+>
+> 运行测试用例时，每完成一个单元测试，Python 都打印一个字符：测试通过时打印一个句点；测试引发错误时打印一个`E`；测试导致断言失败时打印一个`F`。这就是你运行测试用例时，在输出的第一行中看到的句点和字符数量各不相同的原因。如果测试用例包含很多单元测试，需要运行很长时间，就可通过观察这些结果来获悉有多少个测试通过了。
+
+> **动手试一试**
+>
+> **11-3 雇员**：编写一个名为`Employee`的类，其方法`__init__()`接受名、姓和年薪，并将它们都存储在属性中。编写一个名为`give_raise()`的方法，它默认将年薪增加5000美元，但也能够接受其他的年薪增加量。
+>
+> 为`Employee`编写一个测试用例，其中包含两个测试方法：`test_give_default_raise()`和`test_give_custom_raise()`。使用方法`setUp()`，以免在每个测试方法中都创建新的雇员实例。运行这个测试用例，确认两个测试都通过了。
+
+### **11.3　小结**
+
+在本章中，你学习了：如何使用模块`unittest`中的工具来为函数和类编写测试；如何编写继承`unittest.TestCase`的类，以及如何编写测试方法，以核实函数和类的行为符合预期；如何使用方法`setUp()`来根据类高效地创建实例并设置其属性，以便在类的所有测试方法中都可使用它们。
+
+测试是很多初学者都不熟悉的主题。作为初学者，并非必须为你尝试的所有项目编写测试；但参与工作量较大的项目时，你应对自己编写的函数和类的重要行为进行测试。这样你就能够更加确定自己所做的工作不会破坏项目的其他部分，你就能够随心所欲地改进既有代码了。如果不小心破坏了原来的功能，你马上就会知道，从而能够轻松地修复问题。相比于等到不满意的用户报告 bug 后再采取措施，在测试未通过时采取措施要容易得多。
+
+如果你在项目中包含了初步测试，其他程序员将更敬佩你，他们将能够更得心应手地尝试使用你编写的代码，也更愿意与你合作开发项目。如果你要跟其他程序员开发的项目共享代码，就必须证明你编写的代码通过了既有测试，通常还需要为你添加的新行为编写测试。
+
+请通过多开展测试来熟悉代码测试过程。对于自己编写的函数和类，请编写针对其重要行为的测试，但在项目早期，不要试图去编写全覆盖的测试用例，除非有充分的理由这样做。
+
+------
+
+
+
+# 第二部分　项目
+
+祝贺你！你现在已对 Python 有了足够的认识，可以开始开发有意思的交互式项目了。通过动手开发项目，可学到新技能，并更深入地理解第一部分介绍的概念。
+
+第二部分包含三个不同类型的项目，你可以选择完成其中的任何项目或全部项目，完成这些项目的顺序无关紧要。下面简要地描述每个项目，帮助你决定首先去完成哪个项目。
+
+**外星人入侵：使用 Python 开发游戏**
+
+在项目“外星人入侵”（第12~14章）中，你将使用 Pygame 包来开发一款 2D 游戏，它在玩家每消灭一群向下移动的外星人后，都将玩家提高一个等级；而等级越高，游戏的节奏越快，难度越大。完成这个项目后，你将获得自己动手使用 Pygame 开发 2D 游戏所需的技能。
+
+**数据可视化**
+
+“数据可视化”项目始于第15章，在这一章中，你将学习如何使用 matplotlib 和 Pygal 来生成数据，以及根据这些数据创建实用而漂亮的图表。第16章介绍如何从网上获取数据，并将它们提供给可视化包以创建天气图和交易收盘价图。最后，第17章介绍如何编写自动下载数据并对其进行可视化的程序。学习可视化让你可以探索数据挖掘领域，这是当前在全球都非常吃香的技能。
+
+**Web 应用程序**
+
+在“Web 应用程序”项目（第18~20章）中，你将使用 Django 包来创建一个简单的 Web 应用程序，它让用户能够记录任意多个一直在学习的主题。用户将通过指定用户名和密码来创建账户，输入主题，并编写条目来记录学习的内容。你还将学习如何部署应用程序，让世界上的任何人都能够访问它。
+
+完成这个项目后，你将能够自己动手创建简单的 Web 应用程序，并能够深入学习其他有关如何使用 Django 开发应用程序的资料。
+
+------
+
+
+
+## 第12章　武装飞船
+
+### **老齐导读**
+
+pygame 是 Python 中开发游戏的第三方包，官方网站https://www.pygame.org/news，官方网站提供的各种安装方式https://www.pygame.org/wiki/GettingStarted
+
+以上信息，供同学在阅读时参考。
+
+读者按照书中代码进行程序调试，在调试过程中，请以“面向对象”思想理解对元素、屏幕的控制方法。
+
+![enter image description here](https://images.gitbook.cn/06219100-8838-11e9-b6f4-77ea8c81f44e)
+
+> 我们来开发一个游戏吧！我们将使用 Pygame，这是一组功能强大而有趣的模块，可用于管理图形、动画乃至声音，让你能够更轻松地开发复杂的游戏。通过使用 Pygame 来处理在屏幕上绘制图像等任务，你不用考虑众多烦琐而艰难的编码工作，而是将重点放在程序的高级逻辑上。
+>
+> 在本章中，你将安装 Pygame，再创建一艘能够根据用户输入而左右移动和射击的飞船。在接下来的两章中，你将创建一群作为射杀目标的外星人，并做其他的改进，如限制可供玩家使用的飞船数以及添加记分牌。
+>
+> 从本章开始，你还将学习管理包含多个文件的项目。我们将重构很多代码，以提高代码的效率，并管理文件的内容，以确保项目组织有序。
+>
+> 创建游戏是趣学语言的理想方式。看别人玩你编写的游戏让你很有满足感，而编写简单的游戏有助于你明白专业级游戏是怎么编写出来的。在阅读本章的过程中，请动手输入并运行代码，以明白各个代码块对整个游戏所做的贡献，并尝试不同的值和设置，这样你将对如何改进游戏的交互性有更深入的认识。
+
+> **注意**　
+>
+> 游戏《外星人入侵》将包含很多不同的文件，因此请在你的系统中新建一个文件夹，并将其命名为`alien_invasion`。请务必将这个项目的所有文件都存储到这个文件夹中，这样相关的 import 语句才能正确地工作。
+
+### **12.1　规划项目**
+
+开发大型项目时，做好规划后再动手编写项目很重要。规划可确保你不偏离轨道，从而提高项目成功的可能性。
+
+下面来编写有关游戏《外星人入侵》的描述，其中虽然没有涵盖这款游戏的所有细节，但能让你清楚地知道该如何动手开发它。
+
+> 在游戏《外星人入侵》中，玩家控制着一艘最初出现在屏幕底部中央的飞船。玩家可以使用箭头键左右移动飞船，还可使用空格键进行射击。游戏开始时，一群外星人出现在天空中，他们在屏幕中向下移动。玩家的任务是射杀这些外星人。玩家将所有外星人都消灭干净后，将出现一群新的外星人，他们移动的速度更快。只要有外星人撞到了玩家的飞船或到达了屏幕底部，玩家就损失一艘飞船。玩家损失三艘飞船后，游戏结束。
+
+在第一个开发阶段，我们将创建一艘可左右移动的飞船，这艘飞船在用户按空格键时能够开火。设置好这种行为后，我们就能够将注意力转向外星人，并提高这款游戏的可玩性。
+
+### **12.2　安装 Pygame**
+
+开始编码前，先来安装 Pygame。下面介绍如何在 Linux、OS X 和 Microsoft Windows 中安装 Pygame。
+
+如果你使用的是 Linux 系统和 Python 3，或者是 OS X 系统，就需要使用 pip 来安装 Pygame。pip 是一个负责为你下载并安装 Python 包的程序。接下来的几小节介绍如何使用 pip 来安装 Python 包。
+
+如果你使用的是 Linux 系统和 Python 2.7，或者是 Windows，就无需使用 pip 来安装 Pygame；在这种情况下，请直接跳到12.2.2节或12.2.4节。
+
+> **注意**　
+>
+> 接下来的部分包含在各种系统上安装 pip 的说明，因为数据可视化项目和 Web 应用程序项目都需要 pip。这些说明也可在http://www.ituring.com.cn/book/1861 的“随书下载”中找到。如果安装时遇到麻烦，看看在线说明是否管用。
+
+#### **12.2.1　使用 pip 安装 Python 包**
+
+大多数较新的 Python 版本都自带 pip，因此首先可检查系统是否已经安装了 pip。在 Python 3 中，pip 有时被称为 pip3。
+
+**1. 在 Linux 和 OS X 系统中检查是否安装了 pip**
+
+打开一个终端窗口，并执行如下命令：
+
+```
+  $ pip --version
+❶ pip 7.0.3 from /usr/local/lib/python3.5/dist-packages (python 3.5)
+  $
+```
+
+如果你的系统只安装了一个版本的 Python，并看到了类似于上面的输出，请跳到12.2.2节或12.2.3节。如果出现了错误消息，请尝试将 pip 替换为 pip3。如果这两个版本都没有安装到你的系统中，请跳到“安装 pip”。
+
+如果你的系统安装了多个版本的 Python，请核实 pip 关联到了你使用的 Python 版本，如 python 3.5（见❶）。如果 pip 关联到了正确的 Python 版本，请跳到12.2.2节或12.2.3节。如果 pip 没有关联到正确的 Python 版本，请尝试将 pip 替换为 pip3。如果执行这两个命令时，输出都表明没有关联到正确的 Python 版本，请跳到“安装 pip”。
+
+**2. 在 Windows 系统中检查是否安装了 pip**
+
+打开一个终端窗口，并执行如下命令：
+
+```
+  > python -m pip --version
+❶ pip 7.0.3 from C:\Python35\lib\site-packages (python 3.5)
+  >
+```
+
+如果你的系统只安装了一个版本的 Python，并看到了类似于上面的输出，请跳到12.2.4节。如果出现了错误消息，请尝试将 pip 替换为 pip3。如果执行这两个命令时都出现错误消息，请跳到“安装 pip”。
+
+如果你的系统安装了多个版本的 Python，请核实 pip 关联到了你使用的 Python 版本，如 python 3.5（见❶）。如果 pip 关联到了正确的 Python 版本，请跳到12.2.4节。如果 pip 没有关联到正确的 Python 版本，请尝试将 pip 替换为 pip3。如果执行这两个命令时都出现错误消息，请跳到“安装 pip”。
+
+**3. 安装 pip**
+
+要安装 pip，请访问 https://bootstrap.pypa.io/get-pip.py。如果出现对话框，请选择保存文件；如果 get-pip.py 的代码出现在浏览器中，请将这些代码复制并粘贴到文本编辑器中，再将文件保存为 get-pip.py。将 get-pip.py 保存到计算机中后，你需要以管理员身份运行它，因为 pip 将在你的系统中安装新包。
+
+> **注意**　
+>
+> 如果你找不到 get-pip.py，请访问 https://pip.pypa.io/，单击左边面板中的 Installation，再单击中间窗口中的链接 get-pip.py。
+
+**4. 在 Linux 和 OS X 系统中安装 pip**
+
+使用下面的命令以管理员身份运行 get-pip.py：
+
+```
+$ sudo python get-pip.py
+```
+
+> **注意**　
+>
+> 如果你启动终端会话时使用的是命令`python3`，那么在这里应使用命令`sudo python3 get-pip.py`。
+
+这个程序运行后，使用命令`pip --version`（或`pip3 --version`）确认正确地安装了 pip。
+
+**5. 在 Windows 系统中安装 pip**
+
+使用下面的命令运行 get-pip.py：
+
+```
+> python get-pip.py
+```
+
+如果你在终端中运行 Python 时使用的是另一个命令，也请使用这个命令来运行 get-pip.py。例如，你可能需要使用命令`python3 get-pip.py`或`C:\Python35\python get-pip.py`。
+
+这个程序运行后，执行命令`python -m pip --version`以确认成功地安装了 pip。
+
+#### **12.2.2　在 Linux 系统中安装 Pygame**
+
+如果你使用的是 Python 2.7，请使用包管理器来安装 Pygame。为此，打开一个终端窗口，并执行下面的命令，这将下载 Pygame，并将其安装到你的系统中：
+
+```
+$ sudo apt-get install python-pygame
+```
+
+执行如下命令，在终端会话中检查安装情况：
+
+```
+$ python
+>>> import pygame
+>>>
+```
+
+如果没有任何输出，就说明 Python 导入了 Pygame，你可以跳到12.3节。
+
+如果你使用的是 Python 3，就需要执行两个步骤：安装 Pygame 依赖的库；下载并安装 Pygame。
+
+执行下面的命令来安装 Pygame 依赖的库（如果你开始终端会话时使用的是命令`python3.5`，请将`python3-dev`替换为`python3.5-dev`）：
+
+```
+$ sudo apt-get install python3-dev mercurial
+$ sudo apt-get install libsdl-image1.2-dev libsdl2-dev libsdl-ttf2.0-dev
+```
+
+这将安装运行《外星人入侵》时需要的库。如果你要启用 Pygame 的一些高级功能，如添加声音的功能，可安装下面这些额外的库：
+
+```
+$ sudo apt-get install libsdl-mixer1.2-dev libportmidi-dev
+$ sudo apt-get install libswscale-dev libsmpeg-dev libavformat-dev libavcodec-dev
+$ sudo apt-get install python-numpy
+```
+
+接下来，执行下面的命令来安装 Pygame（如有必要，将`pip`替换为`pip3`）：
+
+```
+$ pip install --user hg+http://bitbucket.org/pygame/pygame
+```
+
+告知你 Pygame 找到了哪些库后，输出将暂停一段时间。请按回车键，即便有一些库没有找到。你将看到一条消息，说明成功地安装了 Pygame。
+
+要确认安装成功，请启动一个 Python 终端会话，并尝试执行下面的命令来导入 Pygame：
+
+```
+$ python3
+>>> import pygame
+>>>
+```
+
+如果导入成功，请跳到12.3节。
+
+#### **12.2.3　在 OS X 系统中安装 Pygame**
+
+要安装 Pygame 依赖的有些包，需要 Homebrew。如果你没有安装 Homebrew，请参阅附录 A 的说明。
+
+为安装 Pygame 依赖的库，请执行下面的命令：
+
+```
+$ brew install hg sdl sdl_image sdl_ttf
+```
+
+这将安装运行游戏《外星人入侵》所需的库。每安装一个库后，输出都会向上滚动。
+
+如果你还想启用较高级的功能，如在游戏中包含声音，可安装下面两个额外的库：
+
+```
+$ brew install sdl_mixer portmidi
+```
+
+使用下面的命令来安装 Pygame（如果你运行的是 Python 2.7，请将`pip3`替换为`pip`）：
+
+```
+$ pip3 install --user hg+http://bitbucket.org/pygame/pygame
+```
+
+启动一个 Python 终端会话，并导入 Pygame 以检查安装是否成功（如果你运行的是 Python 2.7，请将`python3`替换为`python`）：
+
+```
+$ python3
+>>> import pygame
+>>>
+```
+
+如果导入成功，请跳到12.3节。
+
+#### **12.2.4　在 Windows 系统中安装 Pygame**
+
+Pygame 项目托管在代码分享网站 Bitbucket 中。要在 Windows 系统中安装 Pygame，请访问 https://bitbucket.org/pygame/pygame/downloads/，查找与你运行的 Python 版本匹配的 Windows 安装程序。如果在 Bitbucket 上找不到合适的安装程序，请去 http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame 看看。
+
+下载合适的文件后，如果它是.exe 文件，就运行它。
+
+如果该文件的扩展名为.whl，就将它复制到你的项目文件夹中。再打开一个命令窗口，切换到该文件所在的文件夹，并使用 pip 来运行它：
+
+```
+> python -m pip install --user pygame-1.9.2a0-cp35-none-win32.whl
+```
+
+### **12.3　开始游戏项目**
+
+现在来开始开发游戏《外星人入侵》。首先创建一个空的 Pygame 窗口，供后面用来绘制游戏元素，如飞船和外星人。我们还将让这个游戏响应用户输入、设置背景色以及加载飞船图像。
+
+#### **12.3.1　创建 Pygame 窗口以及响应用户输入**
+
+首先，我们创建一个空的 Pygame 窗口。使用 Pygame 编写的游戏的基本结构如下：
+
+**alien_invasion.py**
+
+```
+  import sys
+
+  import pygame
+
+  def run_game():
+      # 初始化游戏并创建一个屏幕对象
+❶     pygame.init()
+❷     screen = pygame.display.set_mode((1200, 800))
+      pygame.display.set_caption("Alien Invasion")
+
+      # 开始游戏的主循环
+❸     while True:
+
+          # 监视键盘和鼠标事件
+❹         for event in pygame.event.get():
+❺             if event.type == pygame.QUIT:
+                  sys.exit()
+
+          # 让最近绘制的屏幕可见
+❻         pygame.display.flip()
+
+  run_game()
+```
+
+首先，我们导入了模块`sys`和`pygame`。模块`pygame`包含开发游戏所需的功能。玩家退出时，我们将使用模块`sys`来退出游戏。
+
+游戏《外星人入侵》的开头是函数`run_game()`。❶处的代码行`pygame.init()`初始化背景设置，让 Pygame 能够正确地工作。在❷处，我们调用`pygame.display.set_mode()`来创建一个名为`screen`的显示窗口，这个游戏的所有图形元素都将在其中绘制。实参`(1200,800)`是一个元组，指定了游戏窗口的尺寸。通过将这些尺寸值传递给`pygame.display.set_mode()`，我们创建了一个宽1200像素、高800像素的游戏窗口（你可以根据自己的显示器尺寸调整这些值）。
+
+对象`screen`是一个 surface。在 Pygame 中，surface 是屏幕的一部分，用于显示游戏元素。在这个游戏中，每个元素（如外星人或飞船）都是一个 surface。`display.set_mode()`返回的 surface 表示整个游戏窗口。我们激活游戏的动画循环后，每经过一次循环都将自动重绘这个 surface。
+
+这个游戏由一个`while`循环（见❸）控制，其中包含一个事件循环以及管理屏幕更新的代码。事件是用户玩游戏时执行的操作，如按键或移动鼠标。为让程序响应事件，我们编写一个事件循环，以侦听事件，并根据发生的事件执行相应的任务。❹处的`for`循环就是一个事件循环。
+
+为访问 Pygame 检测到的事件，我们使用方法`pygame.event.get()`。所有键盘和鼠标事件都将促使`for`循环运行。在这个循环中，我们将编写一系列的`if`语句来检测并响应特定的事件。例如，玩家单击游戏窗口的关闭按钮时，将检测到`pygame.QUIT`事件，而我们调用`sys.exit()`来退出游戏（见❺）。
+
+❻处调用了`pygame.display.flip()`，命令 Pygame 让最近绘制的屏幕可见。在这里，它在每次执行`while`循环时都绘制一个空屏幕，并擦去旧屏幕，使得只有新屏幕可见。在我们移动游戏元素时，`pygame.display.flip()`将不断更新屏幕，以显示元素的新位置，并在原来的位置隐藏元素，从而营造平滑移动的效果。
+
+在这个基本的游戏结构中，最后一行调用`run_game()`，这将初始化游戏并开始主循环。
+
+如果此时运行这些代码，你将看到一个空的 Pygame 窗口。
+
+#### **12.3.2　设置背景色**
+
+Pygame 默认创建一个黑色屏幕，这太乏味了。下面来将背景设置为另一种颜色：
+
+**alien_invasion.py**
+
+```
+  --snip--
+  def run_game():
+      --snip--
+      pygame.display.set_caption("Alien Invasion")
+
+      # 设置背景色
+❶     bg_color = (230, 230, 230)
+
+      # 开始游戏主循环.
+      while True:
+
+          # 监听键盘和鼠标事件
+          --snip--
+
+          # 每次循环时都重绘屏幕
+❷         screen.fill(bg_color)
+
+          # 让最近绘制的屏幕可见
+          pygame.display.flip()
+
+  run_game()
+```
+
+首先，我们创建了一种背景色，并将其存储在`bg_color`中（见❶）。该颜色只需指定一次，因此我们在进入主`while`循环前定义它。
+
+在 Pygame 中，颜色是以 RGB 值指定的。这种颜色由红色、绿色和蓝色值组成，其中每个值的可能取值范围都为0~255。颜色值(255,0,0)表示红色，(0,255,0)表示绿色，而(0,0,255)表示蓝色。通过组合不同的 RGB 值，可创建1600万种颜色。在颜色值(230,230,230)中，红色、蓝色和绿色量相同，它将背景设置为一种浅灰色。
+
+在❷处，我们调用方法`screen.fill()`，用背景色填充屏幕；这个方法只接受一个实参：一种颜色。
+
+#### **12.3.3　创建设置类**
+
+每次给游戏添加新功能时，通常也将引入一些新设置。下面来编写一个名为`settings`的模块，其中包含一个名为`Settings`的类，用于将所有设置存储在一个地方，以免在代码中到处添加设置。这样，我们就能传递一个设置对象，而不是众多不同的设置。另外，这让函数调用更简单，且在项目增大时修改游戏的外观更容易：要修改游戏，只需修改 settings.py 中的一些值，而无需查找散布在文件中的不同设置。
+
+下面是最初的`Settings`类：
+
+**settings.py**
+
+```
+class Settings():
+    """存储《外星人入侵》的所有设置的类"""
+
+    def __init__(self):
+        """初始化游戏的设置"""
+        # 屏幕设置
+        self.screen_width = 1200
+        self.screen_height = 800
+        self.bg_color = (230, 230, 230)
+```
+
+为创建`Settings`实例并使用它来访问设置，将 alien_invasion.py 修改成下面这样：
+
+**alien_invasion.py**
+
+```
+  --snip--
+  import pygame
+
+  from settings import Settings
+
+  def run_game():
+      # 初始化 pygame、设置和屏幕对象
+      pygame.init()
+❶     ai_settings = Settings()
+❷     screen = pygame.display.set_mode(
+          (ai_settings.screen_width, ai_settings.screen_height))
+      pygame.display.set_caption("Alien Invasion")
+
+      # 开始游戏主循环
+      while True:
+          --snip--
+          # 每次循环时都重绘屏幕
+❸         screen.fill(ai_settings.bg_color)
+
+          # 让最近绘制的屏幕可见
+          pygame.display.flip()
+
+  run_game()
+```
+
+在主程序文件中，我们导入`Settings`类，调用`pygame.init()`，再创建一个`Settings`实例，并将其存储在变量`ai_settings`中（见❶）。创建屏幕时（见❷），使用了`ai_settings`的属性`screen_width`和`screen_height`；接下来填充屏幕时，也使用了`ai_settings`来访问背景色（见❸）。
+
+### **12.4　添加飞船图像**
+
+下面将飞船加入到游戏中。为了在屏幕上绘制玩家的飞船，我们将加载一幅图像，再使用 Pygame 方法`blit()`绘制它。
+
+为游戏选择素材时，务必要注意许可。最安全、最不费钱的方式是使用http://pixabay.com/ 等网站提供的图形，这些图形无需许可，你可以对其进行修改。
+
+在游戏中几乎可以使用任何类型的图像文件，但使用位图（.bmp）文件最为简单，因为 Pygame 默认加载位图。虽然可配置 Pygame 以使用其他文件类型，但有些文件类型要求你在计算机上安装相应的图像库。大多数图像都为.jpg、.png 或.gif 格式，但可使用 Photoshop、GIMP 和 Paint 等工具将其转换为位图。
+
+选择图像时，要特别注意其背景色。请尽可能选择背景透明的图像，这样可使用图像编辑器将其背景设置为任何颜色。图像的背景色与游戏的背景色相同时，游戏看起来最漂亮；你也可以将游戏的背景色设置成与图像的背景色相同。
+
+就游戏《外星人入侵》而言，你可以使用文件 ship.bmp（如图12-1所示），这个文件可在本书的配套资源（http://www.ituring.com.cn/book/1861）中找到。这个文件的背景色与这个项目使用的设置相同。请在主项目文件夹（alien_invasion）中新建一个文件夹，将其命名为 images，并将文件 ship.bmp 保存到这个文件夹中。
+
+![{80%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/16.d12z.001.png)
+
+**图12-1　游戏《外星人入侵》中的飞船**
+
+#### **12.4.1　创建 Ship 类**
+
+选择用于表示飞船的图像后，需要将其显示到屏幕上。我们将创建一个名为`ship`的模块，其中包含`Ship`类，它负责管理飞船的大部分行为。
+
+**ship.py**
+
+```
+  import pygame
+
+  class Ship():
+
+      def __init__(self, screen):
+          """初始化飞船并设置其初始位置"""
+          self.screen = screen
+
+          # 加载飞船图像并获取其外接矩形
+❶         self.image = pygame.image.load('images/ship.bmp')
+❷         self.rect = self.image.get_rect()
+❸         self.screen_rect = screen.get_rect()
+
+          # 将每艘新飞船放在屏幕底部中央
+❹         self.rect.centerx = self.screen_rect.centerx
+          self.rect.bottom = self.screen_rect.bottom
+
+❺     def blitme(self):
+          """在指定位置绘制飞船"""
+          self.screen.blit(self.image, self.rect)
+```
+
+首先，我们导入了模块`pygame`。`Ship`的方法`__init__()`接受两个参数：引用`self`和`screen`，其中后者指定了要将飞船绘制到什么地方。为加载图像，我们调用了`pygame.image.load()`（见❶）。这个函数返回一个表示飞船的 surface，而我们将这个 surface 存储到了`self.image`中。
+
+加载图像后，我们使用`get_rect()`获取相应 surface 的属性`rect`（见❷）。Pygame 的效率之所以如此高，一个原因是它让你能够像处理矩形（`rect`对象）一样处理游戏元素，即便它们的形状并非矩形。像处理矩形一样处理游戏元素之所以高效，是因为矩形是简单的几何形状。这种做法的效果通常很好，游戏玩家几乎注意不到我们处理的不是游戏元素的实际形状。
+
+处理`rect`对象时，可使用矩形四角和中心的 *x* 和 *y* 坐标。可通过设置这些值来指定矩形的位置。
+
+要将游戏元素居中，可设置相应`rect`对象的属性`center`、`centerx`或`centery`。要让游戏元素与屏幕边缘对齐，可使用属性`top`、`bottom`、`left`或`right`；要调整游戏元素的水平或垂直位置，可使用属性`x`和`y`，它们分别是相应矩形左上角的 *x* 和 *y* 坐标。这些属性让你无需去做游戏开发人员原本需要手工完成的计算，你经常会用到这些属性。
+
+> **注意**　
+>
+> 在 Pygame 中，原点(0,0)位于屏幕左上角，向右下方移动时，坐标值将增大。在1200×800的屏幕上，原点位于左上角，而右下角的坐标为(1200,800)。
+
+我们将把飞船放在屏幕底部中央。为此，首先将表示屏幕的矩形存储在`self.screen_rect`中（见❸），再将`self.rect.centerx`（飞船中心的 *x*坐标）设置为表示屏幕的矩形的属性`centerx`（见❹），并将`self.rect.bottom`（飞船下边缘的 *y* 坐标）设置为表示屏幕的矩形的属性`bottom`。Pygame 将使用这些`rect`属性来放置飞船图像，使其与屏幕下边缘对齐并水平居中。
+
+在❺处，我们定义了方法`blitme()`，它根据`self.rect`指定的位置将图像绘制到屏幕上。
+
+#### **12.4.2　在屏幕上绘制飞船**
+
+下面来更新 alien_invasion.py，使其创建一艘飞船，并调用其方法 blitme()：
+
+**alien_invasion.py**
+
+```
+  --snip--
+  from settings import Settings
+  from ship import Ship
+
+  def run_game():
+      --snip--
+      pygame.display.set_caption("Alien Invasion")
+
+      # 创建一艘飞船
+❶     ship = Ship(screen)
+
+      # 开始游戏主循环
+      while True:
+          --snip--
+          # 每次循环时都重绘屏幕
+          screen.fill(ai_settings.bg_color)
+❷         ship.blitme()
+
+          # 让最近绘制的屏幕可见
+          pygame.display.flip()
+
+  run_game()
+```
+
+我们导入`Ship`类，并在创建屏幕后创建一个名为`ship`的`Ship`实例。必须在主`while`循环前面创建该实例（见❶），以免每次循环时都创建一艘飞船。填充背景后，我们调用`ship.blitme()`将飞船绘制到屏幕上，确保它出现在背景前面（见❷）。
+
+现在如果运行 alien_invasion.py，将看到飞船位于空游戏屏幕底部中央，如图12-2所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/16.d12z.002.png)
+
+**图12-2　游戏《外星人入侵》屏幕底部中央有一艘飞船**
+
+### **12.5　重构：模块 game_functions**
+
+在大型项目中，经常需要在添加新代码前重构既有代码。重构旨在简化既有代码的结构，使其更容易扩展。在本节中，我们将创建一个名为`game_functions`的新模块，它将存储大量让游戏《外星人入侵》运行的函数。通过创建模块`game_functions`，可避免 alien_invasion.py 太长，并使其逻辑更容易理解。
+
+#### **12.5.1　函数 check_events()**
+
+我们将首先把管理事件的代码移到一个名为`check_events()`的函数中，以简化`run_game()`并隔离事件管理循环。通过隔离事件循环，可将事件管理与游戏的其他方面（如更新屏幕）分离。
+
+将`check_events()`放在一个名为`game_functions`的模块中：
+
+**game_functions.py**
+
+```
+import sys
+
+import pygame
+
+def check_events():
+    """响应按键和鼠标事件"""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+```
+
+这个模块中导入了事件检查循环要使用的`sys`和`pygame`。当前，函数`check_events()`不需要任何形参，其函数体复制了 alien_invasion.py 的事件循环。
+
+下面来修改 alien_invasion.py，使其导入模块`game_functions`，并将事件循环替换为对函数`check_events()`的调用：
+
+**alien_invasion.py**
+
+```
+import pygame
+
+from settings import Settings
+from ship import Ship
+import game_functions as gf
+
+def run_game():
+    --snip--
+    # 开始游戏主循环
+    while True:
+        gf.check_events()
+
+        # 每次循环时都重绘屏幕
+        --snip--
+```
+
+在主程序文件中，不再需要直接导入`sys`，因为当前只在模块`game_functions`中使用了它。出于简化的目的，我们给导入的模块`game_functions`指定了别名`gf`。
+
+#### **12.5.2　函数 update_screen()**
+
+为进一步简化`run_game()`，下面将更新屏幕的代码移到一个名为`update_screen()`的函数中，并将这个函数放在模块`game_functions.py`中：
+
+**game_functions.py**
+
+```
+--snip--
+
+def check_events():
+    --snip--
+
+def update_screen(ai_settings, screen, ship):
+    """更新屏幕上的图像，并切换到新屏幕"""
+    # 每次循环时都重绘屏幕
+    screen.fill(ai_settings.bg_color)
+    ship.blitme()
+
+    # 让最近绘制的屏幕可见
+    pygame.display.flip()
+```
+
+新函数`update_screen()`包含三个形参：`ai_settings`、`screen`和`ship`。现在需要将 alien_invasion.py 的`while`循环中更新屏幕的代码替换为对函数`update_screen()`的调用：
+
+**alien_invasion.py**
+
+```
+--snip--
+    # 开始游戏主循环
+    while True:
+        gf.check_events()
+        gf.update_screen(ai_settings, screen, ship)
+
+run_game()
+```
+
+这两个函数让`while`循环更简单，并让后续开发更容易：在模块`game_functions`而不是`run_game()`中完成大部分工作。
+
+鉴于我们一开始只想使用一个文件，因此没有立刻引入模块`game_functions`。这让你能够了解实际的开发过程：一开始将代码编写得尽可能简单，并在项目越来越复杂时进行重构。
+
+对代码进行重构使其更容易扩展后，可以开始处理游戏的动态方面了！
+
+> **动手试一试**
+>
+> **12-1 蓝色天空**：创建一个背景为蓝色的 Pygame 窗口。
+>
+> **12-2 游戏角色**：找一幅你喜欢的游戏角色位图图像或将一幅图像转换为位图。创建一个类，将该角色绘制到屏幕中央，并将该图像的背景色设置为屏幕背景色，或将屏幕背景色设置为该图像的背景色。
+
+### **12.6　驾驶飞船**
+
+下面来让玩家能够左右移动飞船。为此，我们将编写代码，在用户按左或右箭头键时作出响应。我们将首先专注于向右移动，再使用同样的原理来控制向左移动。通过这样做，你将学会如何控制屏幕图像的移动。
+
+#### **12.6.1　响应按键**
+
+每当用户按键时，都将在 Pygame 中注册一个事件。事件都是通过方法`pygame.event.get()`获取的，因此在函数`check_events()`中，我们需要指定要检查哪些类型的事件。每次按键都被注册为一个`KEYDOWN`事件。
+
+检测到`KEYDOWN`事件时，我们需要检查按下的是否是特定的键。例如，如果按下的是右箭头键，我们就增大飞船的`rect.centerx`值，将飞船向右移动：
+
+**game_functions.py**
+
+```
+  def check_events(ship):
+      """响应按键和鼠标事件"""
+      for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+              sys.exit()
+
+❶         elif event.type == pygame.KEYDOWN:
+❷             if event.key == pygame.K_RIGHT:
+                  #向右移动飞船
+❸                 ship.rect.centerx += 1
+```
+
+我们在函数`check_events()`中包含形参`ship`，因为玩家按右箭头键时，需要将飞船向右移动。在函数`check_events()`内部，我们在事件循环中添加了一个`elif`代码块，以便在 Pygame 检测到`KEYDOWN`事件时作出响应（见❶）。我们读取属性`event.key`，以检查按下的是否是右箭头键（`pygame.K_RIGHT`）（见❷）。如果按下的是右箭头键，就将`ship.rect.centerx`的值加1，从而将飞船向右移动（见❸）。
+
+在 alien_invasion.py 中，我们需要更新调用的`check_events()`代码，将`ship`作为实参传递给它：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ship)
+        gf.update_screen(ai_settings, screen, ship)
+```
+
+如果现在运行 alien_invasion.py，则每按右箭头键一次，飞船都将向右移动1像素。这是一个开端，但并非控制飞船的高效方式。下面来改进控制方式，允许持续移动。
+
+#### **12.6.2　允许不断移动**
+
+玩家按住右箭头键不放时，我们希望飞船不断地向右移动，直到玩家松开为止。我们将让游戏检测`pygame.KEYUP`事件，以便玩家松开右箭头键时我们能够知道这一点；然后，我们将结合使用`KEYDOWN`和`KEYUP`事件，以及一个名为`moving_right`的标志来实现持续移动。
+
+飞船不动时，标志`moving_right`将为`False`。玩家按下右箭头键时，我们将这个标志设置为`True`；而玩家松开时，我们将这个标志重新设置为`False`。
+
+飞船的属性都由`Ship`类控制，因此我们将给这个类添加一个名为`moving_right`的属性和一个名为`update()`的方法。方法`update()`检查标志`moving_right`的状态，如果这个标志为`True`，就调整飞船的位置。每当需要调整飞船的位置时，我们都调用这个方法。
+
+下面是对`Ship`类所做的修改：
+
+**ship.py**
+
+```
+  class Ship():
+
+      def __init__(self, screen):
+          --snip--
+          # 将每艘新飞船放在屏幕底部中央
+          self.rect.centerx = self.screen_rect.centerx
+          self.rect.bottom = self.screen_rect.bottom
+
+          # 移动标志
+❶         self.moving_right = False
+
+❷     def update(self):
+          """根据移动标志调整飞船的位置"""
+          if self.moving_right:
+              self.rect.centerx += 1
+
+      def blitme(self):
+          --snip--
+```
+
+在方法`__init__()`中，我们添加了属性`self.moving_right`，并将其初始值设置为`False`（见❶）。接下来，我们添加了方法`update()`，它在前述标志为`True`时向右移动飞船（见❷）。
+
+下面来修改`check_events()`，使其在玩家按下右箭头键时将`moving_right`设置为`True`，并在玩家松开时将`moving_right`设置为`False`：
+
+**game_functions.py**
+
+```
+  def check_events(ship):
+      """响应按键和鼠标事件"""
+      for event in pygame.event.get():
+          --snip--
+          elif event.type == pygame.KEYDOWN:
+              if event.key == pygame.K_RIGHT:
+❶                 ship.moving_right = True
+
+❷         elif event.type == pygame.KEYUP:
+              if event.key == pygame.K_RIGHT:
+                  ship.moving_right = False
+```
+
+在❶处，我们修改了游戏在玩家按下右箭头键时响应的方式：不直接调整飞船的位置，而只是将`moving_right`设置为`True`。在❷处，我们添加了一个新的`elif`代码块，用于响应`KEYUP`事件：玩家松开右箭头键（`K_RIGHT`）时，我们将`moving_right`设置为`False`。
+
+最后，我们需要修改`alien_invasion.py`中的`while`循环，以便每次执行循环时都调用飞船的方法`update()`：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ship)
+        ship.update()
+        gf.update_screen(ai_settings, screen, ship)
+```
+
+飞船的位置将在检测到键盘事件后（但在更新屏幕前）更新。这样，玩家输入时，飞船的位置将更新，从而确保使用更新后的位置将飞船绘制到屏幕上。
+
+如果你现在运行 alien_invasion.py 并按住右箭头键，飞船将不断地向右移动，直到你松开为止。
+
+#### **12.6.3　左右移动**
+
+飞船能够不断地向右移动后，添加向左移动的逻辑很容易。我们将再次修改`Ship`类和函数`check_events()`。下面显示了对`Ship`类的方法`__init__()`和`update()`所做的相关修改：
+
+**ship.py**
+
+```
+    def __init__(self, screen):
+        --snip--
+        # 移动标志
+        self.moving_right = False
+        self.moving_left = False
+
+    def update(self):
+        """根据移动标志调整飞船的位置"""
+        if self.moving_right:
+            self.rect.centerx += 1
+        if self.moving_left:
+            self.rect.centerx -= 1
+```
+
+在方法`__init__()`中，我们添加了标志`self.moving_left`；在方法`update()`中，我们添加了一个`if`代码块而不是`elif`代码块，这样如果玩家同时按下了左右箭头键，将先增大飞船的`rect.centerx`值，再降低这个值，即飞船的位置保持不变。如果使用一个`elif`代码块来处理向左移动的情况，右箭头键将始终处于优先地位。从向左移动切换到向右移动时，玩家可能同时按住左右箭头键，在这种情况下，前面的做法让移动更准确。
+
+我们还需对`check_events()`作两方面的调整：
+
+**game_functions.py**
+
+```
+def check_events(ship):
+    """响应按键和鼠标事件"""
+    for event in pygame.event.get():
+        --snip--
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                ship.moving_right = True
+            elif event.key == pygame.K_LEFT:
+                ship.moving_left = True
+
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_RIGHT:
+                ship.moving_right = False
+            elif event.key == pygame.K_LEFT:
+                ship.moving_left = False
+```
+
+如果因玩家按下`K_LEFT`键而触发了`KEYDOWN`事件，我们就将`moving_left`设置为`True`；如果因玩家松开`K_LEFT`而触发了`KEYUP`事件，我们就将`moving_left`设置为`False`。这里之所以可以使用`elif`代码块，是因为每个事件都只与一个键相关联；如果玩家同时按下了左右箭头键，将检测到两个不同的事件。
+
+如果此时运行 alien_invasion.py，将能够不断地左右移动飞船；如果你同时按左右箭头键，飞船将纹丝不动。
+
+下面来进一步优化飞船的移动方式：调整飞船的速度；限制飞船的移动距离，以免它移到屏幕外面去。
+
+#### **12.6.4　调整飞船的速度**
+
+当前，每次执行`while`循环时，飞船最多移动1像素，但我们可以在`Settings`类中添加属性`ship_speed_factor`，用于控制飞船的速度。我们将根据这个属性决定飞船在每次循环时最多移动多少距离。下面演示了如何在 settings.py 中添加这个新属性：
+
+**settings.py**
+
+```
+class Settings():
+    """一个存储游戏《外星人入侵》的所有设置的类"""
+
+    def __init__(self):
+        --snip--
+
+        # 飞船的设置
+        self.ship_speed_factor = 1.5
+```
+
+我们将`ship_speed_factor`的初始值设置成了`1.5`。需要移动飞船时，我们将移动1.5像素而不是1像素。
+
+通过将速度设置指定为小数值，可在后面加快游戏的节奏时更细致地控制飞船的速度。然而，`rect`的`centerx`等属性只能存储整数值，因此我们需要对`Ship`类做些修改：
+
+**ship.py**
+
+```
+  class Ship():
+
+❶     def __init__(self, ai_settings, screen):
+          """初始化飞船并设置其初始位置"""
+          self.screen = screen
+❷         self.ai_settings = ai_settings
+          --snip--
+
+          # 将每艘新飞船放在屏幕底部中央
+          --snip--
+
+          # 在飞船的属性 center 中存储小数值
+❸         self.center = float(self.rect.centerx)
+
+          # 移动标志
+          self.moving_right = False
+          self.moving_left = False
+
+      def update(self):
+          """根据移动标志调整飞船的位置"""
+          # 更新飞船的 center 值，而不是 rect
+          if self.moving_right:
+❹             self.center += self.ai_settings.ship_speed_factor
+          if self.moving_left:
+              self.center -= self.ai_settings.ship_speed_factor
+
+          # 根据 self.center 更新 rect 对象
+❺         self.rect.centerx = self.center
+
+      def blitme(self):
+          --snip--
+```
+
+在❶处，我们在`__init__()`的形参列表中添加了`ai_settings`，让飞船能够获取其速度设置。接下来，我们将形参`ai_settings`的值存储在一个属性中，以便能够在`update()`中使用它（见❷）。鉴于现在调整飞船的位置时，将增加或减去一个单位为像素的小数值，因此需要将位置存储在一个能够存储小数值的变量中。可以使用小数来设置`rect`的属性，但`rect`将只存储这个值的整数部分。为准确地存储飞船的位置，我们定义了一个可存储小数值的新属性`self.center`（见❸）。我们使用函数`float()`将`self.rect.centerx`的值转换为小数，并将结果存储到`self.center`中。
+
+现在在`update()`中调整飞船的位置时，将`self.center`的值增加或减去`ai_settings.ship_speed_factor`的值（见❹）。更新`self.center`后，我们再根据它来更新控制飞船位置的`self.rect.centerx`（见❺）。`self.rect.centerx`将只存储`self.center`的整数部分，但对显示飞船而言，这问题不大。
+
+在 alien_invasion.py 中创建`Ship`实例时，需要传入实参`ai_settings`：
+
+**alien_invasion.py**
+
+```
+--snip--
+def run_game():
+    --snip--
+    # 创建飞船
+    ship = Ship(ai_settings, screen)
+    --snip--
+```
+
+现在，只要`ship_speed_factor`的值大于1，飞船的移动速度就会比以前更快。这有助于让飞船的反应速度足够快，能够将外星人射下来，还让我们能够随着游戏的进行加快游戏的节奏。
+
+#### **12.6.5　限制飞船的活动范围**
+
+当前，如果玩家按住箭头键的时间足够长，飞船将移到屏幕外面，消失得无影无踪。下面来修复这种问题，让飞船到达屏幕边缘后停止移动。为此，我们将修改`Ship`类的方法`update()`：
+
+**ship.py**
+
+```
+      def update(self):
+          """根据移动标志调整飞船的位置"""
+          # 更新飞船的 center 值，而不是 rect
+❶         if self.moving_right and self.rect.right < self.screen_rect.right:
+              self.center += self.ai_settings.ship_speed_factor
+❷         if self.moving_left and self.rect.left > 0:
+              self.center -= self.ai_settings.ship_speed_factor
+
+          # 根据self.center更新rect对象
+          self.rect.centerx = self.center
+```
+
+上述代码在修改`self.center`的值之前检查飞船的位置。`self.rect.right`返回飞船外接矩形的右边缘的 *x* 坐标，如果这个值小于`self.screen_rect.right`的值，就说明飞船未触及屏幕右边缘（见❶）。左边缘的情况与此类似：如果`rect`的左边缘的 *x* 坐标大于零，就说明飞船未触及屏幕左边缘（见❷）。这确保仅当飞船在屏幕内时，才调整`self.center`的值。
+
+如果此时运行 alien_invasion.py，飞船将在触及屏幕左边缘或右边缘后停止移动。
+
+#### **12.6.6　重构 check_events()**
+
+随着游戏开发的进行，函数`check_events()`将越来越长，我们将其部分代码放在两个函数中：一个处理`KEYDOWN`事件，另一个处理`KEYUP`事件：
+
+**game_functions.py**
+
+```
+def check_keydown_events(event, ship):
+    """响应按键"""
+    if event.key == pygame.K_RIGHT:
+        ship.moving_right = True
+    elif event.key == pygame.K_LEFT:
+        ship.moving_left = True
+
+def check_keyup_events(event, ship):
+    """响应松开"""
+    if event.key == pygame.K_RIGHT:
+        ship.moving_right = False
+    elif event.key == pygame.K_LEFT:
+        ship.moving_left = False
+
+def check_events(ship):
+    """响应按键和鼠标事件"""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            check_keydown_events(event, ship)
+        elif event.type == pygame.KEYUP:
+            check_keyup_events(event, ship)
+```
+
+我们创建了两个新函数：`check_keydown_events()`和`check_keyup_events()`，它们都包含形参`event`和`ship`。这两个函数的代码是从`check_events()`中复制而来的，因此我们将函数`check_events`中相应的代码替换成了对这两个函数的调用。现在，函数`check_events()`更简单，代码结构更清晰。这样，在其中响应其他玩家输入时将更容易。
+
+### **12.7　简单回顾**
+
+下一节将添加射击功能，这需要新增一个名为 bullet.py 的文件，并对一些既有文件进行修改。当前，我们有四个文件，其中包含很多类、函数和方法。添加其他功能之前，为让你清楚这个项目的组织结构，先来回顾一下这些文件。
+
+#### **12.7.1　alien_invasion.py**
+
+主文件 alien_invasion.py 创建一系列整个游戏都要用到的对象：存储在`ai_settings`中的设置、存储在`screen`中的主显示 surface 以及一个飞船实例。文件 alien_invasion.py 还包含游戏的主循环，这是一个调用`check_events()`、`ship.update()`和`update_screen()`的`while`循环。
+
+要玩游戏《外星人入侵》，只需运行文件 alien_invasion.py。其他文件（settings.py、game_functions.py、ship.py）包含的代码被直接或间接地导入到这个文件中。
+
+#### **12.7.2　settings.py**
+
+文件 settings.py 包含`Settings`类，这个类只包含方法`__init__()`，它初始化控制游戏外观和飞船速度的属性。
+
+#### **12.7.3　game_functions.py**
+
+文件 game_functions.py 包含一系列函数，游戏的大部分工作都是由它们完成的。函数`check_events()`检测相关的事件，如按键和松开，并使用辅助函数`check_keydown_events()`和`check_keyup_events()`来处理这些事件。就目前而言，这些函数管理飞船的移动。模块`game_functions`还包含函数`update_screen()`，它用于在每次执行主循环时都重绘屏幕。
+
+#### **12.7.4　ship.py**
+
+文件 ship.py 包含`Ship`类，这个类包含方法`__init__()`、管理飞船位置的方法`update()`以及在屏幕上绘制飞船的方法`blitme()`。表示飞船的图像存储在文件夹 images 下的文件 ship.bmp 中。
+
+> **动手试一试**
+>
+> **12-3 火箭**：编写一个游戏，开始时屏幕中央有一个火箭，而玩家可使用四个方向键上下左右移动火箭。请务必确保火箭不会移到屏幕外面。
+>
+> **12-4 按键**：创建一个程序，显示一个空屏幕。在事件循环中，每当检测到`pygame.KEYDOWN`事件时都打印属性`event.key`。运行这个程序，并按各种键，看看 Pygame 如何响应。
+
+### **12.8　射击**
+
+下面来添加射击功能。我们将编写玩家按空格键时发射子弹（小矩形）的代码。子弹将在屏幕中向上穿行，抵达屏幕上边缘后消失。
+
+#### **12.8.1　添加子弹设置**
+
+首先，更新 settings.py，在其方法`__init__()`末尾存储新类`Bullet`所需的值：
+
+**settings.py**
+
+```
+    def __init__(self):
+        --snip--
+        # 子弹设置
+        self.bullet_speed_factor = 1
+        self.bullet_width = 3
+        self.bullet_height = 15
+        self.bullet_color = 60, 60, 60
+```
+
+这些设置创建宽3像素、高15像素的深灰色子弹。子弹的速度比飞船稍低。
+
+#### **12.8.2　创建 Bullet 类**
+
+下面来创建存储`Bullet`类的文件 bullet.py，其前半部分如下：
+
+**bullet.py**
+
+```
+  import pygame
+  from pygame.sprite import Sprite
+
+  class Bullet(Sprite):
+      """一个对飞船发射的子弹进行管理的类"""
+
+      def __init__(self, ai_settings, screen, ship):
+          """在飞船所处的位置创建一个子弹对象"""
+          super(Bullet, self).__init__()
+          self.screen = screen
+
+          # 在(0,0)处创建一个表示子弹的矩形，再设置正确的位置
+❶         self.rect = pygame.Rect(0, 0, ai_settings.bullet_width,
+              ai_settings.bullet_height)
+❷         self.rect.centerx = ship.rect.centerx
+❸         self.rect.top = ship.rect.top
+
+          #存储用小数表示的子弹位置
+❹         self.y = float(self.rect.y)
+
+❺         self.color = ai_settings.bullet_color
+          self.speed_factor = ai_settings.bullet_speed_factor
+```
+
+`Bullet`类继承了我们从模块`pygame.sprite`中导入的`Sprite`类。通过使用精灵，可将游戏中相关的元素编组，进而同时操作编组中的所有元素。为创建子弹实例，需要向`__init__()`传递`ai_settings`、`screen`和`ship`实例，还调用了`super()`来继承`Sprite`。
+
+> **注意**　
+>
+> 代码`super(Bullet, self).__init__()`使用了 Python 2.7 语法。这种语法也适用于 Python 3，但你也可以将这行代码简写为`super().__init__()`。
+
+在❶处，我们创建了子弹的属性`rect`。子弹并非基于图像的，因此我们必须使用`pygame.Rect()`类从空白开始创建一个矩形。创建这个类的实例时，必须提供矩形左上角的 *x* 坐标和 *y* 坐标，还有矩形的宽度和高度。我们在(0,0)处创建这个矩形，但接下来的两行代码将其移到了正确的位置，因为子弹的初始位置取决于飞船当前的位置。子弹的宽度和高度是从`ai_settings`中获取的。
+
+在❷处，我们将子弹的`centerx`设置为飞船的`rect.centerx`。子弹应从飞船顶部射出，因此我们将表示子弹的`rect`的`top`属性设置为飞船的`rect`的`top`属性，让子弹看起来像是从飞船中射出的（见❸）。
+
+我们将子弹的 *y* 坐标存储为小数值，以便能够微调子弹的速度（见❹）。在❺处，我们将子弹的颜色和速度设置分别存储到`self.color`和`self.speed_factor`中。
+
+下面是 bullet.py 的第二部分——方法`update()`和`draw_bullet()`：
+
+**bullet.py**
+
+```
+      def update(self):
+          """向上移动子弹"""
+          #更新表示子弹位置的小数值
+❶         self.y -= self.speed_factor
+          #更新表示子弹的 rect 的位置
+❷         self.rect.y = self.y
+
+      def draw_bullet(self):
+          """在屏幕上绘制子弹"""
+❸         pygame.draw.rect(self.screen, self.color, self.rect)
+```
+
+方法`update()`管理子弹的位置。发射出去后，子弹在屏幕中向上移动，这意味着 *y* 坐标将不断减小，因此为更新子弹的位置，我们从`self.y`中减去`self.speed_factor`的值（见❶）。接下来，我们将`self.rect.y`设置为`self.y`的值（见❷）。属性`speed_factor`让我们能够随着游戏的进行或根据需要提高子弹的速度，以调整游戏的行为。子弹发射后，其 *x* 坐标始终不变，因此子弹将沿直线垂直地往上穿行。
+
+需要绘制子弹时，我们调用`draw_bullet()`。函数`draw.rect()`使用存储在`self.color`中的颜色填充表示子弹的`rect`占据的屏幕部分（见❸）。
+
+#### **12.8.3　将子弹存储到编组中**
+
+定义`Bullet`类和必要的设置后，就可以编写代码了，在玩家每次按空格键时都射出一发子弹。首先，我们将在 alien_invasion.py 中创建一个编组（group），用于存储所有有效的子弹，以便能够管理发射出去的所有子弹。这个编组将是`pygame.sprite.Group`类的一个实例；`pygame.sprite.Group`类类似于列表，但提供了有助于开发游戏的额外功能。在主循环中，我们将使用这个编组在屏幕上绘制子弹，以及更新每颗子弹的位置：
+
+**alien_invasion.py**
+
+```
+  import pygame
+  from pygame.sprite import Group
+  --snip--
+
+  def run_game():
+      --snip--
+      # 创建一艘飞船
+      ship = Ship(ai_settings, screen)
+      # 创建一个用于存储子弹的编组
+❶     bullets = Group()
+
+      # 开始游戏主循环
+      while True:
+          gf.check_events(ai_settings, screen, ship, bullets)
+          ship.update()
+❷         bullets.update()
+          gf.update_screen(ai_settings, screen, ship, bullets)
+
+  run_game()
+```
+
+我们导入了`pygame.sprite`中的`Group`类。在❶处，我们创建了一个`Group`实例，并将其命名为`bullets`。这个编组是在`while`循环外面创建的，这样就无需每次运行该循环时都创建一个新的子弹编组。
+
+> **注意**　
+>
+> 如果在循环内部创建这样的编组，游戏运行时将创建数千个子弹编组，导致游戏慢得像蜗牛。如果游戏停滞不前，请仔细查看主`while`循环中发生的情况。
+
+我们将`bullets`传递给了`check_events()`和`update_screen()`。在`check_events()`中，需要在玩家按空格键时处理`bullets`；而在`update_screen()`中，需要更新要绘制到屏幕上的`bullets`。
+
+当你对编组调用`update()`时，编组将自动对其中的每个精灵调用`update()`，因此代码行`bullets.update()`将为编组`bullets`中的每颗子弹调用`bullet.update()`。
+
+#### **12.8.4　开火**
+
+在 game_functions.py 中，我们需要修改`check_keydown_events()`，以便在玩家按空格键时发射一颗子弹。我们无需修改`check_keyup_events()`，因为玩家松开空格键时什么都不会发生。我们还需修改`update_screen()`，确保在调用`flip()`前在屏幕上重绘每颗子弹。下面是对 game_functions.py 所做的相关修改：
+
+**game_functions.py**
+
+```
+  --snip--
+  from bullet import Bullet
+
+❶ def check_keydown_events(event, ai_settings, screen, ship, bullets):
+      --snip--
+❷     elif event.key == pygame.K_SPACE:
+          # 创建一颗子弹，并将其加入到编组 bullets 中
+          new_bullet = Bullet(ai_settings, screen, ship)
+          bullets.add(new_bullet)
+         --snip--
+
+❸ def check_events(ai_settings, screen, ship, bullets):
+      """响应按键和鼠标事件"""
+      for event in pygame.event.get():
+          --snip--
+          elif event.type == pygame.KEYDOWN:
+              check_keydown_events(event, ai_settings, screen, ship, bullets)
+          --snip--
+
+❹ def update_screen(ai_settings, screen, ship, bullets):
+      --snip--
+      # 在飞船和外星人后面重绘所有子弹
+❺     for bullet in bullets.sprites():
+          bullet.draw_bullet()
+      ship.blitme()
+      --snip--
+```
+
+编组`bulltes`传递给了`check_keydown_events()`（见❶）。玩家按空格键时，创建一颗新子弹（一个名为`new_bullet`的`Bullet`实例），并使用方法`add()`将其加入到编组`bullets`中（见❷）；代码`bullets.add(new_bullet)`将新子弹存储到编组`bullets`中。
+
+在`check_events()`的定义中，我们需要添加形参`bullets`（见❸）；调用`check_keydown_events()`时，我们也需要将`bullets`作为实参传递给它。
+
+在❹处，我们给在屏幕上绘制子弹的`update_screen()`添加了形参`bullets`。方法`bullets.sprites()`返回一个列表，其中包含编组`bullets`中的所有精灵。为在屏幕上绘制发射的所有子弹，我们遍历编组`bullets`中的精灵，并对每个精灵都调用`draw_bullet()`（见❺）。
+
+如果此时运行 alien_invasion.py，将能够左右移动飞船，并发射任意数量的子弹。子弹在屏幕上向上穿行，抵达屏幕顶部后消失，如图12-3所示。可在 settings.py 中修改子弹的尺寸、颜色和速度。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/16.d12z.003.png)
+
+**图12-3　飞船发射一系列子弹后的《外星人入侵》游戏**
+
+#### **12.8.5　删除已消失的子弹**
+
+当前，子弹抵达屏幕顶端后消失，这仅仅是因为 Pygame 无法在屏幕外面绘制它们。这些子弹实际上依然存在，它们的 *y* 坐标为负数，且越来越小。这是个问题，因为它们将继续消耗内存和处理能力。
+
+我们需要将这些已消失的子弹删除，否则游戏所做的无谓工作将越来越多，进而变得越来越慢。为此，我们需要检测这样的条件，即表示子弹的`rect`的`bottom`属性为零，它表明子弹已穿过屏幕顶端：
+
+**alien_invasion.py**
+
+```
+      # 开始游戏主循环
+      while True:
+          gf.check_events(ai_settings, screen, ship, bullets)
+          ship.update()
+          bullets.update()
+
+          # 删除已消失的子弹
+❶         for bullet in bullets.copy():
+❷             if bullet.rect.bottom <= 0:
+❸                  bullets.remove(bullet)
+❹         print(len(bullets))
+
+          gf.update_screen(ai_settings, screen, ship, bullets)
+```
+
+在`for`循环中，不应从列表或编组中删除条目，因此必须遍历编组的副本。我们使用了方法`copy()`来设置`for`循环（见❶），这让我们能够在循环中修改`bullets`。我们检查每颗子弹，看看它是否已从屏幕顶端消失（见❷）。如果是这样，就将其从`bullets`中删除（见❸）。在❹处，我们使用了一条`print`语句，以显示当前还有多少颗子弹，从而核实已消失的子弹确实删除了。
+
+如果这些代码没有问题，我们发射子弹后查看终端窗口时，将发现随着子弹一颗颗地在屏幕顶端消失，子弹数将逐渐降为零。运行这个游戏并确认子弹已被删除后，将这条`print`语句删除。如果你留下这条语句，游戏的速度将大大降低，因为将输出写入到终端而花费的时间比将图形绘制到游戏窗口花费的时间还多。
+
+#### **12.8.6　限制子弹数量**
+
+很多射击游戏都对可同时出现在屏幕上的子弹数量进行限制，以鼓励玩家有目标地射击。下面在游戏《外星人入侵》中作这样的限制。
+
+首先，在 settings.py 中存储所允许的最大子弹数：
+
+**settings.py**
+
+```
+        # 子弹设置
+        self.bullet_width = 3
+        self.bullet_height = 15
+        self.bullet_color = 60, 60, 60
+        self.bullets_allowed = 3
+```
+
+这将未消失的子弹数限制为3颗。在 game_functions.py 的`check_keydown_events()`中，我们在创建新子弹前检查未消失的子弹数是否小于该设置：
+
+**game_functions.py**
+
+```
+def check_keydown_events(event, ai_settings, screen, ship, bullets):
+    --snip--
+    elif event.key == pygame.K_SPACE:
+        # 创建新子弹并将其加入到编组 bullets 中
+        if len(bullets) < ai_settings.bullets_allowed:
+            new_bullet = Bullet(ai_settings, screen, ship)
+            bullets.add(new_bullet)
+```
+
+玩家按空格键时，我们检查`bullets`的长度。如果`len(bullets)`小于3，我们就创建一个新子弹；但如果已有3颗未消失的子弹，则玩家按空格键时什么都不会发生。如果你现在运行这个游戏，屏幕上最多只能有3颗子弹。
+
+#### **12.8.7　创建函数 update_bullets()**
+
+编写并检查子弹管理代码后，可将其移到模块`game_functions`中，以让主程序文件 alien_invasion.py 尽可能简单。我们创建一个名为`update_bullets()`的新函数，并将其添加到 game_functions.py 的末尾：
+
+**game_functions.py**
+
+```
+def update_bullets(bullets):
+   """更新子弹的位置，并删除已消失的子弹"""
+    # 更新子弹的位置
+    bullets.update()
+
+    # 删除已消失的子弹
+    for bullet in bullets.copy():
+        if bullet.rect.bottom <= 0:
+            bullets.remove(bullet)
+```
+
+`update_bullets()`的代码是从 alien_invasion.py 剪切并粘贴而来的，它只需要一个参数，即编组`bullets`。
+
+alien_invasion.py 中的`while`循环又变得很简单了：
+
+**alien_invasion.py**
+
+```
+      # 开始游戏主循环
+      while True:
+❶         gf.check_events(ai_settings, screen, ship, bullets)
+❷         ship.update()
+❸         gf.update_bullets(bullets)
+❹         gf.update_screen(ai_settings, screen, ship, bullets)
+```
+
+我们让主循环包含尽可能少的代码，这样只要看函数名就能迅速知道游戏中发生的情况。主循环检查玩家的输入（见❶），然后更新飞船的位置（见❷）和所有未消失的子弹的位置（见❸）。接下来，我们使用更新后的位置来绘制新屏幕（见❹）。
+
+#### **12.8.8　创建函数 fire_bullet()**
+
+下面将发射子弹的代码移到一个独立的函数中，这样，在`check_keydown_events()`中只需使用一行代码来发射子弹，让`elif`代码块变得非常简单：
+
+**game_functions.py**
+
+```
+def check_keydown_events(event, ai_settings, screen, ship, bullets):
+    """响应按键"""
+    --snip--
+    elif event.key == pygame.K_SPACE:
+        fire_bullet(ai_settings, screen, ship, bullets)
+
+def fire_bullet(ai_settings, screen, ship, bullets):
+    """如果还没有到达限制，就发射一颗子弹"""
+    #创建新子弹，并将其加入到编组 bullets 中
+    if len(bullets) < ai_settings.bullets_allowed:
+        new_bullet = Bullet(ai_settings, screen, ship)
+        bullets.add(new_bullet)
+```
+
+函数`fire_bullet()`只包含玩家按空格键时用于发射子弹的代码；在`check_keydown_events()`中，我们在玩家按空格键时调用`fire_bullet()`。
+
+请再次运行 alien_invasion.py，确认发射子弹时依然没有错误。
+
+> **动手试一试**
+>
+> **12-5 侧面射击**：编写一个游戏，将一艘飞船放在屏幕左边，并允许玩家上下移动飞船。在玩家按空格键时，让飞船发射一颗在屏幕中向右穿行的子弹，并在子弹离开屏幕而消失后将其删除。
+
+### **12.9　小结**
+
+在本章中，你学习了：游戏开发计划的制定；使用 Pygame 编写的游戏的基本结构；如何设置背景色，以及如何将设置存储在可供游戏的各个部分访问的独立类中；如何在屏幕上绘制图像，以及如何让玩家控制游戏元素的移动；如何创建自动移动的元素，如在屏幕中向上飞驰的子弹，以及如何删除不再需要的对象；如何定期重构项目的代码，为后续开发提供便利。
+
+在第 13 章中，我们将在游戏《外星人入侵》中添加外星人。在第 13 章结束时，你将能够击落外星人——但愿是在他们撞到飞船前！
+
+------
+
+
+
+## 第13章　外星人
+
+### **老齐导读**
+
+本章内容是上一章基础上的深入，例如在创建 Alien 类的时候，继承了 Pygame 默认的 Sprite 类，这个类是 Pygame 中创建角色对象的基本类，它包括了一些游戏角色常用的方法，比如 updata/add/remove/kill/groups 等，详细内容请阅读https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite
+
+在游戏中，所创建的新的元素对象继承 Sprite 类之后，就具备了上述各个方法。
+
+另外，在 13.3.2 节中创建外星人群，使用了 Pygame 中的 Group 类，这也体现了 Pygame 为游戏开发带来的优势https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Group。
+
+![enter image description here](https://images.gitbook.cn/28f52d90-883d-11e9-b7a6-b7ac1ec9af97)
+
+> 在本章中，我们将在游戏《外星人入侵》中添加外星人。首先，我们在屏幕上边缘附近添加一个外星人，然后生成一群外星人。我们让这群外星人向两边和下面移动，并删除被子弹击中的外星人。最后，我们将显示玩家拥有的飞船数量，并在玩家的飞船用完后结束游戏。
+>
+> 通过阅读本章，你将更深入地了解 Pygame 和大型项目的管理。你还将学习如何检测游戏对象之间的碰撞，如子弹和外星人之间的碰撞。检测碰撞有助于你定义游戏元素之间的交互：可以将角色限定在迷宫墙壁之内或在两个角色之间传球。我们将时不时地查看游戏开发计划，以确保编程工作不偏离轨道。
+>
+> 着手编写在屏幕上添加一群外星人的代码前，先来回顾一下这个项目，并更新开发计划。
+
+### **13.1　回顾项目**
+
+开发较大的项目时，进入每个开发阶段前回顾一下开发计划，搞清楚接下来要通过编写代码来完成哪些任务都是不错的主意。本章涉及以下内容。
+
+- 研究既有代码，确定实现新功能前是否要进行重构。
+- 在屏幕左上角添加一个外星人，并指定合适的边距。
+- 根据第一个外星人的边距和屏幕尺寸计算屏幕上可容纳多少个外星人。我们将编写一个循环来创建一系列外星人，这些外星人填满了屏幕的上半部分。
+- 让外星人群向两边和下方移动，直到外星人被全部击落，有外星人撞到飞船，或有外星人抵达屏幕底端。如果整群外星人都被击落，我们将再创建一群外星人。如果有外星人撞到了飞船或抵达屏幕底端，我们将销毁飞船并再创建一群外星人。
+- 限制玩家可用的飞船数量，配给的飞船用完后，游戏结束。
+
+我们将在实现功能的同时完善这个计划，但就目前而言，该计划已足够详尽。
+
+在给项目添加新功能前，还应审核既有代码。每进入一个新阶段，通常项目都会更复杂，因此最好对混乱或低效的代码进行清理。
+
+我们在开发的同时一直不断地重构，因此当前需要做的清理工作不多，但每次为测试新功能而运行这个游戏时，都必须使用鼠标来关闭它，这太讨厌了。下面来添加一个结束游戏的快捷键 Q：
+
+**game_functions.py**
+
+```
+def check_keydown_events(event, ai_settings, screen, ship, bullets):
+    --snip--
+    elif event.key == pygame.K_q:
+        sys.exit()
+```
+
+在`check_keydown_events()`中，我们添加了一个代码块，以便在玩家按 Q 时结束游戏。这样的修改很安全，因为 Q 键离箭头键和空格键很远，玩家不小心按 Q 键而导致游戏结束的可能性不大。现在测试时可按 Q 关闭游戏，而无需使用鼠标来关闭窗口了。
+
+### **13.2　创建第一个外星人**
+
+在屏幕上放置外星人与放置飞船类似。每个外星人的行为都由`Alien`类控制，我们将像创建`Ship`类那样创建这个类。出于简化考虑，我们也使用位图来表示外星人。你可以自己寻找表示外星人的图像，也可使用图13-1所示的图像，可在本书配套资源（https://www.nostarch.com/pythoncrashcourse/）中找到。这幅图像的背景为灰色，与屏幕背景色一致。请务必将你选择的图像文件保存到文件夹 images 中。
+
+![{70%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/17.d13z.001.png)
+
+**图13-1　用来创建外星人群的外星人图像**
+
+#### **13.2.1　创建 Alien 类**
+
+下面来编写`Alien`类：
+
+**alien.py**
+
+```
+  import pygame
+  from pygame.sprite import Sprite
+
+  class Alien(Sprite):
+      """表示单个外星人的类"""
+
+      def __init__(self, ai_settings, screen):
+          """初始化外星人并设置其起始位置"""
+          super(Alien, self).__init__()
+          self.screen = screen
+          self.ai_settings = ai_settings
+
+          # 加载外星人图像，并设置其 rect 属性
+          self.image = pygame.image.load('images/alien.bmp')
+          self.rect = self.image.get_rect()
+
+          # 每个外星人最初都在屏幕左上角附近
+❶         self.rect.x = self.rect.width
+          self.rect.y = self.rect.height
+
+          # 存储外星人的准确位置
+          self.x = float(self.rect.x)
+
+      def blitme(self):
+          """在指定位置绘制外星人"""
+          self.screen.blit(self.image, self.rect)
+```
+
+除位置不同外，这个类的大部分代码都与`Ship`类相似。每个外星人最初都位于屏幕左上角附近，我们将每个外星人的左边距都设置为外星人的宽度，并将上边距设置为外星人的高度（见❶）。
+
+#### **13.2.2　创建 Alien 实例**
+
+下面在 alien_invasion.py 中创建一个`Alien`实例：
+
+**alien_invasion.py**
+
+```
+--snip--
+from ship import Ship
+from alien import Alien
+import game_functions as gf
+
+def run_game():
+    --snip--
+    # 创建一个外星人
+    alien = Alien(ai_settings, screen)
+
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, ship, bullets)
+        ship.update()
+        gf.update_bullets(bullets)
+        gf.update_screen(ai_settings, screen, ship, alien, bullets)
+
+run_game()
+```
+
+在这里，我们导入了新创建的`Alien`类，并在进入主`while`循环前创建了一个`Alien`实例。我们没有修改外星人的位置，因此该`while`循环没有任何新东西，但我们修改了对`update_screen()`的调用，传递了一个外星人实例。
+
+#### **13.2.3　让外星人出现在屏幕上**
+
+为让外星人出现在屏幕上，我们在`update_screen()`中调用其方法`blitme()`：
+
+**game_functions.py**
+
+```
+def update_screen(ai_settings, screen, ship, alien, bullets):
+    --snip--
+
+    # 在飞船和外星人后面重绘所有的子弹
+    for bullet in bullets:
+        bullet.draw_bullet()
+    ship.blitme()
+    alien.blitme()
+
+    # 让最近绘制的屏幕可见
+    pygame.display.flip()
+```
+
+我们先绘制飞船和子弹，再绘制外星人，让外星人在屏幕上位于最前面。图13-2显示了屏幕上的第一个外星人。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/17.d13z.002.png)
+
+**图13-2　第一个外星人现身**
+
+第一个外星人正确地现身后，下面来编写绘制一群外星人的代码。
+
+### **13.3　创建一群外星人**
+
+要绘制一群外星人，需要确定一行能容纳多少个外星人以及要绘制多少行外星人。我们将首先计算外星人之间的水平间距，并创建一行外星人，再确定可用的垂直空间，并创建整群外星人。
+
+#### **13.3.1　确定一行可容纳多少个外星人**
+
+为确定一行可容纳多少个外星人，我们来看看可用的水平空间有多大。屏幕宽度存储在`ai_settings.screen_width`中，但需要在屏幕两边都留下一定的边距，把它设置为外星人的宽度。由于有两个边距，因此可用于放置外星人的水平空间为屏幕宽度减去外星人宽度的两倍：
+
+```
+available_space_x = ai_settings.screen_width – (2 * alien_width)
+```
+
+我们还需要在外星人之间留出一定的空间，即外星人宽度。因此，显示一个外星人所需的水平空间为外星人宽度的两倍：一个宽度用于放置外星人，另一个宽度为外星人右边的空白区域。为确定一行可容纳多少个外星人，我们将可用空间除以外星人宽度的两倍：
+
+```
+number_aliens_x = available_space_x / (2 * alien_width)
+```
+
+我们将在创建外星人群时使用这些公式。
+
+> **注意**　
+>
+> 令人欣慰的是，在程序中执行计算时，一开始你无需确定公式是正确的，而可以尝试直接运行程序，看看结果是否符合预期。即便是在最糟糕的情况下，也只是屏幕上显示的外星人太多或太少。你可以根据在屏幕上看到的情况调整计算公式。
+
+#### **13.3.2　创建多行外星人**
+
+为创建一行外星人，首先在 alien_invasion.py 中创建一个名为`aliens`的空编组，用于存储全部外星人，再调用 game_functions.py 中创建外星人群的函数：
+
+**alien_invasion.py**
+
+```
+  import pygame
+  from pygame.sprite import Group
+  from settings import Settings
+  from ship import Ship
+  import game_functions as gf
+
+  def run_game():
+      --snip--
+      # 创建一艘飞船、一个子弹编组和一个外星人编组
+      ship = Ship(ai_settings, screen)
+      bullets = Group()
+❶     aliens = Group()
+
+      # 创建外星人群
+❷     gf.create_fleet(ai_settings, screen, aliens)
+
+      # 开始游戏主循环
+      while True:
+          --snip—
+❸         gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+
+  run_game()
+```
+
+由于我们不再在 alien_invasion.py 中直接创建外星人，因此无需在这个文件中导入`Alien`类。
+
+❶处创建了一个空编组，用于存储所有的外星人。接下来，调用稍后将编写的函数`create_fleet()`（见❷），并将`ai_settings`、对象`screen`和空编组`aliens`传递给它。然后，修改对`update_screen()`的调用，让它能够访问外星人编组（见❸）。
+
+我们还需要修改`update_screen()`：
+
+**game_functions.py**
+
+```
+def update_screen(ai_settings, screen, ship, aliens, bullets):
+    --snip--
+    ship.blitme()
+    aliens.draw(screen)
+
+    # 让最近绘制的屏幕可见
+    pygame.display.flip()
+```
+
+对编组调用`draw()`时，Pygame 自动绘制编组的每个元素，绘制位置由元素的属性`rect`决定。在这里，`aliens.draw(screen)`在屏幕上绘制编组中的每个外星人。
+
+#### **13.3.3　创建外星人群**
+
+现在可以创建外星人群了。下面是新函数`create_fleet()`，我们将它放在 game_functions.py 的末尾。我们还需要导入`Alien`类，因此务必在文件 game_functions.py 开头添加相应的`import`语句：
+
+**game_functions.py**
+
+```
+  --snip--
+  from bullet import Bullet
+  from alien import Alien
+  --snip--
+
+  def create_fleet(ai_settings, screen, aliens):
+      """创建外星人群"""
+      # 创建一个外星人，并计算一行可容纳多少个外星人
+      # 外星人间距为外星人宽度
+❶     alien = Alien(ai_settings, screen)
+❷     alien_width = alien.rect.width
+❸     available_space_x = ai_settings.screen_width - 2 * alien_width
+❹     number_aliens_x = int(available_space_x / (2 * alien_width))
+
+      # 创建第一行外星人
+❺     for alien_number in range(number_aliens_x):
+          # 创建一个外星人并将其加入当前行
+❻         alien = Alien(ai_settings, screen)
+          alien.x = alien_width + 2 * alien_width * alien_number
+          alien.rect.x = alien.x
+          aliens.add(alien)
+```
+
+这些代码大都在前面详细介绍过。为放置外星人，我们需要知道外星人的宽度和高度，因此在执行计算前，我们先创建一个外星人（见❶）。这个外星人不是外星人群的成员，因此没有将它加入到编组`aliens`中。在❷处，我们从外星人的`rect`属性中获取外星人宽度，并将这个值存储到`alien_width`中，以免反复访问属性`rect`。在❸处，我们计算可用于放置外星人的水平空间，以及其中可容纳多少个外星人。
+
+相比于前面介绍的工作，这里唯一的不同是使用了`int()`来确保计算得到的外星人数量为整数（见❹），因为我们不希望某个外星人只显示一部分，而且函数`range()`也需要一个整数。函数`int()`将小数部分丢弃，相当于向下圆整（这大有裨益，因为我们宁愿每行都多出一点点空间，也不希望每行的外星人之间过于拥挤）。
+
+接下来，我们编写了一个循环，它从零数到要创建的外星人数（见❺）。在这个循环的主体中，我们创建一个新的外星人，并通过设置 *x* 坐标将其加入当前行（见❻）。将每个外星人都往右推一个外星人的宽度。接下来，我们将外星人宽度乘以2，得到每个外星人占据的空间（其中包括其右边的空白区域），再据此计算当前外星人在当前行的位置。最后，我们将每个新创建的外星人都添加到编组`aliens`中。
+
+如果你现在运行这个游戏，将看到第一行外星人，如图13-3所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/17.d13z.003.png)
+
+**图13-3　第一行外星人**
+
+这行外星人在屏幕上稍微偏向了左边，这实际上是有好处的，因为我们将让外星人群往右移，触及屏幕边缘后稍微往下移，然后往左移，以此类推。就像经典游戏《太空入侵者》，相比于只往下移，这种移动方式更有趣。我们将让外形人群不断这样移动，直到所有外星人都被击落或有外星人撞上飞船或抵达屏幕底端。
+
+> **注意**　
+>
+> 根据你选择的屏幕宽度，在你的系统中，第一行外星人的位置可能稍有不同。
+
+#### **13.3.4　重构 create_fleet()**
+
+倘若我们创建了外星人群，也许应该让`create_fleet()`保持原样，但鉴于创建外星人的工作还未完成，我们稍微清理一下这个函数。下面是`create_fleet()`和两个新函数，`get_number_aliens_x()`和`create_alien()`：
+
+**game_functions.py**
+
+```
+❶ def get_number_aliens_x(ai_settings, alien_width):
+      """计算每行可容纳多少个外星人"""
+      available_space_x = ai_settings.screen_width - 2 * alien_width
+      number_aliens_x = int(available_space_x / (2 * alien_width))
+      return number_aliens_x
+
+  def create_alien(ai_settings, screen, aliens, alien_number):
+      """创建一个外星人并将其放在当前行"""
+      alien = Alien(ai_settings, screen)
+❷     alien_width = alien.rect.width
+      alien.x = alien_width + 2 * alien_width * alien_number
+      alien.rect.x = alien.x
+      aliens.add(alien)
+
+  def create_fleet(ai_settings, screen, aliens):
+      """创建外星人群"""
+      # 创建一个外星人，并计算每行可容纳多少个外星人
+      alien = Alien(ai_settings, screen)
+❸     number_aliens_x = get_number_aliens_x(ai_settings, alien.rect.width)
+
+      # 创建第一行外星人
+      for alien_number in range(number_aliens_x):
+❹         create_alien(ai_settings, screen, aliens, alien_number)
+```
+
+函数`get_number_aliens_x()`的代码都来自`create_fleet()`，且未做任何修改（见❶）。函数`create_alien()`的代码也都来自`create_fleet()`，且未做任何修改，只是使用刚创建的外星人来获取外星人宽度（见❷）。在❸处，我们将计算可用水平空间的代码替换为对`get_number_aliens_x()`的调用，并删除了引用`alien_width`的代码行，因为现在这是在`create_alien()`中处理的。在❹处，我们调用`create_alien()`。通过这样的重构，添加新行进而创建整群外星人将更容易。
+
+#### **13.3.5　添加行**
+
+要创建外星人群，需要计算屏幕可容纳多少行，并对创建一行外星人的循环重复相应的次数。为计算可容纳的行数，我们这样计算可用垂直空间：将屏幕高度减去第一行外星人的上边距（外星人高度）、飞船的高度以及最初外星人高度加上外星人间距（外星人高度的两倍）：
+
+```
+available_space_y = ai_settings.screen_height – 3 * alien_height – ship_height
+```
+
+这将在飞船上方留出一定的空白区域，给玩家留出射杀外星人的时间。
+
+每行下方都要留出一定的空白区域，并将其设置为外星人的高度。为计算可容纳的行数，我们将可用垂直空间除以外星人高度的两倍（同样，如果这样的计算不对，我们马上就能发现，继而将间距调整为合理的值）。
+
+```
+number_rows = available_space_y / (2 * alien_height)
+```
+
+知道可容纳多少行后，便可重复执行创建一行外星人的代码：
+
+**game_functions.py**
+
+```
+❶ def get_number_rows(ai_settings, ship_height, alien_height):
+      """计算屏幕可容纳多少行外星人"""
+❷     available_space_y = (ai_settings.screen_height -
+                              (3 * alien_height) - ship_height)
+      number_rows = int(available_space_y / (2 * alien_height))
+      return number_rows
+
+  def create_alien(ai_settings, screen, aliens, alien_number, row_number):
+      --snip--
+      alien.x = alien_width + 2 * alien_width * alien_number
+      alien.rect.x = alien.x
+❸     alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
+      aliens.add(alien)
+
+  def create_fleet(ai_settings, screen, ship, aliens):
+      --snip--
+      number_aliens_x = get_number_aliens_x(ai_settings, alien.rect.width)
+      number_rows = get_number_rows(ai_settings, ship.rect.height,
+          alien.rect.height)
+
+      # 创建外星人群
+❹     for row_number in range(number_rows):
+          for alien_number in range(number_aliens_x):
+              create_alien(ai_settings, screen, aliens, alien_number,
+                  row_number)
+```
+
+为计算屏幕可容纳多少行外星人，我们在函数`get_number_rows()`中实现了前面计算`available_space_y`和`number_rows`的公式（见❶），这个函数与`get_number_aliens_x()`类似。计算公式用括号括起来了，这样可将代码分成两行，以遵循每行不超过79字符的建议（见❷）。这里使用了`int()`，因为我们不想创建不完整的外星人行。
+
+为创建多行，我们使用两个嵌套在一起的循环：一个外部循环和一个内部循环（见❸）。其中的内部循环创建一行外星人，而外部循环从零数到要创建的外星人行数。Python 将重复执行创建单行外星人的代码，重复次数为`number_rows`。
+
+为嵌套循环，我们编写了一个新的`for`循环，并缩进了要重复执行的代码。（在大多数文本编辑器中，缩进代码块和取消缩进都很容易，详情请参阅附录 B。）我们调用`create_alien()`时，传递了一个表示行号的实参，将每行都沿屏幕依次向下放置。
+
+`create_alien()`的定义需要一个用于存储行号的形参。在`create_alien()`中，我们修改外星人的 *y* 坐标（见❹），并在第一行外星人上方留出与外星人等高的空白区域。相邻外星人行的 *y* 坐标相差外星人高度的两倍，因此我们将外星人高度乘以2，再乘以行号。第一行的行号为0，因此第一行的垂直位置不变，而其他行都沿屏幕依次向下放置。
+
+在`create_fleet()`的定义中，还新增了一个用于存储`ship`对象的形参，因此在 alien_invasion.py 中调用`create_fleet()`时，需要传递实参`ship`：
+
+**alien_invasion.py**
+
+```
+# 创建外星人群
+gf.create_fleet(ai_settings, screen, ship, aliens)
+```
+
+如果你现在运行这个游戏，将看到一群外星人，如图13-4所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/17.d13z.004.png)
+
+**图13-4　整群外星人都现身了**
+
+在下一节，我们将让外星人群动起来！
+
+> **动手试一试**
+>
+> **13-1 星星**：找一幅星星图像，并在屏幕上显示一系列整齐排列的星星。
+>
+> **13-2 更逼真的星星**：为让星星的分布更逼真，可随机地放置星星。本书前面说过，可像下面这样来生成随机数：
+>
+> ```
+> from random import randint
+> random_number = randint(-10,10)
+> ```
+>
+> 上述代码返回一个-10和10之间的随机整数。在为完成练习13-1而编写的程序中，随机地调整每颗星星的位置。
+
+### **13.4　让外星人群移动**
+
+下面来让外星人群在屏幕上向右移动，撞到屏幕边缘后下移一定的距离，再沿相反的方向移动。我们将不断地移动所有的外星人，直到所有外星人都被消灭，有外星人撞上飞船，或有外星人抵达屏幕底端。下面先来让外星人向右移动。
+
+#### **13.4.1　向右移动外星人**
+
+为移动外星人，我们将使用 alien.py 中的方法`update()`，且对外星人群中的每个外星人都调用它。首先，添加一个控制外星人速度的设置：
+
+**settings.py**
+
+```
+    def __init__(self):
+        --snip--
+        # 外星人设置
+        self.alien_speed_factor = 1
+```
+
+然后，使用这个设置来实现`update()`：
+
+**alien.py**
+
+```
+      def update(self):
+          """向右移动外星人"""
+❶         self.x += self.ai_settings.alien_speed_factor
+❷         self.rect.x = self.x
+```
+
+每次更新外星人位置时，都将它向右移动，移动量为`alien_speed_factor`的值。我们使用属性`self.x`跟踪每个外星人的准确位置，这个属性可存储小数值（见❶）。然后，我们使用`self.x`的值来更新外星人的`rect`的位置（见❷）。
+
+在主`while`循环中已调用了更新飞船和子弹的方法，但现在还需更新每个外星人的位置：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, ship, bullets)
+        ship.update()
+        gf.update_bullets(bullets)
+        gf.update_aliens(aliens)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+```
+
+我们在更新子弹后再更新外星人的位置，因为稍后要检查是否有子弹撞到了外星人。
+
+最后，在文件 game_functions.py 末尾添加新函数`update_aliens()`：
+
+**game_functions.py**
+
+```
+def update_aliens(aliens):
+    """更新外星人群中所有外星人的位置"""
+    aliens.update()
+```
+
+我们对编组`aliens`调用方法`update()`，这将自动对每个外星人调用方法`update()`。如果你现在运行这个游戏，会看到外星人群向右移，并逐渐在屏幕右边缘消失。
+
+#### **13.4.2　创建表示外星人移动方向的设置**
+
+下面来创建让外星人撞到屏幕右边缘后向下移动、再向左移动的设置。实现这种行为的代码如下：
+
+**settings.py**
+
+```
+        # 外星人设置
+        self.alien_speed_factor = 1
+        self.fleet_drop_speed = 10
+        # fleet_direction 为1表示向右移，为-1表示向左移
+        self.fleet_direction = 1
+```
+
+设置`fleet_drop_speed`指定了有外星人撞到屏幕边缘时，外星人群向下移动的速度。将这个速度与水平速度分开是有好处的，这样你就可以分别调整这两种速度了。
+
+要实现`fleet_direction`设置，可以将其设置为文本值，如`'left'`或`'right'`，但这样就必须编写`if-elif`语句来检查外星人群的移动方向。鉴于只有两个可能的方向，我们使用值1和-1来表示它们，并在外星人群改变方向时在这两个值之间切换。另外，鉴于向右移动时需要增大每个外星人的 *x* 坐标，而向左移动时需要减小每个外星人的 *x* 坐标，使用数字来表示方向更合理。
+
+#### **13.4.3　检查外星人是否撞到了屏幕边缘**
+
+现在需要编写一个方法来检查是否有外星人撞到了屏幕边缘，还需修改`update()`，以让每个外星人都沿正确的方向移动：
+
+**alien.py**
+
+```
+      def check_edges(self):
+          """如果外星人位于屏幕边缘，就返回 True"""
+          screen_rect = self.screen.get_rect()
+❶         if self.rect.right >= screen_rect.right:
+              return True
+❷         elif self.rect.left <= 0:
+              return True
+
+      def update(self):
+          """向左或向右移动外星人"""
+❸         self.x += (self.ai_settings.alien_speed_factor *
+                          self.ai_settings.fleet_direction)
+          self.rect.x = self.x
+```
+
+我们可对任何外星人调用新方法`check_edges()`，看看它是否位于屏幕左边缘或右边缘。如果外星人的`rect`的`right`属性大于或等于屏幕的`rect`的`right`属性，就说明外星人位于屏幕右边缘（见❶）。如果外星人的`rect`的`left`属性小于或等于0，就说明外星人位于屏幕左边缘（见❷）。
+
+我们修改了方法`update()`，将移动量设置为外星人速度和`fleet_direction`的乘积，让外星人向左或向右移。如果`fleet_direction`为1，就将外星人当前的 *x* 坐标增大`alien_speed_factor`，从而将外星人向右移；如果`fleet_direction`为-1，就将外星人当前的 *x* 坐标减去`alien_speed_factor`，从而将外星人向左移。
+
+#### **13.4.4　向下移动外星人群并改变移动方向**
+
+有外星人到达屏幕边缘时，需要将整群外星人下移，并改变它们的移动方向。我们需要对 game_functions.py 做重大修改，因为我们要在这里检查是否有外星人到达了左边缘或右边缘。为此，我们编写函数`check_fleet_edges()`和`change_fleet_direction()`，并对`update_aliens()`进行修改：
+
+**game_functions.py**
+
+```
+  def check_fleet_edges(ai_settings, aliens):
+      """有外星人到达边缘时采取相应的措施"""
+❶     for alien in aliens.sprites():
+          if alien.check_edges():
+              change_fleet_direction(ai_settings, aliens)
+              break
+
+  def change_fleet_direction(ai_settings, aliens):
+      """将整群外星人下移，并改变它们的方向"""
+      for alien in aliens.sprites():
+❷         alien.rect.y += ai_settings.fleet_drop_speed
+      ai_settings.fleet_direction *= -1
+
+  def update_aliens(ai_settings, aliens):
+      """
+      检查是否有外星人位于屏幕边缘，并更新整群外星人的位置
+      """
+❸     check_fleet_edges(ai_settings, aliens)
+      aliens.update()
+```
+
+在`check_fleet_edges()`中，我们遍历外星人群，并对其中的每个外星人调用`check_edges()`（见❶）。如果`check_edges()`返回`True`，我们就知道相应的外星人位于屏幕边缘，需要改变外星人群的方向，因此我们调用`change_fleet_direction()`并退出循环。在`change_fleet_direction()`中，我们遍历所有外星人，将每个外星人下移`fleet_drop_speed`设置的值（见❷）；然后，将`fleet_direction`的值修改为其当前值与-1的乘积。
+
+我们修改了函数`update_aliens()`，在其中通过调用`check_fleet_edges()`来确定是否有外星人位于屏幕边缘。现在，函数`update_aliens()`包含形参`ai_settings`，因此我们调用它时指定了与`ai_settings`对应的实参：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, ship, bullets)
+        ship.update()
+        gf.update_bullets(bullets)
+        gf.update_aliens(ai_settings, aliens)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+```
+
+如果你现在运行这个游戏，外星人群将在屏幕上来回移动，并在抵达屏幕边缘后向下移动。现在可以开始射杀外星人，检查是否有外星人撞到飞船，或抵达了屏幕底端。
+
+> **动手试一试**
+>
+> **13-3 雨滴**：寻找一幅雨滴图像，并创建一系列整齐排列的雨滴。让这些雨滴往下落，直到到达屏幕底端后消失。
+>
+> **13-4 连绵细雨**：修改为完成练习13-3而编写的代码，使得一行雨滴消失在屏幕底端后，屏幕顶端又出现一行新雨滴，并开始往下落。
+
+### **13.5　射杀外星人**
+
+我们创建了飞船和外星人群，但子弹击中外星人时，将穿过外星人，因为我们还没有检查碰撞。在游戏编程中，碰撞指的是游戏元素重叠在一起。要让子弹能够击落外星人，我们将使用`sprite.groupcollide()`检测两个编组的成员之间的碰撞。
+
+#### **13.5.1　检测子弹与外星人的碰撞**
+
+子弹击中外星人时，我们要马上知道，以便碰撞发生后让外星人立即消失。为此，我们将在更新子弹的位置后立即检测碰撞。
+
+方法`sprite.groupcollide()`将每颗子弹的`rect`同每个外星人的`rect`进行比较，并返回一个字典，其中包含发生了碰撞的子弹和外星人。在这个字典中，每个键都是一颗子弹，而相应的值都是被击中的外星人（第14章实现记分系统时，也会用到这个字典）。
+
+在函数`update_bullets()`中，使用下面的代码来检查碰撞：
+
+**game_functions.py**
+
+```
+def update_bullets(aliens, bullets):
+    """更新子弹的位置，并删除已消失的子弹"""
+    --snip--
+    # 检查是否有子弹击中了外星人
+    # 如果是这样，就删除相应的子弹和外星人
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+```
+
+新增的这行代码遍历编组`bullets`中的每颗子弹，再遍历编组`aliens`中的每个外星人。每当有子弹和外星人的`rect`重叠时，`groupcollide()`就在它返回的字典中添加一个键-值对。两个实参`True`告诉 Pygame 删除发生碰撞的子弹和外星人。（要模拟能够穿行到屏幕顶端的高能子弹——消灭它击中的每个外星人，可将第一个布尔实参设置为`False`，并让第二个布尔实参为`True`。这样被击中的外星人将消失，但所有的子弹都始终有效，直到抵达屏幕顶端后消失。）
+
+我们调用`update_bullets()`时，传递了实参`aliens`：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, ship, bullets)
+        ship.update()
+        gf.update_bullets(aliens, bullets)
+        gf.update_aliens(ai_settings, aliens)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+```
+
+如果你此时运行这个游戏，被击中的外星人将消失。如图13-5所示，其中有一部分外星人被击落。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/17.d13z.005.png)
+
+**图13-5　可以射杀外星人了**
+
+#### **13.5.2　为测试创建大子弹**
+
+只需通过运行这个游戏就可以测试其很多功能，但有些功能在正常情况下测试起来比较烦琐。例如，要测试代码能否正确地处理外星人编组为空的情形，需要花很长时间将屏幕上的外星人都击落。
+
+测试有些功能时，可以修改游戏的某些设置，以便专注于游戏的特定方面。例如，可以缩小屏幕以减少需要击落的外星人数量，也可以提高子弹的速度，以便能够在单位时间内发射大量子弹。
+
+测试这个游戏时，我喜欢做的一项修改是增大子弹的尺寸，使其在击中外星人后依然有效，如图13-6所示。请尝试将`bullet_width`设置为300，看看将所有外星人都射杀有多快！
+
+类似这样的修改可提高测试效率，还可能激发出如何赋予玩家更大威力的思想火花。（完成测试后，别忘了将设置恢复正常。）
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/17.d13z.006.png)
+
+**图13-6　威力更大的子弹让游戏的有些方法测试起来更容易**
+
+#### **13.5.3　生成新的外星人群**
+
+这个游戏的一个重要特点是外星人无穷无尽，一个外星人群被消灭后，又会出现一群外星人。
+
+要在外星人群被消灭后又显示一群外星人，首先需要检查编组`aliens`是否为空。如果为空，就调用`create_fleet()`。我们将在`update_bullets()`中执行这种检查，因为外星人都是在这里被消灭的：
+
+**game_functions.py**
+
+```
+  def update_bullets(ai_settings, screen, ship, aliens, bullets):
+      --snip--
+      # 检查是否有子弹击中了外星人
+      # 如果是，就删除相应的子弹和外星人
+      collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+❶     if len(aliens) == 0:
+          # 删除现有的子弹并新建一群外星人
+❷         bullets.empty()
+          create_fleet(ai_settings, screen, ship, aliens)
+```
+
+在❶处，我们检查编组`aliens`是否为空。如果是，就使用方法`empty()`删除编组中余下的所有精灵，从而删除现有的所有子弹。我们还调用了`create_fleet()`，再次在屏幕上显示一群外星人。
+
+现在，`update_bullets()`的定义包含额外的形参`ai_settings`、`screen`和`ship`，因此我们需要更新 alien_invasion.py 中对`update_bullets()`的调用：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, ship, bullets)
+        ship.update()
+        gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
+        gf.update_aliens(ai_settings, aliens)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+```
+
+现在，当前外星人群消灭干净后，将立刻出现一个新的外星人群。
+
+#### **13.5.4　提高子弹的速度**
+
+如果你现在尝试在这个游戏中射杀外星人，可能发现子弹的速度比以前慢，这是因为在每次循环中，Pygame 需要做的工作更多了。为提高子弹的速度，可调整 settings.py 中`bullet_speed_factor`的值。例如，如果将这个值增大到3，子弹在屏幕上向上穿行的速度将变得相当快：
+
+**settings.py**
+
+```
+        # 子弹设置
+        self.bullet_speed_factor = 3
+        self.bullet_width = 3
+        --snip--
+```
+
+这项设置的最佳值取决于你的系统速度，请找出适合你的值吧。
+
+#### **13.5.5　重构 update_bullets()**
+
+下面来重构`update_bullets()`，使其不再完成那么多任务。我们将把处理子弹和外星人碰撞的代码移到一个独立的函数中：
+
+**game_functions.py**
+
+```
+def update_bullets(ai_settings, screen, ship, aliens, bullets):
+    --snip--
+    # 删除已消失的子弹
+    for bullet in bullets.copy():
+        if bullet.rect.bottom <= 0:
+            bullets.remove(bullet)
+
+    check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets)
+
+def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
+    """响应子弹和外星人的碰撞"""
+    # 删除发生碰撞的子弹和外星人
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+    if len(aliens) == 0:
+        # 删除现有的所有子弹，并创建一个新的外星人群
+        bullets.empty()
+        create_fleet(ai_settings, screen, ship, aliens)
+```
+
+我们创建了一个新函数——`check_bullet_alien_collisions()`，以检测子弹和外星人之间的碰撞，以及在整群外星人都被消灭干净时采取相应的措施。这避免了`update_bullets()`太长，简化了后续的开发工作。
+
+> **动手试一试**
+>
+> **13-5 抓球**：创建一个游戏，在屏幕底端放置一个玩家可左右移动的角色。让一个球出现在屏幕顶端，且水平位置是随机的，并让这个球以固定的速度往下落。如果角色与球发生碰撞（表示将球抓住了），就让球消失。每当角色抓住球或球因抵达屏幕底端而消失后，都创建一个新球。
+
+### **13.6　结束游戏**
+
+如果玩家根本不会输，游戏还有什么趣味和挑战性可言？如果玩家没能在足够短的时间内将整群外星人都消灭干净，且有外星人撞到了飞船，飞船将被摧毁。与此同时，我们还限制了可供玩家使用的飞船数，而有外星人抵达屏幕底端时，飞船也将被摧毁。玩家用光了飞船后，游戏便结束。
+
+#### **13.6.1　检测外星人和飞船碰撞**
+
+我们首先检查外星人和飞船之间的碰撞，以便外星人撞上飞船时我们能够作出合适的响应。我们在更新每个外星人的位置后立即检测外星人和飞船之间的碰撞。
+
+**game_functions.py**
+
+```
+  def update_aliens(ai_settings, ship, aliens):
+      """
+      检查是否有外星人到达屏幕边缘
+        然后更新所有外星人的位置
+      """
+      check_fleet_edges(ai_settings, aliens)
+      aliens.update()
+
+      # 检测外星人和飞船之间的碰撞
+❶     if pygame.sprite.spritecollideany(ship, aliens):
+❷         print("Ship hit!!!")
+```
+
+方法`spritecollideany()`接受两个实参：一个精灵和一个编组。它检查编组是否有成员与精灵发生了碰撞，并在找到与精灵发生了碰撞的成员后就停止遍历编组。在这里，它遍历编组`aliens`，并返回它找到的第一个与飞船发生了碰撞的外星人。
+
+如果没有发生碰撞，`spritecollideany()`将返回`None`，因此❶处的`if`代码块不会执行。如果找到了与飞船发生碰撞的外星人，它就返回这个外星人，因此`if`代码块将执行：打印“Ship hit!!!”（见❷）。（有外星人撞到飞船时，需要执行的任务很多：需要删除余下的所有外星人和子弹，让飞船重新居中，以及创建一群新的外星人。编写完成这些任务的代码前，需要确定检测外星人和飞船碰撞的方法是否可行。而为确定这一点，最简单的方式是编写一条`print`语句。）
+
+现在，我们需要将`ship`传递给`update_aliens()`：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, ship, bullets)
+        ship.update()
+        gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
+        gf.update_aliens(ai_settings, ship, aliens)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+```
+
+现在如果你运行这个游戏，则每当有外星人撞到飞船时，终端窗口都将显示“Ship hit!!!”。测试这项功能时，请将`alien_drop_speed`设置为较大的值，如50或100，这样外星人将更快地撞到飞船。
+
+#### **13.6.2　响应外星人和飞船碰撞**
+
+现在需要确定外星人与飞船发生碰撞时，该做些什么。我们不销毁`ship`实例并创建一个新的`ship`实例，而是通过跟踪游戏的统计信息来记录飞船被撞了多少次（跟踪统计信息还有助于记分）。
+
+下面来编写一个用于跟踪游戏统计信息的新类——`GameStats`，并将其保存为文件 game_stats.py：
+
+**game_stats.py**
+
+```
+  class GameStats():
+      """跟踪游戏的统计信息"""
+
+      def __init__(self, ai_settings):
+          """初始化统计信息"""
+          self.ai_settings = ai_settings
+❶         self.reset_stats()
+
+      def reset_stats(self):
+          """初始化在游戏运行期间可能变化的统计信息"""
+          self.ships_left = self.ai_settings.ship_limit
+```
+
+在这个游戏运行期间，我们只创建一个`GameStats`实例，但每当玩家开始新游戏时，需要重置一些统计信息。为此，我们在方法`reset_stats()`中初始化大部分统计信息，而不是在`__init__()`中直接初始化它们。我们在`__init__()`中调用这个方法，这样创建`GameStats`实例时将妥善地设置这些统计信息（见❶），同时在玩家开始新游戏时也能调用`reset_stats()`。
+
+当前只有一项统计信息——`ships_left`，其值在游戏运行期间将不断变化。一开始玩家拥有的飞船数存储在 settings.py 的`ship_limit`中：
+
+**settings.py**
+
+```
+        # 飞船设置
+        self.ship_speed_factor = 1.5
+        self.ship_limit = 3
+```
+
+我们还需对 alien_invasion.py 做些修改，以创建一个`GameStats`实例：
+
+**alien_invasion.py**
+
+```
+  --snip--
+  from settings import Settings
+❶ from game_stats import GameStats
+  --snip--
+
+  def run_game():
+      --snip--
+      pygame.display.set_caption("Alien Invasion")
+
+      # 创建一个用于存储游戏统计信息的实例
+❷     stats = GameStats(ai_settings)
+      --snip--
+      # 开始游戏主循环
+      while True:
+          --snip--
+          gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
+❸         gf.update_aliens(ai_settings, stats, screen, ship, aliens, bullets)
+          --snip--
+```
+
+我们导入了新类`GameStats`（见❶），创建了一个名为`stats`的实例（见❷），再调用`update_aliens()`并添加了实参`stats`、`screen`和`ship`（见❸）。在有外星人撞到飞船时，我们将使用这些实参来跟踪玩家还有多少艘飞船，以及创建一群新的外星人。
+
+有外星人撞到飞船时，我们将余下的飞船数减1，创建一群新的外星人，并将飞船重新放置到屏幕底端中央（我们还将让游戏暂停一段时间，让玩家在新外星人群出现前注意到发生了碰撞，并将重新创建外星人群）。
+
+下面将实现这些功能的大部分代码放到函数`ship_hit()`中：
+
+**game_functions.py**
+
+```
+  import sys
+❶ from time import sleep
+
+  import pygame
+  --snip--
+
+  def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+      """响应被外星人撞到的飞船"""
+      # 将 ships_left 减1
+❷     stats.ships_left -= 1
+
+      # 清空外星人列表和子弹列表
+❸     aliens.empty()
+      bullets.empty()
+
+      # 创建一群新的外星人，并将飞船放到屏幕底端中央
+❹     create_fleet(ai_settings, screen, ship, aliens)
+      ship.center_ship()
+
+      # 暂停
+❺     sleep(0.5)
+
+❻ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
+      --snip--
+      # 检测外星人和飞船碰撞
+      if pygame.sprite.spritecollideany(ship, aliens):
+          ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+```
+
+我们首先从模块`time`中导入了函数`sleep()`，以便使用它来让游戏暂停（见❶）。新函数`ship_hit()`在飞船被外星人撞到时作出响应。在这个函数内部，将余下的飞船数减1（见❷），然后清空编组`aliens`和`bullets`（见❸）。
+
+接下来，我们创建一群新的外星人，并将飞船居中（见❹），稍后将在`Ship`类中添加方法`center_ship()`。最后，我们更新所有元素后（但在将修改显示到屏幕前）暂停，让玩家知道其飞船被撞到了（见❺）。屏幕将暂时停止变化，让玩家能够看到外星人撞到了飞船。函数`sleep()`执行完毕后，将接着执行函数`update_screen()`，将新的外星人群绘制到屏幕上。
+
+我们还更新了`update_aliens()`的定义，使其包含形参`stats`、`screen`和`bullets`（见❻），让它能够在调用`ship_hit()`时传递这些值。
+
+下面是新方法`center_ship()`，请将其添加到 ship.py 的末尾：
+
+**ship.py**
+
+```
+    def center_ship(self):
+        """让飞船在屏幕上居中"""
+        self.center = self.screen_rect.centerx
+```
+
+为让飞船居中，我们将飞船的属性`center`设置为屏幕中心的 *x* 坐标，而该坐标是通过属性`screen_rect`获得的。
+
+> **注意**　
+>
+> 我们根本没有创建多艘飞船，在整个游戏运行期间，我们都只创建了一个飞船实例，并在该飞船被撞到时将其居中。统计信息`ships_left`让我们知道飞船是否用完。
+
+请运行这个游戏，射杀几个外星人，并让一个外星人撞到飞船。游戏暂停后，将出现一群新的外星人，而飞船将在屏幕底端居中。
+
+#### **13.6.3　有外星人到达屏幕底端**
+
+如果有外星人到达屏幕底端，我们将像有外星人撞到飞船那样作出响应。请添加一个执行这项任务的新函数，并将其命名为`check_aliens_bottom()`：
+
+**game_functions.py**
+
+```
+  def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+      """检查是否有外星人到达了屏幕底端"""
+      screen_rect = screen.get_rect()
+      for alien in aliens.sprites():
+❶         if alien.rect.bottom >= screen_rect.bottom:
+              # 像飞船被撞到一样进行处理
+              ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+              break
+
+  def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
+      --snip--
+      # 检查是否有外星人到达屏幕底端
+❷     check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
+```
+
+函数`check_aliens_bottom()`检查是否有外星人到达了屏幕底端。到达屏幕底端后，外星人的属性`rect.bottom`的值大于或等于屏幕的属性`rect.bottom`的值（见❶）。如果有外星人到达屏幕底端，我们就调用`ship_hit()`；只要检测到一个外星人到达屏幕底端，就无需检查其他外星人，因此我们在调用`ship_hit()`后退出循环。
+
+我们在更新所有外星人的位置并检测是否有外星人和飞船发生碰撞后调用`check_aliens_bottom()`（见❷）。现在，每当有外星人撞到飞船或抵达屏幕底端时，都将出现一群新的外星人。
+
+#### **13.6.4　游戏结束**
+
+现在这个游戏看起来更完整了，但它永远都不会结束，只是`ships_left`不断变成更小的负数。下面在`GameStats`中添加一个作为标志的属性`game_active`，以便在玩家的飞船用完后结束游戏：
+
+**game_stats.py**
+
+```
+    def __init__(self, settings):
+        --snip--
+        # 游戏刚启动时处于活动状态
+        self.game_active = True
+```
+
+现在在`ship_hit()`中添加代码，在玩家的飞船都用完后将`game_active`设置为`False`：
+
+**game_functions.py**
+
+```
+def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+    """响应飞船被外星人撞到"""
+    if stats.ships_left > 0:
+        # 将 ships_left 减1
+        stats.ships_left -= 1
+        --snip--
+        #暂停一会儿
+        sleep(0.5)
+
+    else:
+        stats.game_active = False
+```
+
+`ship_hit()`的大部分代码都没变。我们将原来的所有代码都移到了一个`if`语句块中，这条`if`语句检查玩家是否至少还有一艘飞船。如果是这样，就创建一群新的外星人，暂停一会儿，再接着往下执行。如果玩家没有飞船了，就将`game_active`设置为`False`。
+
+### **13.7　确定应运行游戏的哪些部分**
+
+在 alien_invasion.py 中，我们需要确定游戏的哪些部分在任何情况下都应运行，哪些部分仅在游戏处于活动状态时才运行：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, ship, bullets)
+
+        if stats.game_active:
+            ship.update()
+            gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
+            gf.update_aliens(ai_settings, stats, screen, ship, aliens, bullets)
+
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+```
+
+在主循环中，在任何情况下都需要调用`check_events()`，即便游戏处于非活动状态时亦如此。例如，我们需要知道玩家是否按了 Q 键以退出游戏，或单击关闭窗口的按钮。我们还需要不断更新屏幕，以便在等待玩家是否选择开始新游戏时能够修改屏幕。其他的函数仅在游戏处于活动状态时才需要调用，因为游戏处于非活动状态时，我们不用更新游戏元素的位置。
+
+现在，你运行这个游戏时，它将在飞船用完后停止不动。
+
+> **动手试一试**
+>
+> **13-6 游戏结束**：在为完成练习13-5而编写的代码中，跟踪玩家有多少次未将球接着。在未接着球的次数到达三次后，结束游戏。
+
+### **13.8　小结**
+
+在本章中，你学习了：如何在游戏中添加大量相同的元素，如创建一群外星人；如何使用嵌套循环来创建元素网格，还通过调用每个元素的方法`update()`移动了大量的元素；如何控制对象在屏幕上移动的方向，以及如何响应事件，如有外星人到达屏幕边缘；如何检测和响应子弹和外星人碰撞以及外星人和飞船碰撞；如何在游戏中跟踪统计信息，以及如何使用标志`game_active`来判断游戏是否结束了。
+
+在与这个项目相关的最后一章中，我们将添加一个 Play 按钮，让玩家能够开始游戏，以及游戏结束后再玩。每当玩家消灭一群外星人后，我们都将加快游戏的节奏，并添加一个记分系统，得到一个极具可玩性的游戏！
+
+------
+
+
+
+## 第14章　记分
+
+### **老齐导读**
+
+本章在前两章基础上，对游戏进一步提高其友好性和控制性，比如开始按钮、记分系统和分数、等级等显示。实现这些功能的基本思路与之前的元素设计类似，但是要注意一些代码的细节，比如对鼠标事件的相应，光标的隐藏等。
+
+![enter image description here](https://images.gitbook.cn/d1905330-883d-11e9-9a9c-451c1f88314a)
+
+> 在本章中，我们将结束游戏《外星人入侵》的开发。我们将添加一个 Play 按钮，用于根据需要启动游戏以及在游戏结束后重启游戏。我们还将修改这个游戏，使其在玩家的等级提高时加快节奏，并实现一个记分系统。阅读本章后，你将掌握足够多的知识，能够开始编写随玩家等级提高而加大难度以及显示得分的游戏。
+
+### **14.1　添加 Play 按钮**
+
+在本节中，我们将添加一个 Play 按钮，它在游戏开始前出现，并在游戏结束后再次出现，让玩家能够开始新游戏。
+
+当前，这个游戏在玩家运行 alien_invasion.py 时就开始了。下面让游戏一开始处于非活动状态，并提示玩家单击 Play 按钮来开始游戏。为此，在 game_stats.py 中输入如下代码：
+
+**game_stats.py**
+
+```
+    def __init__(self, ai_settings):
+        """初始化统计信息"""
+        self.ai_settings = ai_settings
+        self.reset_stats()
+
+        # 让游戏一开始处于非活动状态
+        self.game_active = False
+
+    def reset_stats(self):
+        --snip--
+```
+
+现在游戏一开始将处于非活动状态，等我们创建 Play 按钮后，玩家才能开始游戏。
+
+#### **14.1.1　创建 Button 类**
+
+由于 Pygame 没有内置创建按钮的方法，我们创建一个`Button`类，用于创建带标签的实心矩形。你可以在游戏中使用这些代码来创建任何按钮。下面是`Button`类的第一部分，请将这个类保存为文件 button.py：
+
+**button.py**
+
+```
+  import pygame.font
+
+  class Button():
+
+❶     def __init__(self, ai_settings, screen, msg):
+          """初始化按钮的属性"""
+          self.screen = screen
+          self.screen_rect = screen.get_rect()
+
+          # 设置按钮的尺寸和其他属性
+❷         self.width, self.height = 200, 50
+          self.button_color = (0, 255, 0)
+          self.text_color = (255, 255, 255)
+❸         self.font = pygame.font.SysFont(None, 48)
+
+          # 创建按钮的 rect 对象，并使其居中
+❹         self.rect = pygame.Rect(0, 0, self.width, self.height)
+          self.rect.center = self.screen_rect.center
+
+          # 按钮的标签只需创建一次
+❺         self.prep_msg(msg)
+```
+
+首先，我们导入了模块`pygame.font`，它让 Pygame 能够将文本渲染到屏幕上。方法`__init__()`接受参数`self`，对象`ai_settings`和`screen`，以及`msg`，其中`msg`是要在按钮中显示的文本（见❶）。我们设置按钮的尺寸（见❷），然后通过设置`button_color`让按钮的`rect`对象为亮绿色，并通过设置`text_color`让文本为白色。
+
+在（见❸）处，我们指定使用什么字体来渲染文本。实参`None`让`Pygame`使用默认字体，而`48`指定了文本的字号。为让按钮在屏幕上居中，我们创建一个表示按钮的`rect`对象（见❹），并将其`center`属性设置为屏幕的`center`属性。
+
+Pygame 通过将你要显示的字符串渲染为图像来处理文本。在❺处，我们调用`prep_msg()`来处理这样的渲染。
+
+`prep_msg()`的代码如下：
+
+**button.py**
+
+```
+      def prep_msg(self, msg):
+          """将 msg 渲染为图像，并使其在按钮上居中"""
+❶         self.msg_image = self.font.render(msg, True, self.text_color,
+              self.button_color)
+❷         self.msg_image_rect = self.msg_image.get_rect()
+          self.msg_image_rect.center = self.rect.center
+```
+
+方法`prep_msg()`接受实参`self`以及要渲染为图像的文本（`msg`）。调用`font.render()`将存储在`msg`中的文本转换为图像，然后将该图像存储在`msg_image`中（见❶）。方法`font.render()`还接受一个布尔实参，该实参指定开启还是关闭反锯齿功能（反锯齿让文本的边缘更平滑）。余下的两个实参分别是文本颜色和背景色。我们启用了反锯齿功能，并将文本的背景色设置为按钮的颜色（如果没有指定背景色，Pygame 将以透明背景的方式渲染文本）。
+
+在❷处，我们让文本图像在按钮上居中：根据文本图像创建一个`rect`，并将其`center`属性设置为按钮的`center`属性。
+
+最后，我们创建方法`draw_button()`，通过调用它可将这个按钮显示到屏幕上：
+
+**button.py**
+
+```
+    def draw_button(self):
+        # 绘制一个用颜色填充的按钮，再绘制文本
+        self.screen.fill(self.button_color, self.rect)
+        self.screen.blit(self.msg_image, self.msg_image_rect)
+```
+
+我们调用`screen.fill()`来绘制表示按钮的矩形，再调用`screen.blit()`，并向它传递一幅图像以及与该图像相关联的`rect`对象，从而在屏幕上绘制文本图像。至此，`Button`类便创建好了。
+
+#### **14.1.2　在屏幕上绘制按钮**
+
+我们将使用`Button`类来创建一个 Play 按钮。鉴于只需要一个 Play 按钮，我们直接在 alien_invasion.py 中创建它，如下所示：
+
+**alien_invasion.py**
+
+```
+  --snip--
+  from game_stats import GameStats
+  from button import Button
+  --snip--
+
+  def run_game():
+      --snip--
+      pygame.display.set_caption("Alien Invasion")
+
+      # 创建 Play 按钮
+❶     play_button = Button(ai_settings, screen, "Play")
+      --snip--
+
+      # 开始游戏主循环
+      while True:
+          --snip--
+❷         gf.update_screen(ai_settings, screen, stats, ship, aliens, bullets,
+              play_button)
+
+  run_game()
+```
+
+我们导入`Button`类，并创建一个名为`play_button`的实例（见❶），然后我们将`play_button`传递给`update_screen()`，以便能够在屏幕更新时显示按钮（见❷）。
+
+接下来，修改`update_screen()`，以便在游戏处于非活动状态时显示 Play 按钮：
+
+**game_functions.py**
+
+```
+def update_screen(ai_settings, screen, stats, ship, aliens, bullets,
+        play_button):
+    """更新屏幕上的图像，并切换到新屏幕"""
+    --snip--
+
+    # 如果游戏处于非活动状态，就绘制 Play 按钮
+    if not stats.game_active:
+        play_button.draw_button()
+
+    # 让最近绘制的屏幕可见
+    pygame.display.flip()
+```
+
+为让 Play 按钮位于其他所有屏幕元素上面，我们在绘制其他所有游戏元素后再绘制这个按钮，然后切换到新屏幕。如果你现在运行这个游戏，将在屏幕中央看到一个 Play 按钮，如图14-1所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/18.d14z.001.png)
+
+**图14-1　游戏处于非活动状态时出现的 Play 按钮**
+
+#### **14.1.3　开始游戏**
+
+为在玩家单击 Play 按钮时开始新游戏，需在 game_functions.py 中添加如下代码，以监视与这个按钮相关的鼠标事件：
+
+**game_functions.py**
+
+```
+  def check_events(ai_settings, screen, stats, play_button, ship, bullets):
+      """响应按键和鼠标事件"""
+      for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+              --snip--
+❶         elif event.type == pygame.MOUSEBUTTONDOWN:
+❷             mouse_x, mouse_y = pygame.mouse.get_pos()
+❸             check_play_button(stats, play_button, mouse_x, mouse_y)
+
+  def check_play_button(stats, play_button, mouse_x, mouse_y):
+      """在玩家单击 Play 按钮时开始新游戏"""
+❹     if play_button.rect.collidepoint(mouse_x, mouse_y):
+          stats.game_active = True
+```
+
+我们修改了`check_events()`的定义，在其中添加了形参`stats`和`play_button`。我们将使用`stats`来访问标志`game_active`，并使用`play_button`来检查玩家是否单击了 Play 按钮。
+
+无论玩家单击屏幕的什么地方，Pygame 都将检测到一个`MOUSEBUTTONDOWN`事件（见❶），但我们只想让这个游戏在玩家用鼠标单击 Play 按钮时作出响应。为此，我们使用了`pygame.mouse.get_pos()`，它返回一个元组，其中包含玩家单击时鼠标的 *x* 和 *y* 坐标（见❷）。我们将这些值传递给函数`check_play_button()`（见❸），而这个函数使用`collidepoint()`检查鼠标单击位置是否在 Play 按钮的`rect`内（见❹）。如果是这样的，我们就将`game_active`设置为`True`，让游戏就此开始！
+
+在`alien_invasion.py`中调用`check_events()`，需要传递另外两个实参——`stats`和`play_button`：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, stats, play_button, ship,
+            bullets)
+        --snip--
+```
+
+至此，你应该能够开始这个游戏了。游戏结束时，`game_active`应为`False`，并重新显示 Play 按钮。
+
+#### **14.1.4　重置游戏**
+
+前面编写的代码只处理了玩家第一次单击 Play 按钮的情况，而没有处理游戏结束的情况，因为没有重置导致游戏结束的条件。
+
+为在玩家每次单击 Play 按钮时都重置游戏，需要重置统计信息、删除现有的外星人和子弹、创建一群新的外星人，并让飞船居中，如下所示：
+
+**game_functions.py**
+
+```
+  def check_play_button(ai_settings, screen, stats, play_button, ship, aliens,
+          bullets, mouse_x, mouse_y):
+      """在玩家单击 Play 按钮时开始新游戏"""
+      if play_button.rect.collidepoint(mouse_x, mouse_y):
+          # 重置游戏统计信息
+❶         stats.reset_stats()
+          stats.game_active = True
+
+          # 清空外星人列表和子弹列表
+❷         aliens.empty()
+          bullets.empty()
+
+          # 创建一群新的外星人，并让飞船居中
+❸         create_fleet(ai_settings, screen, ship, aliens)
+          ship.center_ship()
+```
+
+我们更新了`check_play_button()`的定义，使其能够访问`ai_settings`、`stats`、`ship`、`aliens`和`bullets`。为重置在游戏期间发生了变化的设置以及刷新游戏的视觉元素，它需要这些对象。
+
+在❶处，我们重置了游戏统计信息，给玩家提供了三艘新飞船。接下来，我们将`game_active`设置为`True`（这样，这个函数的代码执行完毕后，游戏就会开始），清空编组`aliens`和`bullets`（见❷），创建一群新的外星人，并将飞船居中（见❸）。
+
+`check_events()`的定义需要修改，调用`check_play_button()`的代码亦如此：
+
+**game_functions.py**
+
+```
+  def check_events(ai_settings, screen, stats, play_button, ship, aliens,
+          bullets):
+      """响应按键和鼠标事件"""
+      for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+              --snip--
+          elif event.type == pygame.MOUSEBUTTONDOWN:
+              mouse_x, mouse_y = pygame.mouse.get_pos()
+❶             check_play_button(ai_settings, screen, stats, play_button, ship,
+                  aliens, bullets, mouse_x, mouse_y)
+```
+
+`check_events()`的定义需要形参`aliens`，以便将它传递给`check_play_button()`。接下来，我们修改了调用`check_play_button()`的代码，以将合适的实参传递给它（见❶）。
+
+下面来修改 alien_invasion.py 中调用`check_events()`的代码，以将实参`aliens`传递给它：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, stats, play_button, ship,
+            aliens, bullets)
+        --snip--
+```
+
+现在，每当玩家单击 Play 按钮时，这个游戏都将正确地重置，让玩家想玩多少次就玩多少次！
+
+#### **14.1.5　将 Play 按钮切换到非活动状态**
+
+当前，Play 按钮存在一个问题，那就是即便 Play 按钮不可见，玩家单击其原来所在的区域时，游戏依然会作出响应。游戏开始后，如果玩家不小心单击了 Play 按钮原来所处的区域，游戏将重新开始！
+
+为修复这个问题，可让游戏仅在`game_active`为`False`时才开始：
+
+**game_functions.py**
+
+```
+  def check_play_button(ai_settings, screen, stats, play_button, ship, aliens,
+          bullets, mouse_x, mouse_y):
+      """玩家单击 Play 按钮时开始新游戏"""
+❶     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+❷     if button_clicked and not stats.game_active:
+          #重置游戏统计信息
+          --snip--
+```
+
+标志`button_clicked`的值为`True`或`False`（见❶），仅当玩家单击了 Play 按钮**且**游戏当前处于非活动状态时，游戏才重新开始（见❷）。为测试这种行为，可开始新游戏，并不断地单击 Play 按钮原来所在的区域。如果一切都像预期的那样工作，单击 Play 按钮原来所处的区域应该没有任何影响。
+
+#### **14.1.6　隐藏光标**
+
+为让玩家能够开始游戏，我们要让光标可见，但游戏开始后，光标只会添乱。为修复这种问题，我们在游戏处于活动状态时让光标不可见：
+
+**game_functions.py**
+
+```
+def check_play_button(ai_settings, screen, stats, play_button, ship, aliens,
+        bullets, mouse_x, mouse_y):
+    """在玩家单击 Play 按钮时开始新游戏"""
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        # 隐藏光标
+        pygame.mouse.set_visible(False)
+        --snip--
+```
+
+通过向`set_visible()`传递`False`，让 Pygame 在光标位于游戏窗口内时将其隐藏起来。
+
+游戏结束后，我们将重新显示光标，让玩家能够单击 Play 按钮来开始新游戏。相关的代码如下：
+
+**game_functions.py**
+
+```
+def ship_hit(ai_settings, screen, stats, ship, aliens, bullets):
+    """响应飞船被外星人撞到"""
+    if stats.ships_left > 0:
+        --snip--
+    else:
+        stats.game_active = False
+        pygame.mouse.set_visible(True)
+```
+
+在`ship_hit()`中，我们在游戏进入非活动状态后，立即让光标可见。关注这样的细节让游戏显得更专业，也让玩家能够专注于玩游戏而不是费力搞明白用户界面。
+
+> **动手试一试**
+>
+> **14-1 按 P 开始新游戏**：鉴于游戏《外星人入侵》使用键盘来控制飞船，最好让玩家也能够通过按键来开始游戏。请添加让玩家在按 P 时开始游戏的代码。也许这样做会有所帮助：将`check_play_button()`的一些代码提取出来，放到一个名为`start_game()`的函数中，并在`check_play_button()`和`check_keydown_events()`中调用这个函数。
+>
+> **14-2 射击练习**：创建一个矩形，它在屏幕右边缘以固定的速度上下移动。然后，在屏幕左边缘创建一艘飞船，玩家可上下移动该飞船，并射击前述矩形目标。添加一个用于开始游戏的 Play 按钮，在玩家三次未击中目标时结束游戏，并重新显示 Play 按钮，让玩家能够通过单击该按钮来重新开始游戏。
+
+### **14.2　提高等级**
+
+当前，将整群外星人都消灭干净后，玩家将提高一个等级，但游戏的难度并没有变。下面来增加一点趣味性：每当玩家将屏幕上的外星人都消灭干净后，加快游戏的节奏，让游戏玩起来更难。
+
+#### **14.2.1　修改速度设置**
+
+我们首先重新组织`Settings`类，将游戏设置划分成静态的和动态的两组。对于随着游戏进行而变化的设置，我们还确保它们在开始新游戏时被重置。settings.py 的方法`__init__()`如下：
+
+**settings.py**
+
+```
+      def __init__(self):
+          """初始化游戏的静态设置"""
+          # 屏幕设置
+          self.screen_width = 1200
+          self.screen_height = 800
+          self.bg_color = (230, 230, 230)
+
+          # 飞船设置
+          self.ship_limit = 3
+
+          # 子弹设置
+          self.bullet_width = 3
+          self.bullet_height = 15
+          self.bullet_color = 60, 60, 60
+          self.bullets_allowed = 3
+
+          # 外星人设置
+          self.fleet_drop_speed = 10
+
+          # 以什么样的速度加快游戏节奏
+❶         self.speedup_scale = 1.1
+
+❷         self.initialize_dynamic_settings()
+```
+
+我们依然在`__init__()`中初始化静态设置。在❶处，我们添加了设置`speedup_scale`，用于控制游戏节奏的加快速度：2表示玩家每提高一个等级，游戏的节奏就翻倍；1表示游戏节奏始终不变。将其设置为1.1能够将游戏节奏提高到够快，让游戏既有难度，又并非不可完成。最后，我们调用`initialize_dynamic_settings()`，以初始化随游戏进行而变化的属性（见❷）。
+
+`initialize_dynamic_settings()`的代码如下：
+
+**settings.py**
+
+```
+    def initialize_dynamic_settings(self):
+        """初始化随游戏进行而变化的设置"""
+        self.ship_speed_factor = 1.5
+        self.bullet_speed_factor = 3
+        self.alien_speed_factor = 1
+
+        # fleet_direction 为1表示向右；为-1表示向左
+        self.fleet_direction = 1
+```
+
+这个方法设置了飞船、子弹和外星人的初始速度。随游戏的进行，我们将提高这些速度，而每当玩家开始新游戏时，都将重置这些速度。在这个方法中，我们还设置了`fleet_direction`，使得游戏刚开始时，外星人总是向右移动。每当玩家提高一个等级时，我们都使用`increase_speed()`来提高飞船、子弹和外星人的速度：
+
+**settings.py**
+
+```
+    def increase_speed(self):
+        """提高速度设置"""
+        self.ship_speed_factor *= self.speedup_scale
+        self.bullet_speed_factor *= self.speedup_scale
+        self.alien_speed_factor *= self.speedup_scale
+```
+
+为提高这些游戏元素的速度，我们将每个速度设置都乘以`speedup_scale`的值。
+
+在`check_bullet_alien_collisions()`中，我们在整群外星人都被消灭后调用`increase_speed()`来加快游戏的节奏，再创建一群新的外星人：
+
+**game_functions.py**
+
+```
+def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
+    --snip--
+    if len(aliens) == 0:
+        # 删除现有的子弹，加快游戏节奏，并创建一群新的外星人
+        bullets.empty()
+        ai_settings.increase_speed()
+        create_fleet(ai_settings, screen, ship, aliens)
+```
+
+通过修改速度设置`ship_speed_factor`、`alien_speed_factor`和`bullet_speed_factor`的值，足以加快整个游戏的节奏！
+
+#### **14.2.2　重置速度**
+
+每当玩家开始新游戏时，我们都需要将发生了变化的设置重置为初始值，否则新游戏开始时，速度设置将是前一次游戏增加了的值：
+
+**game_functions.py**
+
+```
+def check_play_button(ai_settings, screen, stats, play_button, ship, aliens,
+        bullets, mouse_x, mouse_y):
+    """在玩家单击 Play 按钮时开始新游戏"""
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        # 重置游戏设置
+        ai_settings.initialize_dynamic_settings()
+
+        # 隐藏光标
+        pygame.mouse.set_visible(False)
+        --snip--
+```
+
+现在，游戏《外星人入侵》玩起来更有趣，也更有挑战性。每当玩家将屏幕上的外星人消灭干净后，游戏都将加快节奏，因此难度会更大些。如果游戏的难度提高得太快，可降低`settings.speedup_scale`的值；如果游戏的挑战性不足，可稍微提高这个设置的值。找出这个设置的最佳值，让难度的提高速度相对合理：一开始的几群外星人很容易消灭干净；接下来的几群消灭起来有一定难度，但也不是不可能；而要将更靠后的外星人群消灭干净几乎不可能。
+
+> **动手试一试**
+>
+> **14-3 有一定难度的射击练习**：以你为完成练习14-2而做的工作为基础，让标靶的移动速度随游戏进行而加快，并在玩家单击 Play 按钮时将其重置为初始值。
+
+### **14.3　记分**
+
+下面来实现一个记分系统，以实时地跟踪玩家的得分，并显示最高得分、当前等级和余下的飞船数。
+
+得分是游戏的一项统计信息，因此我们在`GameStats`中添加一个`score`属性：
+
+**game_stats.py**
+
+```
+class GameStats():
+    --snip--
+    def reset_stats(self):
+        """初始化随游戏进行可能变化的统计信息"""
+        self.ships_left = self.ai_settings.ship_limit
+        self.score = 0
+```
+
+为在每次开始游戏时都重置得分，我们在`reset_stats()`而不是`__init__()`中初始化`score`。
+
+#### **14.3.1　显示得分**
+
+为在屏幕上显示得分，我们首先创建一个新类`Scoreboard`。就当前而言，这个类只显示当前得分，但后面我们也将使用它来显示最高得分、等级和余下的飞船数。下面是这个类的前半部分，它被保存为文件 scoreboard.py：
+
+**scoreboard.py**
+
+```
+  import pygame.font
+
+  class Scoreboard():
+      """显示得分信息的类"""
+
+❶     def __init__(self, ai_settings, screen, stats):
+          """初始化显示得分涉及的属性"""
+          self.screen = screen
+          self.screen_rect = screen.get_rect()
+          self.ai_settings = ai_settings
+          self.stats = stats
+
+          # 显示得分信息时使用的字体设置
+❷         self.text_color = (30, 30, 30)
+❸         self.font = pygame.font.SysFont(None, 48)
+
+          # 准备初始得分图像
+❹         self.prep_score()
+```
+
+由于`Scoreboard`在屏幕上显示文本，因此我们首先导入模块`pygame.font`。接下来，我们在`__init__()`中包含形参`ai_settings`、`screen`和`stats`，让它能够报告我们跟踪的值（见❶）。然后，我们设置文本颜色（见❷）并实例化一个字体对象（见❸）。
+
+为将要显示的文本转换为图像，我们调用了`prep_score()`（见❹），其定义如下：
+
+**scoreboard.py**
+
+```
+      def prep_score(self):
+        """将得分转换为一幅渲染的图像"""
+❶         score_str = str(self.stats.score)
+❷         self.score_image = self.font.render(score_str, True, self.text_color,
+              self.ai_settings.bg_color)
+
+          # 将得分放在屏幕右上角
+❸         self.score_rect = self.score_image.get_rect()
+❹         self.score_rect.right = self.screen_rect.right - 20
+❺         self.score_rect.top = 20
+```
+
+在`prep_score()`中，我们首先将数字值`stats.score`转换为字符串（见❶），再将这个字符串传递给创建图像的`render()`（见❷）。为在屏幕上清晰地显示得分，我们向`render()`传递了屏幕背景色，以及文本颜色。
+
+我们将得分放在屏幕右上角，并在得分增大导致这个数字更宽时让它向左延伸。为确保得分始终锚定在屏幕右边，我们创建了一个名为`score_rect`的`rect`（见❸），让其右边缘与屏幕右边缘相距20像素（见❹），并让其上边缘与屏幕上边缘也相距20像素（见❺）。
+
+最后，我们创建方法`show_score()`，用于显示渲染好的得分图像：
+
+**scoreboard.py**
+
+```
+    def show_score(self):
+        """在屏幕上显示得分"""
+        self.screen.blit(self.score_image, self.score_rect)
+```
+
+这个方法将得分图像显示到屏幕上，并将其放在`score_rect`指定的位置。
+
+#### **14.3.2　创建记分牌**
+
+为显示得分，我们在 alien_invasion.py 中创建一个`Scoreboard`实例：
+
+**alien_invasion.py**
+
+```
+  --snip--
+  from game_stats import GameStats
+  from scoreboard import Scoreboard
+  --snip--
+  def run_game():
+      --snip--
+      # 创建存储游戏统计信息的实例，并创建记分牌
+      stats = GameStats(ai_settings)
+❶     sb = Scoreboard(ai_settings, screen, stats)
+      --snip--
+      # 开始游戏主循环
+      while True:
+          --snip--
+❷         gf.update_screen(ai_settings, screen, stats, sb, ship, aliens,
+              bullets, play_button)
+
+  run_game()
+```
+
+我们导入新创建的类`Scoreboard`，并在创建实例`stats`后创建了一个名为`sb`的`Scoreboard`实例（见❶）。接下来，我们将`sb`传递给`update_screen()`，让它能够在屏幕上显示得分（见❷）。
+
+为显示得分，将`update_screen()`修改成下面这样：
+
+**game_functions.py**
+
+```
+def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets,
+        play_button):
+    _--snip--_
+    # 显示得分
+    sb.show_score()
+
+    # 如果游戏处于非活动状态，就显示 Play 按钮
+    if not stats.game_active:
+        play_button.draw_button()
+
+    # 让最近绘制的屏幕可见
+    pygame.display.flip()
+```
+
+我们在`update_screen()`的形参列表中添加了`sb`，并在绘制 Play 按钮前调用`show_score`。
+
+如果现在运行这个游戏，你将在屏幕右上角看到0（当前，我们只想在进一步开发记分系统前确认得分出现在正确的地方）。图14-2显示了游戏开始前的得分。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/18.d14z.002.png)
+
+**图14-2　得分出现在屏幕右上角**
+
+下面来指定每个外星人值多少点！
+
+#### **14.3.3　在外星人被消灭时更新得分**
+
+为在屏幕上实时地显示得分，每当有外星人被击中时，我们都更新`stats.score`的值，再调用`prep_score()`更新得分图像。但在此之前，我们需要指定玩家每击落一个外星人都将得到多少个点：
+
+**settings.py**
+
+```
+    def initialize_dynamic_settings(self):
+        --snip--
+
+        # 记分
+        self.alien_points = 50
+```
+
+随着游戏的进行，我们将提高每个外星人值的点数。为确保每次开始新游戏时这个值都会被重置，我们在`initialize_dynamic_settings()`中设置它。
+
+在`check_bullet_alien_collisions()`中，每当有外星人被击落时，都更新得分：
+
+**game_functions.py**
+
+```
+  def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship,
+          aliens, bullets):
+      """响应子弹和外星人发生碰撞"""
+      # 删除发生碰撞的子弹和外星人
+      collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+      if collisions:
+❶         stats.score += ai_settings.alien_points
+          sb.prep_score()
+      --snip--
+```
+
+我们更新`check_bullet_alien_collisions()`的定义，在其中包含了形参`stats`和`sb`，让它能够更新得分和记分牌。有子弹撞到外星人时，Pygame 返回一个字典（`collisions`）。我们检查这个字典是否存在，如果存在，就将得分加上一个外星人值的点数（见❶）。接下来，我们调用`prep_score()`来创建一幅显示最新得分的新图像。
+
+我们需要修改`update_bullets()`，确保在函数之间传递合适的实参：
+
+**game_functions.py**
+
+```
+def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets):
+    """更新子弹的位置，并删除已消失的子弹"""
+    --snip--
+
+    check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship,
+        aliens, bullets)
+```
+
+在`update_bullets()`的定义中，需要新增形参`stats`和`sb`，而调用`check_bullet_alien_collisions()`时，也需要传递实参`stats`和`sb`。
+
+我们还需要修改主`while`循环中调用`update_bullets()`的代码：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, stats, play_button, ship,
+            aliens, bullets)
+        if stats.game_active:
+            ship.update()
+            gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens,
+                bullets)
+            --snip--
+```
+
+调用`update_bullets()`时，需要传递实参`stats`和`sb`。
+
+如果你现在运行这个游戏，得分将不断增加！
+
+#### **14.3.4　将消灭的每个外星人的点数都计入得分**
+
+当前，我们的代码可能遗漏了一些被消灭的外星人。例如，如果在一次循环中有两颗子弹射中了外星人，或者因子弹更宽而同时击中了多个外星人，玩家将只能得到一个被消灭的外星人的点数。为修复这种问题，我们来调整检测子弹和外星人碰撞的方式。
+
+在`check_bullet_alien_collisions()`中，与外星人碰撞的子弹都是字典`collisions`中的一个键；而与每颗子弹相关的值都是一个列表，其中包含该子弹撞到的外星人。我们遍历字典`collisions`，确保将消灭的每个外星人的点数都记入得分：
+
+**game_functions.py**
+
+```
+  def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship,
+          aliens, bullets):
+      --snip--
+      if collisions:
+❶         for aliens in collisions.values():
+              stats.score += ai_settings.alien_points * len(aliens)
+              sb.prep_score()
+      --snip--
+```
+
+如果字典`collisions`存在，我们就遍历其中的所有值。别忘了，每个值都是一个列表，包含被同一颗子弹击中的所有外星人。对于每个列表，都将一个外星人的点数乘以其中包含的外星人数量，并将结果加入到当前得分中。为测试这一点，请将子弹宽度改为300像素，并核实你得到了更宽的子弹击中的每个外星人的点数，再将子弹宽度恢复到正常值。
+
+#### **14.3.5　提高点数**
+
+玩家每提高一个等级，游戏都变得更难，因此处于较高的等级时，外星人的点数应更高。为实现这种功能，我们添加一些代码，以在游戏节奏加快时提高点数：
+
+**settings.py**
+
+```
+  class Settings():
+      """存储游戏《外星人入侵》的所有设置的类"""
+
+      def __init__(self):
+          --snip--
+          # 加快游戏节奏的速度
+          self.speedup_scale = 1.1
+          # 外星人点数的提高速度
+❶         self.score_scale = 1.5
+
+          self.initialize_dynamic_settings()
+
+      def increase_speed(self):
+          """提高速度设置和外星人点数"""
+          self.ship_speed_factor *= self.speedup_scale
+          self.bullet_speed_factor *= self.speedup_scale
+          self.alien_speed_factor *= self.speedup_scale
+
+❷         self.alien_points = int(self.alien_points * self.score_scale)
+```
+
+我们定义了点数提高的速度，并称之为`score_scale`（见❶）。很小的节奏加快速度（1.1）让游戏很快就变得极具挑战性，但为让记分发生显著的变化，需要将点数的提高速度设置为更大的值（1.5）。现在，我们在加快游戏节奏的同时，提高了每个外星人的点数。为让点数为整数，我们使用了函数`int()`。
+
+为显示外星人的点数，我们在`Settings`的方法`increase_speed()`中添加了一条`print`语句：
+
+**settings.py**
+
+```
+    def increase_speed(self):
+        --snip--
+        self.alien_points = int(self.alien_points * self.score_scale)
+        print(self.alien_points)
+```
+
+现在每当提高一个等级时，你都会在终端窗口看到新的点数值。
+
+> **注意**　
+>
+> 确认点数在不断增加后，一定要删除这条`print`语句，否则它可能会影响游戏的性能以及分散玩家的注意力。
+
+#### **14.3.6　将得分圆整**
+
+大多数街机风格的射击游戏都将得分显示为10的整数倍，下面让我们的记分系统遵循这个原则。我们还将设置得分的格式，在大数字中添加用逗号表示的千位分隔符。我们在`Scoreboard`中执行这种修改：
+
+**scoreboard.py**
+
+```
+      def prep_score(self):
+          """将得分转换为渲染的图像"""
+❶         rounded_score = int(round(self.stats.score, -1))
+❷         score_str = "{:,}".format(rounded_score)
+          self.score_image = self.font.render(score_str, True, self.text_color,
+              self.ai_settings.bg_color)
+          --snip--
+```
+
+函数`round()`通常让小数精确到小数点后多少位，其中小数位数是由第二个实参指定的。然而，如果将第二个实参指定为负数，`round()`将圆整到最近的10、100、1000等整数倍。❶处的代码让 Python 将`stats.score`的值圆整到最近的10的整数倍，并将结果存储到`rounded_score`中。
+
+> **注意**　
+>
+> 在 Python 2.7 中，`round()`总是返回一个小数值，因此我们使用`int()`来确保报告的得分为整数。如果你使用的是 Python 3，可省略对`int()`的调用。
+
+❷处使用了一个字符串格式设置指令，它让 Python 将数值转换为字符串时在其中插入逗号，例如，输出`1,000,000`而不是`1000000`。如果你现在运行这个游戏，看到的将是10的整数倍的整洁得分，即便得分很高亦如此，如图14-3所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/18.d14z.003.png)
+
+**图14-3　得分为10的整数倍，并将逗号用作千分位分隔符**
+
+#### **14.3.7　最高得分**
+
+每个玩家都想超过游戏的最高得分记录。下面来跟踪并显示最高得分，给玩家提供要超越的目标。我们将最高得分存储在`GameStats`中：
+
+**game_stats.py**
+
+```
+    def __init__(self, ai_settings):
+        --snip--
+        # 在任何情况下都不应重置最高得分
+        self.high_score = 0
+```
+
+鉴于在任何情况下都不会重置最高得分，我们在`__init__()`中而不是`reset_stats()`中初始化`high_score`。
+
+下面来修改`Scoreboard`以显示最高得分。先来修改方法`__init__()`：
+
+**scoreboard.py**
+
+```
+      def __init__(self, ai_settings, screen, stats):
+          --snip--
+          # 准备包含最高得分和当前得分的图像
+          self.prep_score()
+❶         self.prep_high_score()
+```
+
+最高得分将与当前得分分开显示，因此我们需要编写一个新方法`prep_high_score()`，用于准备包含最高得分的图像（见❶）。
+
+方法`prep_high_score()`的代码如下：
+
+**scoreboard.py**
+
+```
+      def prep_high_score(self):
+          """将最高得分转换为渲染的图像"""
+❶         high_score = int(round(self.stats.high_score, -1))
+❷         high_score_str = "{:,}".format(high_score)
+❸         self.high_score_image = self.font.render(high_score_str, True,
+              self.text_color, self.ai_settings.bg_color)
+
+          #将最高得分放在屏幕顶部中央
+          self.high_score_rect = self.high_score_image.get_rect()
+❹         self.high_score_rect.centerx = self.screen_rect.centerx
+❺         self.high_score_rect.top = self.score_rect.top
+```
+
+我们将最高得分圆整到最近的10的整数倍（见❶），并添加了用逗号表示的千分位分隔符（见❷）。然后，我们根据最高得分生成一幅图像（见❸），使其水平居中（见❹），并将其`top`属性设置为当前得分图像的`top`属性（见❺）。
+
+现在，方法`show_score()`需要在屏幕右上角显示当前得分，并在屏幕顶部中央显示最高得分：
+
+**scoreboard.py**
+
+```
+    def show_score(self):
+        """在屏幕上显示当前得分和最高得分"""
+        self.screen.blit(self.score_image, self.score_rect)
+        self.screen.blit(self.high_score_image, self.high_score_rect)
+```
+
+为检查是否诞生了新的最高得分，我们在 game_functions.py 中添加一个新函数`check_high_score()`：
+
+**game_functions.py**
+
+```
+  def check_high_score(stats, sb):
+      """检查是否诞生了新的最高得分"""
+❶     if stats.score > stats.high_score:
+          stats.high_score = stats.score
+          sb.prep_high_score()
+```
+
+函数`check_high_score()`包含两个形参：`stats`和`sb`。它使用`stats`来比较当前得分和最高得分，并在必要时使用`sb`来修改最高得分图像。在❶处，我们比较当前得分和最高得分，如果当前得分更高，就更新`high_score`的值，并调用`prep_high_score()`来更新包含最高得分的图像。
+
+在`check_bullet_alien_collisions()`中，每当有外星人被消灭，都需要在更新得分后调用`check_high_score()`：
+
+**game_functions.py**
+
+```
+def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship,
+        aliens, bullets):
+    --snip--
+    if collisions:
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_points * len(aliens)
+            sb.prep_score()
+        check_high_score(stats, sb)
+    --snip--
+```
+
+字典`collisions`存在时，我们根据消灭了多少外星人来更新得分，再调用`check_high_score()`。
+
+第一次玩这款游戏时，当前得分就是最高得分，因此两个地方显示的都是当前得分。但再次开始这个游戏时，最高得分出现在中央，而当前得分出现在右边，如图14-4所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/18.d14z.004.png)
+
+**图14-4　最高得分显示在屏幕顶部中央**
+
+#### **14.3.8　显示等级**
+
+为在游戏中显示玩家的等级，首先需要在`GameStats`中添加一个表示当前等级的属性。为确保每次开始新游戏时都重置等级，在`reset_stats()`中初始化它：
+
+**game_stats.py**
+
+```
+    def reset_stats(self):
+        """初始化随游戏进行可能变化的统计信息"""
+        self.ships_left = self.ai_settings.ship_limit
+        self.score = 0
+        self.level = 1
+```
+
+为让`Scoreboard`能够在当前得分下方显示当前等级，我们在`__init__()`中调用了一个新方法`prep_level()`：
+
+**scoreboard.py**
+
+```
+    def __init__(self, ai_settings, screen, stats):
+        --snip--
+
+        # 准备包含得分的初始图像
+        self.prep_score()
+        self.prep_high_score()
+        self.prep_level()
+```
+
+`prep_level()`的代码如下：
+
+**scoreboard.py**
+
+```
+      def prep_level(self):
+          """将等级转换为渲染的图像"""
+❶         self.level_image = self.font.render(str(self.stats.level), True,
+                  self.text_color, self.ai_settings.bg_color)
+
+          # 将等级放在得分下方
+          self.level_rect = self.level_image.get_rect()
+❷         self.level_rect.right = self.score_rect.right
+❸         self.level_rect.top = self.score_rect.bottom + 10
+```
+
+方法`prep_level()`根据存储在`stats.level`中的值创建一幅图像（见❶），并将其`right`属性设置为得分的`right`属性（见❷）。然后，将`top`属性设置为比得分图像的`bottom`属性大10像素，以便在得分和等级之间留出一定的空间（见❸）。
+
+我们还需要更新`show_score()`：
+
+**scoreboard.py**
+
+```
+    def show_score(self):
+        """在屏幕上显示飞船和得分"""
+        self.screen.blit(self.score_image, self.score_rect)
+        self.screen.blit(self.high_score_image, self.high_score_rect)
+        self.screen.blit(self.level_image, self.level_rect)
+```
+
+在这个方法中，添加了一行在屏幕上显示等级图像的代码。
+
+我们在`check_bullet_alien_collisions()`中提高等级，并更新等级图像：
+
+**game_functions.py**
+
+```
+  def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship,
+          aliens, bullets):
+      --snip--
+      if len(aliens) == 0:
+          # 如果整群外星人都被消灭，就提高一个等级
+          bullets.empty()
+          ai_settings.increase_speed()
+
+          # 提高等级
+❶         stats.level += 1
+❷         sb.prep_level()
+
+          create_fleet(ai_settings, screen, ship, aliens)
+```
+
+如果整群外星人都被消灭，我们就将`stats.level`的值加1（见❶），并调用`prep_level()`，以确保正确地显示新等级（见❷）。
+
+为确保开始新游戏时更新记分和等级图像，在按钮 Play 被单击时触发重置：
+
+**game_functions.py**
+
+```
+  def check_play_button(ai_settings, screen, stats, sb, play_button, ship,
+          aliens, bullets, mouse_x, mouse_y):
+      """在玩家单击 Play 按钮时开始新游戏"""
+      button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+      if button_clicked and not stats.game_active:
+          --snip--
+
+          # 重置游戏统计信息
+          stats.reset_stats()
+          stats.game_active = True
+
+          # 重置记分牌图像
+❶         sb.prep_score()
+          sb.prep_high_score()
+          sb.prep_level()
+
+          # 清空外星人列表和子弹列表
+          aliens.empty()
+          bullets.empty()
+
+          --snip--
+```
+
+`check_play_button()`的定义需要包含对象`sb`。为重置记分牌图像，我们在重置相关游戏设置后调用`prep_score()`、`prep_high_score()`和`prep_level()`（见❶）。
+
+在`check_events()`中，现在需要向`check_play_button()`传递`sb`，让它能够访问记分牌对象：
+
+**game_functions.py**
+
+```
+  def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens,
+          bullets):
+      """响应按键和鼠标事件"""
+      for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+              --snip--
+          elif event.type == pygame.MOUSEBUTTONDOWN:
+              mouse_x, mouse_y = pygame.mouse.get_pos()
+❶             check_play_button(ai_settings, screen, stats, sb, play_button,
+                  ship, aliens, bullets, mouse_x, mouse_y)
+```
+
+`check_events()`的定义需要包含形参`sb`，这样调用`check_play_button()`时，才能将`sb`作为实参传递给它（见❶）。
+
+最后，更新 alien_invasion.py 中调用`check_events()`的代码，也向它传递`sb`：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        gf.check_events(ai_settings, screen, stats, sb, play_button, ship,
+            aliens, bullets)
+        --snip--
+```
+
+现在你可以知道升到多少级了，如图14-5所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/18.d14z.005.png)
+
+**图14-5　当前等级显示在当前得分的正下方**
+
+> **注意**　
+>
+> 在一些经典游戏中，得分带标签，如 Score、High Score 和 Level。我们没有显示这些标签，因为开始玩这款游戏后，每个数字的含义将一目了然。要包含这些标签，只需在`Scoreboard`中调用`font.render()`前，将它们添加到得分字符串中即可。
+
+#### **14.3.9　显示余下的飞船数**
+
+最后，我们来显示玩家还有多少艘飞船，但使用图形而不是数字。为此，我们在屏幕左上角绘制飞船图像来指出还余下多少艘飞船，就像众多经典的街机游戏那样。
+
+首先，需要让`Ship`继承`Sprite`，以便能够创建飞船编组：
+
+**ship.py**
+
+```
+  import pygame
+  from pygame.sprite import Sprite
+
+❶ class Ship(Sprite):
+
+      def __init__(self, ai_settings, screen):
+          """初始化飞船，并设置其起始位置"""
+❷         super(Ship, self).__init__()
+          --snip--
+```
+
+在这里，我们导入了`Sprite`，让`Ship`继承 Sprite （见❶），并在`__init__()`的开头就调用了`super()`（见❷）。
+
+接下来，需要修改`Scoreboard`，在其中创建一个可供显示的飞船编组。下面是其中的`import`语句和方法`__init__()`：
+
+**scoreboard.py**
+
+```
+import pygame.font
+from pygame.sprite import Group
+
+from ship import Ship
+
+class Scoreboard():
+    """报告得分信息的类"""
+
+    def __init__(self, ai_settings, screen, stats):
+        --snip--
+        self.prep_level()
+        self.prep_ships()
+       --snip--
+```
+
+鉴于要创建一个飞船编组，我们导入`Group`和`Ship`类。调用`prep_level()`后，我们调用了`prep_ships()`。
+
+`prep_ships()`的代码如下：
+
+**scoreboard.py**
+
+```
+      def prep_ships(self):
+          """显示还余下多少艘飞船"""
+❶         self.ships = Group()
+❷         for ship_number in range(self.stats.ships_left):
+              ship = Ship(self.ai_settings, self.screen)
+❸             ship.rect.x = 10 + ship_number * ship.rect.width
+❹             ship.rect.y = 10
+❺             self.ships.add(ship)
+```
+
+方法`prep_ships()`创建一个空编组`self.ships`，用于存储飞船实例（见❶）。为填充这个编组，根据玩家还有多少艘飞船运行一个循环相应的次数（见❷）。在这个循环中，我们创建一艘新飞船，并设置其 *x* 坐标，让整个飞船编组都位于屏幕左边，且每艘飞船的左边距都为10像素（见❸）。我们还将 *y* 坐标设置为离屏幕上边缘10像素，让所有飞船都与得分图像对齐（见❹）。最后，我们将每艘新飞船都添加到编组`ships`中（见❺）。
+
+现在需要在屏幕上绘制飞船了：
+
+**scoreboard.py**
+
+```
+    def show_score(self):
+        --snip--
+        self.screen.blit(self.level_image, self.level_rect)
+        # 绘制飞船
+        self.ships.draw(self.screen)
+```
+
+为在屏幕上显示飞船，我们对编组调用了`draw()`。Pygame 将绘制每艘飞船。
+
+为在游戏开始时让玩家知道他有多少艘飞船，我们在开始新游戏时调用`prep_ships()`。这是在 game_functions.py 的`check_play_button()`中进行的：
+
+**game_functions.py**
+
+```
+def check_play_button(ai_settings, screen, stats, sb, play_button, ship,
+        aliens, bullets, mouse_x, mouse_y):
+    """在玩家单击 Play 按钮时开始新游戏"""
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        --snip--
+        # 重置记分牌图像
+        sb.prep_score()
+        sb.prep_high_score()
+        sb.prep_level()
+        sb.prep_ships()
+        --snip--
+```
+
+我们还在飞船被外星人撞到时调用`prep_ships()`，从而在玩家损失一艘飞船时更新飞船图像：
+
+**game_functions.py**
+
+```
+❶ def update_aliens(ai_settings, screen, stats, sb, ship, aliens, bullets):
+      --snip--
+      # 检测外星人和飞船之间的碰撞
+      if pygame.sprite.spritecollideany(ship, aliens):
+❷         ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
+
+      # 检查是否有外星人抵达屏幕底端
+❸     check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets)
+
+❹ def ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets):
+      """响应被外星人撞到的飞船"""
+      if stats.ships_left > 0:
+          # 将 ships_left 减1
+          stats.ships_left -= 1
+
+          # 更新记分牌
+❺         sb.prep_ships()
+
+          # 清空外星人列表和子弹列表
+          --snip--
+```
+
+首先，我们在`update_aliens()`的定义中添加了形参`sb`（见❶）。然后，我们向`ship_hit()`（见❷）和`check_aliens_bottom()`（见❸）都传递了`sb`，让它们都能够访问记分牌对象。
+
+接下来，我们更新了`ship_hit()`的定义，使其包含形参`sb`（见❹）。我们在将`ships_left`的值减1后调用了`prep_ships()`（见❺），这样每次损失了飞船时，显示的飞船数都是正确的。
+
+在`check_aliens_bottom()`中需要调用`ship_hit()`，因此对这个函数进行更新：
+
+**game_functions.py**
+
+```
+def check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens,
+        bullets):
+    """检查是否有外星人抵达屏幕底端"""
+    screen_rect = screen.get_rect()
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            # 像飞船被外星人撞到一样处理
+            ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
+            break
+```
+
+现在，`check_aliens_bottom()`包含形参`sb`，并在调用`ship_hit()`时传递了实参`sb`。
+
+最后，在 alien_invasion.py 中修改调用`update_aliens()`的代码，向它传递实参`sb`：
+
+**alien_invasion.py**
+
+```
+    # 开始游戏主循环
+    while True:
+        --snip--
+        if stats.game_active:
+            ship.update()
+            gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens,
+                bullets)
+            gf.update_aliens(ai_settings, screen, stats, sb, ship, aliens,
+                bullets)
+            --snip--
+```
+
+图14-6显示了完整的记分系统，它在屏幕左上角指出了还余下多少艘飞船。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/18.d14z.006.png)
+
+**图14-6　游戏《外星人入侵》的完整记分系统**
+
+> **动手试一试**
+>
+> **14-4 历史最高分**：每当玩家关闭并重新开始游戏《外星人入侵》时，最高分都将被重置。请修复这个问题，调用`sys.exit()`前将最高分写入文件，并当在`GameStats`中初始化最高分时从文件中读取它。
+>
+> **14-5 重构**：找出执行了多项任务的函数和方法，对它们进行重构，以让代码高效而有序。例如，对于`check_bullet_alien_collisions()`，将其中在外星人群被消灭干净时开始新等级的代码移到一个名为`start_new_level()`的函数中；又比如，对于`Scoreboard`的方法`__init__()`，将其中调用四个不同方法的代码移到一个名为`prep_images()`的方法中，以缩短方法`__init__()`。如果你重构了`check_play_button()`，方法`prep_images()`也可为`check_play_button()`或`start_game()`提供帮助。
+>
+> **注意**　
+>
+> 重构项目前，请阅读附录 D，了解如果重构时引入了 bug，如何将项目恢复到可正确运行的状态。
+>
+> **14-6 扩展游戏《外星人入侵》**：想想如何扩展游戏《外星人入侵》。例如，可让外星人也能够向飞船射击，或者添加盾牌，让飞船躲到它后面，使得只有从两边射来的子弹才能摧毁飞船。另外，还可以使用像`pygame.mixer`这样的模块来添加音效，如爆炸声和射击声。
+
+### **14.4　小结**
+
+在本章中，你学习了如何创建用于开始新游戏的 Play 按钮，如何检测鼠标事件，以及在游戏处于活动状态时如何隐藏光标。你可以利用学到的知识在游戏中创建其他按钮，如用于显示玩法说明的 Help 按钮。你还学习了如何随游戏的进行调整其节奏，如何实现记分系统，以及如何以文本和非文本方式显示信息。
+
+------
+
+
+
+## 第15章　生成数据
+
+### **老齐导读**
+
+本章开始的项目二，数据可视化，是作为入门学习者运用基本知识实践的项目。数据可视化是数据分析和机器学习领域非常重要的技能，如果你愿意就这方面深入学习，推荐 GitChat 的课程：案例上手 Python 数据可视化。
+
+本章要安装多个第三方库，建议读者安装当前最新版本的。
+
+按照书中的顺序，在本章中，运用 Matplotlib 分别绘制了曲线图、散点图，并对坐标系做了各项设置。
+
+根据上述总结，结合书中的代码，读者可以理解使用 Matplotlib 绘图的基本思想。
+
+15.4 节应用的 Pygal 是一个非常有特点的第三方绘图库，官方网站http://pygal.org/en/stable/，请大家将书中代码和官方网站介绍相结合，能够对它有更深刻理解。
+
+之所以在 Matplotlib 之外还有众多的绘图库，是因为不同的库都有不同的擅长，并且比 Matplotlib 在使用方面更多样化、简便。
+
+![enter image description here](https://images.gitbook.cn/a6769550-883e-11e9-b1c9-d994bc31f268)
+
+> **数据可视化**指的是通过可视化表示来探索数据，它与**数据挖掘**紧密相关，而数据挖掘指的是使用代码来探索数据集的规律和关联。数据集可以是用一行代码就能表示的小型数字列表，也可以是数以吉字节的数据。
+>
+> 漂亮地呈现数据关乎的并非仅仅是漂亮的图片。以引人注目的简洁方式呈现数据，让观看者能够明白其含义，发现数据集中原本未意识到的规律和意义。
+>
+> 所幸即便没有超级计算机，也能够可视化复杂的数据。鉴于 Python 的高效性，使用它在笔记本电脑上就能快速地探索由数百万个数据点组成的数据集。数据点并非必须是数字，利用本书前半部分介绍的基本知识，也可以对非数字数据进行分析。
+>
+> 在基因研究、天气研究、政治经济分析等众多领域，大家都使用 Python 来完成数据密集型工作。数据科学家使用 Python 编写了一系列令人印象深刻的可视化和分析工具，其中很多也可供你使用。最流行的工具之一是 matplotlib，它是一个数学绘图库，我们将使用它来制作简单的图表，如折线图和散点图。然后，我们将基于随机漫步概念生成一个更有趣的数据集——根据一系列随机决策生成的图表。
+>
+> 我们还将使用 Pygal 包，它专注于生成适合在数字设备上显示的图表。通过使用 Pygal，可在用户与图表交互时突出元素以及调整其大小，还可轻松地调整整个图表的尺寸，使其适合在微型智能手表或巨型显示器上显示。我们将使用 Pygal 以各种方式探索掷骰子的结果。
+
+### **15.1　安装 matplotlib**
+
+首先，需要安装 matplotlib，我们将使用它来制作开始的几个图表。如果你还未使用过 pip，请参阅12.2.1节。
+
+#### **15.1.1　在 Linux 系统中安装 matplotlib**
+
+如果你使用的是系统自带的 Python 版本，可使用系统的包管理器来安装 matplotlib，为此只需执行一行命令：
+
+```
+$ sudo apt-get install python3-matplotlib
+```
+
+如果你使用的是 Python 2.7，请执行如下命令：
+
+```
+$ sudo apt-get install python-matplotlib
+```
+
+如果你安装了较新的 Python 版本，就必须安装 matplotlib 依赖的一些库：
+
+```
+$ sudo apt-get install python3.5-dev python3.5-tk tk-dev
+$ sudo apt-get install libfreetype6-dev g++
+```
+
+再使用 pip 来安装 matplotlib：
+
+```
+$ pip install --user matplotlib
+```
+
+#### **15.1.2　在 OS X 系统中安装 matplotlib**
+
+Apple 的标准 Python 安装自带了 matplotlib。要检查系统是否安装了 matplotlib，可打开一个终端会话并尝试导入 matplotlib。如果系统没有自带 matplotlib，且你的 Python 是使用 Homebrew 安装的，则可以像下面这样安装 matplotlib：
+
+```
+$ pip install --user matplotlib
+```
+
+> **注意**　
+>
+> 安装包时可能需要使用`pip3`，而不是`pip`。另外，如果这个命令不管用，你可能需要删除标志`--user`。
+
+#### **15.1.3　在 Windows 系统中安装 matplotlib**
+
+在 Windows 系统中，首先需要安装 Visual Studio。为此，请访问https://dev.windows.com/，单击 Downloads，再查找 Visual Studio Community——一组免费的 Windows 开发工具。请下载并运行该安装程序。
+
+接下来，需要下载 matplotlib 安装程序。为此，请访问https://pypi.python.org/pypi/matplotlib/，并查找与你使用的 Python 版本匹配的 wheel 文件（扩展名为.whl 的文件）。例如，如果你使用的是32位的 Python 3.5，则需要下载 matplotlib-1.4.3-cp35-none-win32.whl。
+
+> **注意**　
+>
+> 如果找不到与你安装的 Python 版本匹配的文件，请去http://www.lfd.uci.edu/-gohlke/pythonlibs/#matplotlib 看看，这个网站发布安装程序的时间通常比 matplotlib 官网早些。
+
+将这个.whl 文件复制到你的项目文件夹，打开一个命令窗口，并切换到该项目文件夹，再使用 pip 来安装 matplotlib：
+
+```
+> cd python_work
+python_work> python -m pip install --user matplotlib-1.4.3-cp35-none-win32.whl
+```
+
+#### **15.1.4　测试 matplotlib**
+
+安装必要的包后，对安装进行测试。为此，首先使用命令`python`或`python3`启动一个终端会话，再尝试导入 matplotlib：
+
+```
+$ python3
+>>> import matplotlib
+>>>
+```
+
+如果没有出现任何错误消息，就说明你的系统安装了 matplotlib，可以接着阅读下一节。
+
+> **注意**　
+>
+> 如果你在安装过程中遇到了麻烦，请参阅附录 C。如果依然无济于事，请向他人寻求帮助。对于你遇到的问题，只要向经验丰富的 Python 程序员提供少量的信息，他们很可能很快就能帮你解决。
+
+#### **15.1.5　matplotlib 画廊**
+
+要查看使用 matplotlib 可制作的各种图表，请访问 http://matplotlib.org/ 的示例画廊。单击画廊中的图表，就可查看用于生成图表的代码。
+
+### **15.2　绘制简单的折线图**
+
+下面来使用 matplotlib 绘制一个简单的折线图，再对其进行定制，以实现信息更丰富的数据可视化。我们将使用平方数序列1、4、9、16和25来绘制这个图表。
+
+只需向 matplotlib 提供如下数字，matplotlib 就能完成其他的工作：
+
+**mpl_squares.py**
+
+```
+import matplotlib.pyplot as plt
+
+squares = [1, 4, 9, 16, 25]
+plt.plot(squares)
+plt.show()
+```
+
+我们首先导入了模块`pyplot`，并给它指定了别名`plt`，以免反复输入`pyplot`。在线示例大都这样做，因此这里也这样做。模块`pyplot`包含很多用于生成图表的函数。
+
+我们创建了一个列表，在其中存储了前述平方数，再将这个列表传递给函数`plot()`，这个函数尝试根据这些数字绘制出有意义的图形。`plt.show()`打开 matplotlib 查看器，并显示绘制的图形，如图15-1所示。查看器让你能够缩放和导航图形，另外，单击磁盘图标可将图形保存起来。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.001.png)
+
+**图15-1　使用 matplotlib 可制作的最简单的图表**
+
+#### **15.2.1　修改标签文字和线条粗细**
+
+图15-1所示的图形表明数字是越来越大的，但标签文字太小，线条太细。所幸 matplotlib 让你能够调整可视化的各个方面。
+
+下面通过一些定制来改善这个图形的可读性，如下所示：
+
+**mpl_squares.py**
+
+```
+  import matplotlib.pyplot as plt
+
+  squares = [1, 4, 9, 16, 25]
+❶ plt.plot(squares, linewidth=5)
+
+  # 设置图表标题，并给坐标轴加上标签
+❷ plt.title("Square Numbers", fontsize=24)
+❷ plt.xlabel("Value", fontsize=14)
+  plt.ylabel("Square of Value", fontsize=14)
+
+  # 设置刻度标记的大小
+❹ plt.tick_params(axis='both', labelsize=14)
+
+  plt.show()
+```
+
+参数`linewidth`（见❶）决定了`plot()`绘制的线条的粗细。函数`title()`（见❷）给图表指定标题。在上述代码中，出现了多次的参数`fontsize`指定了图表中文字的大小。
+
+函数`xlabel()`和`ylabel()`让你能够为每条轴设置标题（见❸）；而函数`tick_params()`设置刻度的样式（见❹），其中指定的实参将影响 *x* 轴和 *y*轴上的刻度（`axis='both'`），并将刻度标记的字号设置为14（`labelsize=14`）。
+
+最终的图表阅读起来容易得多了，如图15-2所示：标签文字更大，线条也更粗。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.002.png)
+
+**图15-2　现在图表阅读起来容易得多**
+
+#### **15.2.2　校正图形**
+
+图形更容易阅读后，我们发现没有正确地绘制数据：折线图的终点指出4.0的平方为25！下面来修复这个问题。
+
+当你向`plot()`提供一系列数字时，它假设第一个数据点对应的 *x* 坐标值为0，但我们的第一个点对应的 *x* 值为1。为改变这种默认行为，我们可以给`plot()`同时提供输入值和输出值：
+
+**mpl_squares.py**
+
+```
+import matplotlib.pyplot as plt
+
+input_values = [1, 2, 3, 4, 5]
+squares = [1, 4, 9, 16, 25]
+plt.plot(input_values, squares, linewidth=5)
+
+# 设置图表标题并给坐标轴加上标签
+--snip--
+```
+
+现在`plot()`将正确地绘制数据，因为我们同时提供了输入值和输出值，它无需对输出值的生成方式作出假设。最终的图形是正确的，如图15-3所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.003.png)
+
+**图15-3　根据数据正确地绘制了图形**
+
+使用`plot()`时可指定各种实参，还可使用众多函数对图形进行定制。本章后面处理更有趣的数据集时，将继续探索这些定制函数。
+
+#### **15.2.3　使用 scatter() 绘制散点图并设置其样式**
+
+有时候，需要绘制散点图并设置各个数据点的样式。例如，你可能想以一种颜色显示较小的值，而用另一种颜色显示较大的值。绘制大型数据集时，你还可以对每个点都设置同样的样式，再使用不同的样式选项重新绘制某些点，以突出它们。
+
+要绘制单个点，可使用函数`scatter()`，并向它传递一对 *x* 和 *y* 坐标，它将在指定位置绘制一个点：
+
+**scatter_squares.py**
+
+```
+import matplotlib.pyplot as plt
+
+plt.scatter(2, 4)
+plt.show()
+```
+
+下面来设置输出的样式，使其更有趣：添加标题，给轴加上标签，并确保所有文本都大到能够看清：
+
+```
+  import matplotlib.pyplot as plt
+
+❶ plt.scatter(2, 4, s=200)
+
+  # 设置图表标题并给坐标轴加上标签
+  plt.title("Square Numbers", fontsize=24)
+  plt.xlabel("Value", fontsize=14)
+  plt.ylabel("Square of Value", fontsize=14)
+
+  # 设置刻度标记的大小
+  plt.tick_params(axis='both', which='major', labelsize=14)
+
+  plt.show()
+```
+
+在❶处，我们调用了`scatter()`，并使用实参`s`设置了绘制图形时使用的点的尺寸。如果此时运行 scatter_squares.py，将在图表中央看到一个点，大致如图15-4所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.004.png)
+
+**图15-4　绘制单个点**
+
+#### **15.2.4　使用 scatter() 绘制一系列点**
+
+要绘制一系列的点，可向`scatter()`传递两个分别包含 *x* 值和 *y* 值的列表，如下所示：
+
+**scatter_squares.py**
+
+```
+import matplotlib.pyplot as plt
+
+x_values = [1, 2, 3, 4, 5]
+y_values = [1, 4, 9, 16, 25]
+
+plt.scatter(x_values, y_values, s=100)
+
+# 设置图表标题并给坐标轴指定标签
+--snip--
+```
+
+列表`x_values`包含要计算其平方值的数字，而列表`y_values`包含前述每个数字的平方值。将这些列表传递给`scatter()`时，matplotlib 依次从每个列表中读取一个值来绘制一个点。要绘制的点的坐标分别为(1,1)、(2,4)、(3,9)、(4,16)和(5,25)，最终的结果如图15-5所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.005.png)
+
+**图15-5　由多个点组成的散点图**
+
+#### **15.2.5　自动计算数据**
+
+手工计算列表要包含的值可能效率低下，需要绘制的点很多时尤其如此。可以不必手工计算包含点坐标的列表，而让 Python 循环来替我们完成这种计算。下面是绘制1000个点的代码：
+
+**scatter_squares.py**
+
+```
+  import matplotlib.pyplot as plt
+
+❶ x_values = list(range(1, 1001))
+  y_values = [x**2 for x in x_values]
+
+❷ plt.scatter(x_values, y_values, s=40)
+
+  # 设置图表标题并给坐标轴加上标签
+  --snip--
+
+  # 设置每个坐标轴的取值范围
+❸ plt.axis([0, 1100, 0, 1100000])
+
+  plt.show()
+```
+
+我们首先创建了一个包含 *x* 值的列表，其中包含数字1~1000（见❶）。接下来是一个生成 *y* 值的列表解析，它遍历 *x* 值（`for x in x_values`），计算其平方值（`x**2`），并将结果存储到列表`y_values`中。然后，将输入列表和输出列表传递给`scatter()`（见❷）。
+
+由于这个数据集较大，我们将点设置得较小，并使用函数`axis()`指定了每个坐标轴的取值范围（见❸）。函数`axis()`要求提供四个值：*x* 和 *y* 坐标轴的最小值和最大值。在这里，我们将 *x* 坐标轴的取值范围设置为0~1100，并将 *y* 坐标轴的取值范围设置为0~1100000。结果如图15-6所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.006.png)
+
+**图15-6　Python 绘制1000个点与绘制5个点一样容易**
+
+#### **15.2.6　删除数据点的轮廓**
+
+matplotlib 允许你给散点图中的各个点指定颜色。默认为蓝色点和黑色轮廓，在散点图包含的数据点不多时效果很好。但绘制很多点时，黑色轮廓可能会粘连在一起。要删除数据点的轮廓，可在调用`scatter()`时传递实参`edgecolor='none'`[[1\]](https://gitbook.cn/m/mazi/columns/5ce3cfab3481b33762ae04b6/topics/5ce3cfab3481b33762ae04ca#ch1_back)：
+
+```
+plt.scatter(x_values, y_values, edgecolor='none', s=40)
+```
+
+将相应调用修改为上述代码后，如果再运行 scatter_squares.py，在图表中看到的将是蓝色实心点。
+
+#### **15.2.7　自定义颜色**
+
+要修改数据点的颜色，可向`scatter()`传递参数`c`，并将其设置为要使用的颜色的名称，如下所示：
+
+```
+plt.scatter(x_values, y_values, c='red', edgecolor='none', s=40)
+```
+
+你还可以使用 RGB 颜色模式自定义颜色。要指定自定义颜色，可传递参数`c`，并将其设置为一个元组，其中包含三个0~1之间的小数值，它们分别表示红色、绿色和蓝色分量。例如，下面的代码行创建一个由淡蓝色点组成的散点图：
+
+```
+plt.scatter(x_values, y_values, c=(0, 0, 0.8), edgecolor='none', s=40)
+```
+
+值越接近0，指定的颜色越深，值越接近1，指定的颜色越浅。
+
+#### **15.2.8　使用颜色映射**
+
+**颜色映射**（colormap）是一系列颜色，它们从起始颜色渐变到结束颜色。在可视化中，颜色映射用于突出数据的规律，例如，你可能用较浅的颜色来显示较小的值，并使用较深的颜色来显示较大的值。
+
+模块`pyplot`内置了一组颜色映射。要使用这些颜色映射，你需要告诉`pyplot`该如何设置数据集中每个点的颜色。下面演示了如何根据每个点的 *y* 值来设置其颜色：
+
+**scatter_squares.py**
+
+```
+import matplotlib.pyplot as plt
+
+x_values = list(range(1, 1001))
+y_values = [x**2 for x in x_values]
+
+plt.scatter(x_values, y_values, c=y_values, cmap=plt.cm.Blues,
+    edgecolor='none', s=40)
+
+# 设置图表标题并给坐标轴加上标签
+--snip--
+```
+
+我们将参数`c`设置成了一个 *y* 值列表，并使用参数`cmap`告诉`pyplot`使用哪个颜色映射。这些代码将 *y* 值较小的点显示为浅蓝色，并将 *y* 值较大的点显示为深蓝色，生成的图形如图15-7所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.007.png)
+
+**图15-7　使用颜色映射Blues的图表**
+
+> **注意**　
+>
+> 要了解`pyplot`中所有的颜色映射，请访问 http://matplotlib.org/，单击 Examples，向下滚动到 Color Examples，再单击 colormaps_reference。
+
+#### **15.2.9　自动保存图表**
+
+要让程序自动将图表保存到文件中，可将对`plt.show()`的调用替换为对`plt.savefig()`的调用：
+
+```
+plt.savefig('squares_plot.png', bbox_inches='tight')
+```
+
+第一个实参指定要以什么样的文件名保存图表，这个文件将存储到 scatter_squares.py 所在的目录中；第二个实参指定将图表多余的空白区域裁剪掉。如果要保留图表周围多余的空白区域，可省略这个实参。
+
+> **动手试一试**
+>
+> **15-1 立方**：数字的三次方被称为其立方。请绘制一个图形，显示前5个整数的立方值，再绘制一个图形，显示前5000个整数的立方值。
+>
+> **15-2 彩色立方**：给你前面绘制的立方图指定颜色映射。
+
+### **15.3　随机漫步**
+
+在本节中，我们将使用 Python 来生成随机漫步数据，再使用 matplotlib 以引人瞩目的方式将这些数据呈现出来。**随机漫步**是这样行走得到的路径：每次行走都完全是随机的，没有明确的方向，结果是由一系列随机决策决定的。你可以这样认为，随机漫步就是蚂蚁在晕头转向的情况下，每次都沿随机的方向前行所经过的路径。
+
+在自然界、物理学、生物学、化学和经济领域，随机漫步都有其实际用途。例如，漂浮在水滴上的花粉因不断受到水分子的挤压而在水面上移动。水滴中的分子运动是随机的，因此花粉在水面上的运动路径犹如随机漫步。我们稍后将编写的代码模拟了现实世界的很多情形。
+
+#### **15.3.1　创建 RandomWalk() 类**
+
+为模拟随机漫步，我们将创建一个名为`RandomWalk`的类，它随机地选择前进方向。这个类需要三个属性，其中一个是存储随机漫步次数的变量，其他两个是列表，分别存储随机漫步经过的每个点的 *x* 和 *y* 坐标。
+
+`RandomWalk`类只包含两个方法：`__init__()`和`fill_walk()`，其中后者计算随机漫步经过的所有点。下面先来看看`__init__()`，如下所示：
+
+**random_walk.py**
+
+```
+❶ from random import choice
+
+  class RandomWalk():
+      """一个生成随机漫步数据的类"""
+
+❷     def __init__(self, num_points=5000):
+          """初始化随机漫步的属性"""
+          self.num_points = num_points
+
+          # 所有随机漫步都始于(0, 0)
+❸         self.x_values = [0]
+          self.y_values = [0]
+```
+
+为做出随机决策，我们将所有可能的选择都存储在一个列表中，并在每次做决策时都使用`choice()`来决定使用哪种选择（见❶）。接下来，我们将随机漫步包含的默认点数设置为5000，这大到足以生成有趣的模式，同时又足够小，可确保能够快速地模拟随机漫步（见❷）。然后，在❸处，我们创建了两个用于存储*x* 和 *y* 值的列表，并让每次漫步都从点(0,0)出发。
+
+#### **15.3.2　选择方向**
+
+我们将使用`fill_walk()`来生成漫步包含的点，并决定每次漫步的方向，如下所示。请将这个方法添加到 random_walk.py 中：
+
+**random_walk.py**
+
+```
+      def fill_walk(self):
+          """计算随机漫步包含的所有点"""
+
+          # 不断漫步，直到列表达到指定的长度
+❶         while len(self.x_values) < self.num_points:
+
+              # 决定前进方向以及沿这个方向前进的距离
+❷             x_direction = choice([1, -1])
+              x_distance = choice([0, 1, 2, 3, 4])
+❸             x_step = x_direction * x_distance
+
+              y_direction = choice([1, -1])
+              y_distance = choice([0, 1, 2, 3, 4])
+❹             y_step = y_direction * y_distance
+
+              # 拒绝原地踏步
+❺             if x_step == 0 and y_step == 0:
+                  continue
+
+              # 计算下一个点的 x 和 y 值
+❻             next_x = self.x_values[-1] + x_step
+              next_y = self.y_values[-1] + y_step
+
+              self.x_values.append(next_x)
+              self.y_values.append(next_y)
+```
+
+在❶处，我们建立了一个循环，这个循环不断运行，直到漫步包含所需数量的点。这个方法的主要部分告诉 Python 如何模拟四种漫步决定：向右走还是向左走？沿指定的方向走多远？向上走还是向下走？沿选定的方向走多远？
+
+我们使用`choice([1,-1])`给`x_direction`选择一个值，结果要么是表示向右走的1，要么是表示向左走的-1（见❷）。接下来，`choice([0,1,2,3,4])`随机地选择一个0~4之间的整数，告诉 Python 沿指定的方向走多远（`x_distance`）。（通过包含0，我们不仅能够沿两个轴移动，还能够沿 *y* 轴移动。）
+
+在❸和❹处，我们将移动方向乘以移动距离，以确定沿 *x* 和 *y* 轴移动的距离。如果`x_step`为正，将向右移动，为负将向左移动，而为零将垂直移动；如果`y_step`为正，就意味着向上移动，为负意味着向下移动，而为零意味着水平移动。如果`x_step`和`y_step`都为零，则意味着原地踏步，我们拒绝这样的情况，接着执行下一次循环（见❺）。
+
+为获取漫步中下一个点的 *x* 值，我们将`x_step`与`x_values`中的最后一个值相加（见❻），对于 *y* 值也做相同的处理。获得下一个点的 *x* 值和 *y* 值后，我们将它们分别附加到列表`x_values`和`y_values`的末尾。
+
+#### **15.3.3　绘制随机漫步图**
+
+下面的代码将随机漫步的所有点都绘制出来：
+
+**rw_visual.py**
+
+```
+  import matplotlib.pyplot as plt
+
+  from random_walk import RandomWalk
+
+  # 创建一个 RandomWalk 实例，并将其包含的点都绘制出来
+❶ rw = RandomWalk()
+  rw.fill_walk()
+❷ plt.scatter(rw.x_values, rw.y_values, s=15)
+  plt.show()
+```
+
+我们首先导入了模块`pyplot`和`RandomWalk`类，然后创建了一个`RandomWalk`实例，并将其存储到`rw`中（见❶），再调用`fill_walk()`。在❷处，我们将随机漫步包含的 *x* 和 *y* 值传递给`scatter()`，并选择了合适的点尺寸。图15-8显示了包含5000个点的随机漫步图（本节的示意图未包含 matplotlib 查看器部分，但你运行 rw_visual.py 时，依然会看到）。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.008.png)
+
+**图15-8　包含5000个点的随机漫步**
+
+#### **15.3.4　模拟多次随机漫步**
+
+每次随机漫步都不同，因此探索可能生成的各种模式很有趣。要在不多次运行程序的情况下使用前面的代码模拟多次随机漫步，一种办法是将这些代码放在一个`while`循环中，如下所示：
+
+**rw_visual.py**
+
+```
+  import matplotlib.pyplot as plt
+
+  from random_walk import RandomWalk
+
+  # 只要程序处于活动状态，就不断地模拟随机漫步
+  while True:
+      # 创建一个 RandomWalk 实例，并将其包含的点都绘制出来
+      rw = RandomWalk()
+      rw.fill_walk()
+      plt.scatter(rw.x_values, rw.y_values, s=15)
+      plt.show()
+
+❶     keep_running = input("Make another walk? (y/n): ")
+      if keep_running == 'n':
+          break
+```
+
+这些代码模拟一次随机漫步，在 matplotlib 查看器中显示结果，再在不关闭查看器的情况下暂停。如果你关闭查看器，程序将询问你是否要再模拟一次随机漫步。如果你输入`y`，可模拟多次随机漫步：这些随机漫步都在起点附近进行，大多沿特定方向偏离起点，漫步点分布不均匀等。要结束程序，请输入`n`。
+
+> **注意**　
+>
+> 如果你使用的是 Python 2.7，别忘了将❶处的`input()`替换为`raw_input()`。
+
+#### **15.3.5　设置随机漫步图的样式**
+
+在本节中，我们将定制图表，以突出每次漫步的重要特征，并让分散注意力的元素不那么显眼。为此，我们确定要突出的元素，如漫步的起点、终点和经过的路径。接下来确定要使其不那么显眼的元素，如刻度标记和标签。最终的结果是简单的可视化表示，清楚地指出了每次漫步经过的路径。
+
+#### **15.3.6　给点着色**
+
+我们将使用颜色映射来指出漫步中各点的先后顺序，并删除每个点的黑色轮廓，让它们的颜色更明显。为根据漫步中各点的先后顺序进行着色，我们传递参数`c`，并将其设置为一个列表，其中包含各点的先后顺序。由于这些点是按顺序绘制的，因此给参数`c`指定的列表只需包含数字1~5000，如下所示：
+
+**rw_visual.py**
+
+```
+  --snip--
+  while True:
+      # 创建一个 RandomWalk 实例，并将其包含的点都绘制出来
+      rw = RandomWalk()
+      rw.fill_walk()
+
+❶     point_numbers = list(range(rw.num_points))
+      plt.scatter(rw.x_values, rw.y_values, c=point_numbers, cmap=plt.cm.Blues,
+          edgecolor='none', s=15)
+      plt.show()
+
+      keep_running = input("Make another walk? (y/n): ")
+      --snip--
+```
+
+在❶处，我们使用了`range()`生成了一个数字列表，其中包含的数字个数与漫步包含的点数相同。接下来，我们将这个列表存储在`point_numbers`中，以便后面使用它来设置每个漫步点的颜色。我们将参数`c`设置为`point_numbers`，指定使用颜色映射`Blues`，并传递实参`edgecolor=none`以删除每个点周围的轮廓。最终的随机漫步图从浅蓝色渐变为深蓝色，如图15-9所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.009.png)
+
+**图15-9　使用颜色映射Blues着色的随机漫步图**
+
+#### **15.3.7　重新绘制起点和终点**
+
+除了给随机漫步的各个点着色，以指出它们的先后顺序外，如果还能呈现随机漫步的起点和终点就更好了。为此，可在绘制随机漫步图后重新绘制起点和终点。我们让起点和终点变得更大，并显示为不同的颜色，以突出它们，如下所示：
+
+**rw_visual.py**
+
+```
+--snip--
+while True:
+    --snip--
+    plt.scatter(rw.x_values, rw.y_values, c=point_numbers, cmap=plt.cm.Blues,
+        edgecolor='none', s=15)
+
+    # 突出起点和终点
+    plt.scatter(0, 0, c='green', edgecolors='none', s=100)
+    plt.scatter(rw.x_values[-1], rw.y_values[-1], c='red', edgecolors='none',
+        s=100)
+
+    plt.show()
+    --snip--
+```
+
+为突出起点，我们使用绿色绘制点(0,0)，并使其比其他点大（`s=100`）。为突出终点，我们在漫步包含的最后一个 *x* 和 *y* 值处绘制一个点，将其颜色设置为红色，并将尺寸设置为100。请务必将这些代码放在调用`plt.show()`的代码前面，确保在其他点的上面绘制起点和终点。
+
+如果你现在运行这些代码，将能准确地知道每次随机漫步的起点和终点（如果起点和终点不明显，请调整它们的颜色和大小，直到明显为止）。
+
+#### **15.3.8　隐藏坐标轴**
+
+下面来隐藏这个图表中的坐标轴，以免我们注意的是坐标轴而不是随机漫步路径。要隐藏坐标轴，可使用如下代码：
+
+**rw_visual.py**
+
+```
+  --snip--
+  while True:
+      --snip--
+      plt.scatter(rw.x_values[-1], rw.y_values[-1], c='red', edgecolors='none',
+          s=100)
+
+      # 隐藏坐标轴
+❶     plt.axes().get_xaxis().set_visible(False)
+      plt.axes().get_yaxis().set_visible(False)
+
+      plt.show()
+      --snip--
+```
+
+为修改坐标轴，使用了函数`plt.axes()`（见❶）来将每条坐标轴的可见性都设置为`False`。随着你越来越多地进行数据可视化，经常会看到这种串接方法的方式。
+
+如果你现在运行 rw_visual.py，将看到一系列图形，但看不到坐标轴。
+
+#### **15.3.9　增加点数**
+
+下面来增加点数，以提供更多的数据。为此，我们在创建`RandomWalk`实例时增大`num_points`的值，并在绘图时调整每个点的大小，如下所示：
+
+**rw_visual.py**
+
+```
+--snip--
+while True:
+    #创建一个 RandomWalk 实例，并将其包含的点都绘制出来
+    rw = RandomWalk(50000)
+    rw.fill_walk()
+
+    # 绘制点并将图形显示出来
+    point_numbers = list(range(rw.num_points))
+    plt.scatter(rw.x_values, rw.y_values, c=point_numbers, cmap=plt.cm.Blues,
+        edgecolor='none', s=1)
+    --snip--
+```
+
+这个示例模拟了一次包含50000个点的随机漫步（以模拟现实情况），并将每个点的大小都设置为1。最终的随机漫步图更纤细，犹如云朵，如图15-10所示。正如你看到的，我们使用简单的散点图制作出了一件艺术品！
+
+请尝试修改上述代码，看看将漫步包含的点数增加到多少后，程序的运行速度变得极其缓慢或绘制出的图形变得很难看。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.010.png)
+
+**图15-10　包含50000个点的随机漫步**
+
+#### **15.3.10　调整尺寸以适合屏幕**
+
+图表适合屏幕大小时，更能有效地将数据中的规律呈现出来。为让绘图窗口更适合屏幕大小，可像下面这样调整 matplotlib 输出的尺寸：
+
+**rw_visual.py**
+
+```
+--snip--
+while True:
+    # 创建一个 RandomWalk 实例，并将其包含的点都绘制出来
+    rw = RandomWalk()
+    rw.fill_walk()
+
+    # 设置绘图窗口的尺寸
+    plt.figure(figsize=(10, 6))
+    --snip--
+```
+
+函数`figure()`用于指定图表的宽度、高度、分辨率和背景色。你需要给形参`figsize`指定一个元组，向 matplotlib 指出绘图窗口的尺寸，单位为英寸。
+
+Python 假定屏幕分辨率为80像素/英寸，如果上述代码指定的图表尺寸不合适，可根据需要调整其中的数字。如果你知道自己的系统的分辨率，可使用形参`dpi`向`figure()`传递该分辨率，以有效地利用可用的屏幕空间，如下所示：
+
+```
+plt.figure(dpi=128, figsize=(10, 6))
+```
+
+> **动手试一试**
+>
+> **15-3 分子运动**：修改 rw_visual.py，将其中的`plt.scatter()`替换为`plt.plot()`。为模拟花粉在水滴表面的运动路径，向`plt.plot()`传递`rw.x_values`和`rw.y_values`，并指定实参值`linewidth`。使用5000个点而不是50000个点。
+>
+> **15-4 改进的随机漫步**：在类`RandomWalk`中，`x_step`和`y_step`是根据相同的条件生成的：从列表`[1,-1]`中随机地选择方向，并从列表`[0,1,2,3,4]`中随机地选择距离。请修改这些列表中的值，看看对随机漫步路径有何影响。尝试使用更长的距离选择列表，如0~8；或者将-1从 *x* 或 *y* 方向列表中删除。
+>
+> **15-5 重构**：方法`fill_walk()`很长。请新建一个名为`get_step()`的方法，用于确定每次漫步的距离和方向，并计算这次漫步将如何移动。然后，在`fill_walk()`中调用`get_step()`两次：
+>
+> ```
+> x_step = self.get_step()
+> y_step = self.get_step()
+> ```
+>
+> 通过这样的重构，可缩小`fill_walk()`的规模，让这个方法阅读和理解起来更容易。
+
+### **15.4　使用 Pygal 模拟掷骰子**
+
+在本节中，我们将使用 Python 可视化包 Pygal 来生成可缩放的矢量图形文件。对于需要在尺寸不同的屏幕上显示的图表，这很有用，因为它们将自动缩放，以适合观看者的屏幕。如果你打算以在线方式使用图表，请考虑使用 Pygal 来生成它们，这样它们在任何设备上显示时都会很美观。
+
+在这个项目中，我们将对掷骰子的结果进行分析。掷6面的常规骰子时，可能出现的结果为1~6点，且出现每种结果的可能性相同。然而，如果同时掷两个骰子，某些点数出现的可能性将比其他点数大。为确定哪些点数出现的可能性最大，我们将生成一个表示掷骰子结果的数据集，并根据结果绘制出一个图形。
+
+在数学领域，常常利用掷骰子来解释各种数据分析，但它在赌场和其他博弈场景中也得到了实际应用，在游戏《大富翁》以及众多角色扮演游戏中亦如此。
+
+#### **15.4.1　安装 Pygal**
+
+请使用`pip`来安装 Pygal（如果还未使用过`pip`，请参阅12.2.1节）。
+
+在 Linux 和 OS X 系统中，应执行的命令类似于下面这样：
+
+```
+pip install --user pygal==1.7
+```
+
+在 Windows 系统中，命令类似于下面这样：
+
+```
+python -m pip install --user pygal==1.7
+```
+
+> **注意**　
+>
+> 你可能需要使用命令`pip3`而不是`pip`，如果这还是不管用，你可能需要删除标志`--user`。
+
+#### **15.4.2　Pygal 画廊**
+
+要了解使用 Pygal 可创建什么样的图表，请查看图表类型画廊：访问http://www.pygal.org/，单击 Documentation，再单击 Chart types。每个示例都包含源代码，让你知道这些图表是如何生成的。
+
+#### **15.4.3　创建 Die 类**
+
+下面的类模拟掷一个骰子：
+
+**die.py**
+
+```
+  from random import randint
+
+  class Die():
+      """表示一个骰子的类"""
+
+❶     def __init__(self, num_sides=6):
+          """骰子默认为6面"""
+          self.num_sides = num_sides
+
+      def roll(self):
+          """"返回一个位于1和骰子面数之间的随机值"""
+❷         return randint(1, self.num_sides)
+```
+
+方法`__init__()`接受一个可选参数。创建这个类的实例时，如果没有指定任何实参，面数默认为6；如果指定了实参，这个值将用于设置骰子的面数（见❶）。骰子是根据面数命名的，6面的骰子名为 D6，8面的骰子名为 D8，以此类推。
+
+方法`roll()`使用函数`randint()`来返回一个1和面数之间的随机数（见❷）。这个函数可能返回起始值1、终止值`num_sides`或这两个值之间的任何整数。
+
+#### **15.4.4　掷骰子**
+
+使用这个类来创建图表前，先来掷 D6 骰子，将结果打印出来，并检查结果是否合理：
+
+**die_visual.py**
+
+```
+  from die import Die
+
+  # 创建一个 D6
+❶ die = Die()
+
+  # 掷几次骰子，并将结果存储在一个列表中
+  results = []
+❷ for roll_num in range(100):
+      result = die.roll()
+      results.append(result)
+
+  print(results)
+```
+
+在❶处，我们创建了一个`Die`实例，其面数为默认值6。在❷处，我们掷骰子100次，并将每次的结果都存储在列表`results`中。下面是一个示例结果集：
+
+```
+[4, 6, 5, 6, 1, 5, 6, 3, 5, 3, 5, 3, 2, 2, 1, 3, 1, 5, 3, 6, 3, 6, 5, 4,
+ 1, 1, 4, 2, 3, 6, 4, 2, 6, 4, 1, 3, 2, 5, 6, 3, 6, 2, 1, 1, 3, 4, 1, 4,
+ 3, 5, 1, 4, 5, 5, 2, 3, 3, 1, 2, 3, 5, 6, 2, 5, 6, 1, 3, 2, 1, 1, 1, 6,
+ 5, 5, 2, 2, 6, 4, 1, 4, 5, 1, 1, 1, 4, 5, 3, 3, 1, 3, 5, 4, 5, 6, 5, 4,
+ 1, 5, 1, 2]
+```
+
+通过快速扫描这些结果可知，`Die`类看起来没有问题。我们见到了值1和6，这表明返回了最大和最小的可能值；我们没有见到0或7，这表明结果都在正确的范围内。我们还看到了1~6的所有数字，这表明所有可能的结果都出现了。
+
+#### **15.4.5　分析结果**
+
+为分析掷一个 D6 骰子的结果，我们计算每个点数出现的次数：
+
+**die_visual.py**
+
+```
+  --snip--
+  # 掷几次骰子，并将结果存储在一个列表中
+  results = []
+❶ for roll_num in range(1000):
+      result = die.roll()
+      results.append(result)
+
+  # 分析结果
+  frequencies = []
+❷ for value in range(1, die.num_sides+1):
+❸     frequency = results.count(value)
+❹     frequencies.append(frequency)
+
+  print(frequencies)
+```
+
+由于我们将使用 Pygal 来进行分析，而不是将结果打印出来，因此可以将模拟掷骰子的次数增加到1000（见❶）。为分析结果，我们创建了空列表`frequencies`，用于存储每种点数出现的次数。在❷处，我们遍历可能的点数（这里为1~6），计算每种点数在`results`中出现了多少次（见❸），并将这个值附加到列表`frequencies`的末尾（见❹）。接下来，我们在可视化之前将这个列表打印出来：
+
+```
+[155, 167, 168, 170, 159, 181]
+```
+
+结果看起来是合理的：我们看到了6个值——掷 D6 骰子时可能出现的每个点数对应一个；我们还发现，没有任何点数出现的频率比其他点数高很多。下面来可视化这些结果。
+
+#### **15.4.6　绘制直方图**
+
+有了频率列表后，我们就可以绘制一个表示结果的直方图。**直方图**是一种条形图，指出了各种结果出现的频率。创建这种直方图的代码如下：
+
+**die_visual.py**
+
+```
+  import pygal
+  --snip--
+
+  # 分析结果
+  frequencies = []
+  for value in range(1, die.num_sides+1):
+      frequency = results.count(value)
+      frequencies.append(frequency)
+
+  # 对结果进行可视化
+❶ hist = pygal.Bar()
+
+  hist.title = "Results of rolling one D6 1000 times."
+❷ hist.x_labels = ['1', '2', '3', '4', '5', '6']
+  hist.x_title = "Result"
+  hist.y_title = "Frequency of Result"
+
+❸ hist.add('D6', frequencies)
+  hist.render_to_file('die_visual.svg')
+```
+
+为创建条形图，我们创建了一个`pygal.Bar()`实例，并将其存储在`hist`中（见❶）。接下来，我们设置`hist`的属性`title`（用于标示直方图的字符串），将掷 D6 骰子的可能结果用作 *x* 轴的标签（见❷），并给每个轴都添加了标题。在❸处，我们使用`add()`将一系列值添加到图表中（向它传递要给添加的值指定的标签，还有一个列表，其中包含将出现在图表中的值）。最后，我们将这个图表渲染为一个 SVG 文件，这种文件的扩展名必须为.svg。
+
+要查看生成的直方图，最简单的方式是使用 Web 浏览器。为此，在任何 Web 浏览器中新建一个标签页，再在其中打开文件 die_visual.svg（它位于 die_visual.py 所在的文件夹中）。你将看到一个类似于图15-11所示的图表（为方便印刷，我稍微修改了这个图表；默认情况下，Pygal 生成的图表的背景比你在图15-11中看到的要暗）。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.011.png)
+
+**图15-11　使用 Pygal 创建的简单条形图**
+
+注意，Pygal 让这个图表具有交互性：如果你将鼠标指向该图表中的任何条形，将看到与之相关联的数据。在同一个图表中绘制多个数据集时，这项功能显得特别有用。
+
+#### **15.4.7　同时掷两个骰子**
+
+同时掷两个骰子时，得到的点数更多，结果分布情况也不同。下面来修改前面的代码，创建两个 D6 骰子，以模拟同时掷两个骰子的情况。每次掷两个骰子时，我们都将两个骰子的点数相加，并将结果存储在`results`中。请复制 die_visual.py 并将其保存为 dice_visual.py，再做如下修改：
+
+**dice_visual.py**
+
+```
+  import pygal
+
+  from die import Die
+
+  # 创建两个 D6 骰子
+  die_1 = Die()
+  die_2 = Die()
+
+  # 掷骰子多次，并将结果存储到一个列表中
+  results = []
+  for roll_num in range(1000):
+❶     result = die_1.roll() + die_2.roll()
+      results.append(result)
+
+  # 分析结果
+  frequencies = []
+❷ max_result = die_1.num_sides + die_2.num_sides
+❸ for value in range(2, max_result+1):
+      frequency = results.count(value)
+      frequencies.append(frequency)
+
+  # 可视化结果
+  hist = pygal.Bar()
+
+❹ hist.title = "Results of rolling two D6 dice 1000 times."
+  hist.x_labels = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+  hist.x_title = "Result"
+  hist.y_title = "Frequency of Result"
+
+  hist.add('D6 + D6', frequencies)
+  hist.render_to_file('dice_visual.svg')
+```
+
+创建两个`Die`实例后，我们掷骰子多次，并计算每次的总点数（见❶）。可能出现的最大点数12为两个骰子的最大可能点数之和，我们将这个值存储在了`max_result`中（见❷）。可能出现的最小总点数2为两个骰子的最小可能点数之和。分析结果时，我们计算2到`max_result`的各种点数出现的次数（见❸）。我们原本可以使用`range(2,13)`，但这只适用于两个 D6 骰子。模拟现实世界的情形时，最好编写可轻松地模拟各种情形的代码。前面的代码让我们能够模拟掷任何两个骰子的情形，而不管这些骰子有多少面。
+
+创建图表时，我们修改了标题、*x* 轴标签和数据系列（见❹）。（如果列表`x_labels`比这里所示的长得多，那么编写一个循环来自动生成它将更合适。）
+
+运行这些代码后，在浏览器中刷新显示图表的标签页，你将看到如图15-12所示的图表。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.012.png)
+
+**图15-12　模拟同时掷两个6面骰子1000次的结果**
+
+这个图表显示了掷两个 D6 骰子时得到的大致结果。正如你看到的，总点数为2或12的可能性最小，而总点数为7的可能性最大，这是因为在6种情况下得到的总点数都为7。这6种情况如下：1和6、2和5、3和4、4和3、5和2、6和1。
+
+#### **15.4.8　同时掷两个面数不同的骰子**
+
+下面来创建一个6面骰子和一个10面骰子，看看同时掷这两个骰子50000次的结果如何：
+
+**different_dice.py**
+
+```
+  from die import Die
+
+  import pygal
+
+  # 创建一个 D6 和一个 D10
+  die_1 = Die()
+❶ die_2 = Die(10)
+
+  # 掷骰子多次，并将结果存储在一个列表中
+  results = []
+  for roll_num in range(50000):
+      result = die_1.roll() + die_2.roll()
+      results.append(result)
+
+  # 分析结果
+  --snip--
+
+  # 可视化结果
+  hist = pygal.Bar()
+
+❷ hist.title = "Results of rolling a D6 and a D10 50,000 times."
+  hist.x_labels = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+      '13', '14', '15', '16']
+  hist.x_title = "Result"
+  hist.y_title = "Frequency of Result"
+
+  hist.add('D6 + D10', frequencies)
+  hist.render_to_file('dice_visual.svg')
+```
+
+为创建 D10 骰子，我们在创建第二个`Die`实例时传递了实参`10`（见❶）。我们还修改了第一个循环，以模拟掷骰子50000次而不是1000次。可能出现的最小总点数依然是2，但现在可能出现的最大总点数为16，因此我们相应地调整了标题、*x* 轴标签和数据系列标签（见❷）。
+
+图15-13显示了最终的图表。可能性最大的点数不是一个，而是5个，这是因为导致出现最小点数和最大点数的组合都只有一种（1和1以及6和10），但面数较小的骰子限制了得到中间点数的组合数：得到总点数7、8、9、10和11的组合数都是6种。因此，这些总点数是最常见的结果，它们出现的可能性相同。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/19.d15z.013.png)
+
+**图15-13　同时掷6面骰子和10面骰子50000次的结果**
+
+通过使用 Pygal 来模拟掷骰子的结果，能够非常自由地探索这种现象。只需几分钟，就可以掷各种骰子很多次。
+
+> **动手试一试**
+>
+> **15-6 自动生成标签**：请修改 die.py 和 dice_visual.py，将用来设置`hist.x_labels`值的列表替换为一个自动生成这种列表的循环。如果你熟悉列表解析，可尝试将 die_visual.py 和 dice_visual.py 中的其他`for`循环也替换为列表解析。
+>
+> **15-7 两个 D8 骰子：**请模拟同时掷两个8面骰子1000次的结果。逐渐增加掷骰子的次数，直到系统不堪重负为止。
+>
+> **15-8 同时掷三个骰子**：如果你同时掷三个 D6 骰子，可能得到的最小点数为3，而最大点数为18。请通过可视化展示同时掷三个 D6 骰子的结果。
+>
+> **15-9 将点数相乘**：同时掷两个骰子时，通常将它们的点数相加。请通过可视化展示将两个骰子的点数相乘的结果。
+>
+> **15-10 练习使用本章介绍的两个库**：尝试使用 matplotlib 通过可视化来模拟掷骰子的情况，并尝试使用 Pygal 通过可视化来模拟随机漫步的情况。
+
+### **15.5　小结**
+
+在本章中，你学习了：如何生成数据集以及如何对其进行可视化；如何使用 matplotlib 创建简单的图表，以及如何使用散点图来探索随机漫步过程；如何使用 Pygal 来创建直方图，以及如何使用直方图来探索同时掷两个面数不同的骰子的结果。
+
+使用代码生成数据集是一种有趣而强大的方式，可用于模拟和探索现实世界的各种情形。完成后面的数据可视化项目时，请注意可使用代码模拟哪些情形。请研究新闻媒体中的可视化，看看其中是否有图表是以你在这些项目中学到的类似方式生成的。
+
+在第16章中，我们将从网上下载数据，并继续使用 matplotlib 和 Pygal 来探索这些数据。
+
+------
+
+[[1\]](https://gitbook.cn/m/mazi/columns/5ce3cfab3481b33762ae04b6/topics/5ce3cfab3481b33762ae04ca#ch1) 在2.0.0版本的 matplotlib 中，`scatter()`函数的实参`edgecolor`默认为`'none'`。——译者注
+
+------
+
+
+
+## 第16章　下载数据
+
+### **老齐导读**
+
+本章以案例的方式演示了 csv 和 json 两种格式的文档下载和用 Python 读取数据，并进行可视化的方法。
+
+在学习本章内容的过程中，建议你做如下操作：
+
+1. 按部就班地根据书上描述和源码进行操作，并且调试所有代码。
+2. 完成上面的操作是针对本章代码的第一步，此处建议还要做更进一步的操作，即将所有源码整理到一个或者几个 .py 文件中，能够通过执行一个文件，实现最终效果。
+
+在下图中，给出了与本章内容相关的两个拓展方向，一个是 requests 模块，另外一个是数据科学常用的工具 pandas。如果你能够安装 pandas，可以尝试使用 pandas 读取 csv 和 json 文档的方法。
+
+![enter image description here](https://images.gitbook.cn/57e34f30-8840-11e9-9a9c-451c1f88314a)
+
+> 在本章中，你将从网上下载数据，并对这些数据进行可视化。网上的数据多得难以置信，且大多未经过仔细检查。如果能够对这些数据进行分析，你就能发现别人没有发现的规律和关联。
+>
+> 我们将访问并可视化以两种常见格式存储的数据：CSV 和 JSON。我们将使用 Python 模块`csv`来处理以 CSV（逗号分隔的值）格式存储的天气数据，找出两个不同地区在一段时间内的最高温度和最低温度。然后，我们将使用 matplotlib 根据下载的数据创建一个图表，展示两个不同地区的气温变化：阿拉斯加锡特卡和加州死亡谷。在本章的后面，我们将使用模块`json`来访问以 JSON 格式存储的交易收盘价数据，并使用 Pygal 绘制图形以探索价格变化的周期性。
+>
+> 阅读本章后，你将能够处理各种类型和格式的数据集，并对如何创建复杂的图表有更深入的认识。要处理各种真实世界的数据集，必须能够访问并可视化各种类型和格式的在线数据。
+
+### **16.1　CSV 文件格式**
+
+要在文本文件中存储数据，最简单的方式是将数据作为一系列**以逗号分隔的值**（CSV）写入文件。这样的文件称为 CSV 文件。例如，下面是一行 CSV 格式的天气数据：
+
+```
+2014-1-5,61,44,26,18,7,-1,56,30,9,30.34,30.27,30.15,,,,10,4,,0.00,0,,195
+```
+
+这是阿拉斯加锡特卡2014年1月5日的天气数据，其中包含当天的最高气温和最低气温，还有众多其他数据。CSV 文件对人来说阅读起来比较麻烦，但程序可轻松地提取并处理其中的值，这有助于加快数据分析过程。
+
+我们将首先处理少量锡特卡的 CSV 格式的天气数据，这些数据可在本书的配套资源（http://www.ituring.com.cn/book/1861）中找到。请将文件 sitka_weather_07-2014.csv 复制到存储本章程序的文件夹中（下载本书的配套资源后，你就有了这个项目所需的所有文件）。
+
+> **注意**　
+>
+> 这个项目使用的天气数据是从http://www.wunderground.com/history/下载而来的。
+
+#### **16.1.1　分析 CSV 文件头**
+
+`csv`模块包含在 Python 标准库中，可用于分析 CSV 文件中的数据行，让我们能够快速提取感兴趣的值。下面先来查看这个文件的第一行，其中包含一系列有关数据的描述：
+
+**highs_lows.py**
+
+```
+  import csv
+
+  filename = 'sitka_weather_07-2014.csv'
+❶ with open(filename) as f:
+❷     reader = csv.reader(f)
+❸     header_row = next(reader)
+      print(header_row)
+```
+
+导入模块`csv`后，我们将要使用的文件的名称存储在`filename`中。接下来，我们打开这个文件，并将结果文件对象存储在`f`中（见❶）。然后，我们调用`csv.reader()`，并将前面存储的文件对象作为实参传递给它，从而创建一个与该文件相关联的阅读器（`reader`）对象（见❷）。我们将这个阅读器对象存储在`reader`中。
+
+模块`csv`包含函数`next()`，调用它并将阅读器对象传递给它时，它将返回文件中的下一行。在前面的代码中，我们只调用了`next()`一次，因此得到的是文件的第一行，其中包含文件头（见❸）。我们将返回的数据存储在`header_row`中。正如你看到的，`header_row`包含与天气相关的文件头，指出了每行都包含哪些数据：
+
+```
+['AKDT', 'Max TemperatureF', 'Mean TemperatureF', 'Min TemperatureF',
+'Max Dew PointF', 'MeanDew PointF', 'Min DewpointF', 'Max Humidity',
+' Mean Humidity', ' Min Humidity', ' Max Sea Level PressureIn',
+' Mean Sea Level PressureIn', ' Min Sea Level PressureIn',
+' Max VisibilityMiles', ' Mean VisibilityMiles', ' Min VisibilityMiles',
+' Max Wind SpeedMPH', ' Mean Wind SpeedMPH', ' Max Gust SpeedMPH',
+'PrecipitationIn', ' CloudCover', ' Events', ' WindDirDegrees']
+```
+
+reader 处理文件中以逗号分隔的第一行数据，并将每项数据都作为一个元素存储在列表中。文件头`AKDT`表示阿拉斯加时间（Alaska Daylight Time），其位置表明每行的第一个值都是日期或时间。文件头`Max TemperatureF`指出每行的第二个值都是当天的最高华氏温度。可通过阅读其他的文件头来确定文件包含的信息类型。
+
+> **注意**　
+>
+> 文件头的格式并非总是一致的，空格和单位可能出现在奇怪的地方。这在原始数据文件中很常见，但不会带来任何问题。
+
+#### **16.1.2　打印文件头及其位置**
+
+为让文件头数据更容易理解，将列表中的每个文件头及其位置打印出来：
+
+**highs_lows.py**
+
+```
+  --snip--
+  with open(filename) as f:
+      reader = csv.reader(f)
+      header_row = next(reader)
+
+❶     for index, column_header in enumerate(header_row):
+          print(index, column_header)
+```
+
+我们对列表调用了`enumerate()`（见❶）来获取每个元素的索引及其值。（请注意，我们删除了代码行`print(header_row)`，转而显示这个更详细的版本。）
+
+输出如下，其中指出了每个文件头的索引：
+
+```
+0 AKDT
+1 Max TemperatureF
+2 Mean TemperatureF
+3 Min TemperatureF
+--snip--
+20  CloudCover
+21  Events
+22  WindDirDegrees
+```
+
+从中可知，日期和最高气温分别存储在第0列和第1列。为研究这些数据，我们将处理 sitka_weather_07-2014.csv 中的每行数据，并提取其中索引为0和1的值。
+
+#### **16.1.3　提取并读取数据**
+
+知道需要哪些列中的数据后，我们来读取一些数据。首先读取每天的最高气温：
+
+**highs_lows.py**
+
+```
+  import csv
+
+  # 从文件中获取最高气温
+  filename = 'sitka_weather_07-2014.csv'
+  with open(filename) as f:
+      reader = csv.reader(f)
+      header_row = next(reader)
+
+❶     highs = []
+❷     for row in reader:
+❸         highs.append(row[1])
+
+      print(highs)
+```
+
+我们创建了一个名为`highs`的空列表（见❶），再遍历文件中余下的各行（见❷）。阅读器对象从其停留的地方继续往下读取 CSV 文件，每次都自动返回当前所处位置的下一行。由于我们已经读取了文件头行，这个循环将从第二行开始——从这行开始包含的是实际数据。每次执行该循环时，我们都将索引1处（第2列）的数据附加到`highs`末尾（见❸）。
+
+下面显示了`highs`现在存储的数据：
+
+```
+['64', '71', '64', '59', '69', '62', '61', '55', '57', '61', '57', '59', '57',
+ '61', '64', '61', '59', '63', '60', '57', '69', '63', '62', '59', '57', '57',
+ '61', '59', '61', '61', '66']
+```
+
+我们提取了每天的最高气温，并将它们作为字符串整洁地存储在一个列表中。
+
+下面使用`int()`将这些字符串转换为数字，让 matplotlib 能够读取它们：
+
+**highs_lows.py**
+
+```
+  --snip--
+      highs = []
+      for row in reader:
+❶         high = int(row[1])
+          highs.append(high)
+
+      print(highs)
+```
+
+在❶处，我们将表示气温的字符串转换成了数字，再将其附加到列表末尾。这样，最终的列表将包含以数字表示的每日最高气温：
+
+```
+[64, 71, 64, 59, 69, 62, 61, 55, 57, 61, 57, 59, 57, 61, 64, 61, 59, 63, 60, 57,
+ 69, 63, 62, 59, 57, 57, 61, 59, 61, 61, 66]
+```
+
+下面来对这些数据进行可视化。
+
+#### **16.1.4　绘制气温图表**
+
+为可视化这些气温数据，我们首先使用 matplotlib 创建一个显示每日最高气温的简单图形，如下所示：
+
+**highs_lows.py**
+
+```
+  import csv
+
+  from matplotlib import pyplot as plt
+
+  # 从文件中获取最高气温
+  --snip--
+
+  # 根据数据绘制图形
+  fig = plt.figure(dpi=128, figsize=(10, 6))
+❶ plt.plot(highs, c='red')
+
+  # 设置图形的格式
+❷ plt.title("Daily high temperatures, July 2014", fontsize=24)
+❸ plt.xlabel('', fontsize=16)
+  plt.ylabel("Temperature (F)", fontsize=16)
+  plt.tick_params(axis='both', which='major', labelsize=16)
+
+  plt.show()
+```
+
+我们将最高气温列表传给`plot()`（见❶），并传递`c='red'`以便将数据点绘制为红色（红色显示最高气温，蓝色显示最低气温）。接下来，我们设置了一些其他的格式，如字体大小和标签（见❷），这些都在第15章介绍过。鉴于我们还没有添加日期，因此没有给 *x* 轴添加标签，但`plt.xlabel()`确实修改了字体大小，让默认标签更容易看清。图16-1显示了绘制的图表：一个简单的折线图，显示了阿拉斯加锡特卡2014年7月每天的最高气温。
+
+![enter image description here](https://images.gitbook.cn/f9aa2840-1f25-11e9-8864-25129bcee97b)
+
+**图16-1　阿拉斯加锡特卡2014年7月每日最高气温折线图**
+
+#### **16.1.5　模块 datetime**
+
+下面在图表中添加日期，使其更有用。在天气数据文件中，第一个日期在第二行：
+
+```
+2014-7-1,64,56,50,53,51,48,96,83,58,30.19,--snip--
+```
+
+读取该数据时，获得的是一个字符串，因为我们需要想办法将字符串`'2014-7-1'`转换为一个表示相应日期的对象。为创建一个表示2014年7月1日的对象，可使用模块`datetime`中的方法`strptime()`。我们在终端会话中看看`strptime()`的工作原理：
+
+```
+>>> from datetime import datetime
+>>> first_date = datetime.strptime('2014-7-1', '%Y-%m-%d')
+>>> print(first_date)
+2014-07-01 00:00:00
+```
+
+我们首先导入了模块`datetime`中的`datetime`类，然后调用方法`strptime()`，并将包含所需日期的字符串作为第一个实参。第二个实参告诉 Python 如何设置日期的格式。在这个示例中，`'%Y-'`让 Python 将字符串中第一个连字符前面的部分视为四位的年份；`'%m-'`让 Python 将第二个连字符前面的部分视为表示月份的数字；而`'%d'`让 Python 将字符串的最后一部分视为月份中的一天（1~31）。
+
+方法`strptime()`可接受各种实参，并根据它们来决定如何解读日期。表16-1列出了其中一些这样的实参。
+
+**表16-1　模块 datetime 中设置日期和时间格式的实参**
+
+| 实参 | 含义                            |
+| :--- | :------------------------------ |
+| `%A` | 星期的名称，如 Monday           |
+| `%B` | 月份名，如 January              |
+| `%m` | 用数字表示的月份（01~12）       |
+| `%d` | 用数字表示月份中的一天（01~31） |
+| `%Y` | 四位的年份，如2015              |
+| `%y` | 两位的年份，如15                |
+| `%H` | 24小时制的小时数（00~23）       |
+| `%I` | 12小时制的小时数（01~12）       |
+| `%p` | am 或 pm                        |
+| `%M` | 分钟数（00~59）                 |
+| `%S` | 秒数（00~61）                   |
+
+#### **16.1.6　在图表中添加日期**
+
+知道如何处理 CSV 文件中的日期后，就可对气温图形进行改进了，即提取日期和最高气温，并将它们传递给`plot()`，如下所示：
+
+**highs_lows.py**
+
+```
+  import csv
+  from datetime import datetime
+
+  from matplotlib import pyplot as plt
+
+  # 从文件中获取日期和最高气温
+  filename = 'sitka_weather_07-2014.csv'
+  with open(filename) as f:
+      reader = csv.reader(f)
+      header_row = next(reader)
+
+❶     dates, highs = [], []
+      for row in reader:
+❷         current_date = datetime.strptime(row[0], "%Y-%m-%d")
+          dates.append(current_date)
+
+          high = int(row[1])
+          highs.append(high)
+
+  # 根据数据绘制图形
+  fig = plt.figure(dpi=128, figsize=(10, 6))
+❸ plt.plot(dates, highs, c='red')
+
+  # 设置图形的格式
+  plt.title("Daily high temperatures, July 2014", fontsize=24)
+  plt.xlabel('', fontsize=16)
+❹ fig.autofmt_xdate()
+  plt.ylabel("Temperature (F)", fontsize=16)
+  plt.tick_params(axis='both', which='major', labelsize=16)
+
+  plt.show()
+```
+
+我们创建了两个空列表，用于存储从文件中提取的日期和最高气温（见❶）。然后，我们将包含日期信息的数据（`row[0]`）转换为`datetime`对象（见❷），并将其附加到列表`dates`末尾。在❸处，我们将日期和最高气温值传递给`plot()`。在❹处，我们调用了`fig.autofmt_xdate()`来绘制斜的日期标签，以免它们彼此重叠。图16-2显示了改进后的图表。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.002.png)
+
+**图16-2　现在图表的 x 轴上有日期，含义更丰富**
+
+#### **16.1.7　涵盖更长的时间**
+
+设置好图表后，我们来添加更多的数据，以成一幅更复杂的锡特卡天气图。请将文件 sitka_weather_2014.csv 复制到存储本章程序的文件夹中，该文件包含 Weather Underground 提供的整年的锡特卡天气数据。
+
+现在可以创建覆盖整年的天气图了：
+
+**highs_lows.py**
+
+```
+  --snip--
+  # 从文件中获取日期和最高气温
+❶ filename = 'sitka_weather_2014.csv'
+  with open(filename) as f:
+  --snip--
+  # 设置图形的格式
+❷ plt.title("Daily high temperatures - 2014", fontsize=24)
+  plt.xlabel('', fontsize=16)
+  --snip--
+```
+
+我们修改了文件名，以使用新的数据文件 sitka_weather_2014.csv（见❶）；我们还修改了图表的标题，以反映其内容的变化（见❷）。图16-3显示了生成的图形。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.003.png)
+
+**图16-3　一年的天气数据**
+
+#### **16.1.8　再绘制一个数据系列**
+
+图16-3所示的改进后的图表显示了大量意义深远的数据，但我们可以在其中再添加最低气温数据，使其更有用。为此，需要从数据文件中提取最低气温，并将它们添加到图表中，如下所示：
+
+**highs_lows.py**
+
+```
+  --snip--
+  # 从文件中获取日期、最高气温和最低气温
+  filename = 'sitka_weather_2014.csv'
+  with open(filename) as f:
+      reader = csv.reader(f)
+      header_row = next(reader)
+
+❶     dates, highs, lows = [], [], []
+      for row in reader:
+          current_date = datetime.strptime(row[0], "%Y-%m-%d")
+          dates.append(current_date)
+
+          high = int(row[1])
+          highs.append(high)
+
+❷        low = int(row[3])
+          lows.append(low)
+  # 根据数据绘制图形
+  fig = plt.figure(dpi=128, figsize=(10, 6))
+  plt.plot(dates, highs, c='red')
+❸ plt.plot(dates, lows, c='blue')
+
+  # 设置图形的格式
+❹ plt.title("Daily high and low temperatures - 2014", fontsize=24)
+  --snip--
+```
+
+在❶处，我们添加了空列表`lows`，用于存储最低气温。接下来，我们从每行的第4列（`row[3]`）提取每天的最低气温，并存储它们（见❷）。在❸处，我们添加了一个对`plot()`的调用，以使用蓝色绘制最低气温。最后，我们修改了标题（见❹）。图16-4显示了这样绘制出来的图表。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.004.png)
+
+**图16-4　在一个图表中包含两个数据系列**
+
+#### **16.1.9　给图表区域着色**
+
+添加两个数据系列后，我们就可以了解每天的气温范围了。下面来给这个图表做最后的修饰，通过着色来呈现每天的气温范围。为此，我们将使用方法`fill_between()`，它接受一个 *x* 值系列和两个 *y* 值系列，并填充两个 *y* 值系列之间的空间：
+
+**highs_lows.py**
+
+```
+  --snip--
+  # 根据数据绘制图形
+  fig = plt.figure(dpi=128, figsize=(10, 6))
+❶ plt.plot(dates, highs, c='red', alpha=0.5)
+  plt.plot(dates, lows, c='blue', alpha=0.5)
+❷ plt.fill_between(dates, highs, lows, facecolor='blue', alpha=0.1)
+  --snip--
+```
+
+❶处的实参`alpha`指定颜色的透明度。`Alpha`值为0表示完全透明，1（默认设置）表示完全不透明。通过将`alpha`设置为0.5，可让红色和蓝色折线的颜色看起来更浅。
+
+在❷处，我们向`fill_between()`传递了一个 *x* 值系列：列表`dates`，还传递了两个 *y* 值系列：`highs`和`lows`。实参`facecolor`指定了填充区域的颜色，我们还将`alpha`设置成了较小的值0.1，让填充区域将两个数据系列连接起来的同时不分散观察者的注意力。图16-5显示了最高气温和最低气温之间的区域被填充的图表。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.005.png)
+
+**图16-5　给两个数据集之间的区域着色**
+
+通过着色，让两个数据集之间的区域显而易见。
+
+#### **16.1.10　错误检查**
+
+我们应该能够使用有关任何地方的天气数据来运行 highs_lows.py 中的代码，但有些气象站会偶尔出现故障，未能收集部分或全部其应该收集的数据。缺失数据可能会引发异常，如果不妥善地处理，还可能导致程序崩溃。
+
+例如，我们来看看生成加利福尼亚死亡谷的气温图时出现的情况。将文件 death_valley_2014.csv 复制到本章程序所在的文件夹，再修改 highs_lows.py，使其生成死亡谷的气温图：
+
+**highs_lows.py**
+
+```
+--snip--
+# 从文件中获取日期、最高气温和最低气温
+filename = 'death_valley_2014.csv'
+with open(filename) as f:
+--snip--
+```
+
+运行这个程序时，出现了一个错误，如下述输出的最后一行所示：
+
+```
+Traceback (most recent call last):
+  File "highs_lows.py", line 17, in <module>
+    high = int(row[1])
+ValueError: invalid literal for int() with base 10: ''
+```
+
+该 traceback 指出，Python 无法处理其中一天的最高气温，因为它无法将空字符串（`' '`）转换为整数。只要看一下 death_valley_2014.csv，就能发现其中的问题：
+
+```
+2014-2-16,,,,,,,,,,,,,,,,,,,0.00,,,-1
+```
+
+其中好像没有记录2014年2月16日的数据，表示最高温度的字符串为空。为解决这种问题，我们在从 CSV 文件中读取值时执行错误检查代码，对分析数据集时可能出现的异常进行处理，如下所示：
+
+**highs_lows.py**
+
+```
+  --snip--
+  # 从文件中获取日期、最高气温和最低气温
+  filename = 'death_valley_2014.csv'
+  with open(filename) as f:
+      reader = csv.reader(f)
+      header_row = next(reader)
+
+      dates, highs, lows = [], [], []
+      for row in reader:
+❶         try:
+              current_date = datetime.strptime(row[0], "%Y-%m-%d")
+              high = int(row[1])
+              low = int(row[3])
+          except ValueError:
+❷             print(current_date, 'missing data')
+          else:
+❸             dates.append(current_date)
+              highs.append(high)
+              lows.append(low)
+
+   #根据数据绘制图形
+   --snip--
+
+   #设置图形的格式
+❹ title = "Daily high and low temperatures - 2014\nDeath Valley, CA"
+   plt.title(title, fontsize=20)
+   --snip--
+```
+
+对于每一行，我们都尝试从中提取日期、最高气温和最低气温（见❶）。只要缺失其中一项数据，Python 就会引发`ValueError`异常，而我们可这样处理：打印一条错误消息，指出缺失数据的日期（见❷）。打印错误消息后，循环将接着处理下一行。如果获取特定日期的所有数据时没有发生错误，将运行`else`代码块，并将数据附加到相应列表的末尾（见❸）。鉴于我们绘图时使用的是有关另一个地方的信息，我们修改了标题，在图表中指出了这个地方（见❹）。
+
+如果你现在运行`highs_lows.py`，将发现缺失数据的日期只有一个：
+
+```
+2014-02-16 missing data
+```
+
+图16-6显示了绘制出的图形。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.006.png)
+
+**图16-6　死亡谷每日高气温和最低气温**
+
+将这个图表与锡特卡的图表对比可知，总体而言，死亡谷比阿拉斯加东南部暖和，这可能符合预期，但这个沙漠中每天的温差也更大，从着色区域的高度可以明显看出这一点。
+
+使用的很多数据集都可能缺失数据、数据格式不正确或数据本身不正确。对于这样的情形，可使用本书前半部分介绍的工具来处理。在这里，我们使用了一个`try-except-else`代码块来处理数据缺失的问题。在有些情况下，需要使用`continue`来跳过一些数据，或者使用`remove()`或`del`将已提取的数据删除。可采用任何管用的方法，只要能进行精确而有意义的可视化就好。
+
+> **动手试一试**
+>
+> **16-1 旧金山**：旧金山的气温更接近于锡特卡还是死亡谷呢？请绘制一个显示旧金山最高气温和最低气温的图表，并进行比较。可从http://www.wunderground.com/history/下载几乎任何地方的天气数据。为此，请输入相应的地方和日期范围，滚动到页面底部，找到名为 Comma-Delimited File 的链接，再单击该链接，将数据存储为 CSV 文件。
+>
+> **16-2 比较锡特卡和死亡谷的气温**：在有关锡特卡和死亡谷的图表中，气温刻度反映了数据范围的不同。为准确地比较锡特卡和死亡谷的气温范围，需要在 *y* 轴上使用相同的刻度。为此，请修改图16-5和图16-6所示图表的 *y* 轴设置，对锡特卡和死亡谷的气温范围进行直接比较（你也可以对任何两个地方的气温范围进行比较）。你还可以尝试在一个图表中呈现这两个数据集。
+>
+> **16-3 降雨量**：选择你感兴趣的任何地方，通过可视化将其降雨量呈现出来。为此，可先只涵盖一个月的数据，确定代码正确无误后，再使用一整年的数据来运行它。
+>
+> **16-4 探索**：生成一些图表，对你好奇的任何地方的其他天气数据进行研究。
+
+### **16.2　制作交易收盘价走势图：JSON 格式**
+
+在本节中[[1\]](https://gitbook.cn/m/mazi/columns/5ce3cfab3481b33762ae04b6/topics/5ce3cfab3481b33762ae04cb#ch1_back) ，你将下载 JSON 格式的交易收盘价数据，并使用模块`json`来处理它们。Pygal 提供了一个适合初学者使用的绘图工具，你将使用它来对收盘价数据进行可视化，以探索价格变化的周期性。
+
+#### **16.2.1　下载收盘价数据**
+
+收盘价数据文件位于https://raw.githubusercontent.com/muxuezi/btc/master/btc_close_2017.json。可以直接将文件 btc_close_2017.json 下载到本章程序所在的文件夹中，也可以用 Python 2.*x* 标准库中模块`urllib2`（Python 3.*x* 版本使用的是`urllib`）的函数`urlopen`来做，还可以通过 Python 的第三方模块`requests`（将在第17章介绍）下载数据。
+
+首先，我们直接下载 btc_close_2017.json，看看如何着手处理这个文件中的数据：
+
+**btc_close_2017.json**
+
+```
+[
+  {
+    "date": "2017-01-01",
+    "month": "01",
+    "week": "52",
+    "weekday": "Sunday",
+    "close": "6928.6492"
+  },
+  --snip--
+  {
+    "date": "2017-12-12",
+    "month": "12",
+    "week": "50",
+    "weekday": "Tuesday",
+    "close": "113732.6745"
+  }
+]
+```
+
+这个文件实际上就是一个很长的 Python 列表，其中每个元素都是一个包含五个键的字典：统计日期、月份、周数、周几以及收盘价。由于2017年1月1日是周日，作为2017年的第一周实在太短，因此将其计入2016年的第52周。于是2017年的第一周是从2017年1月2日（周一）开始的。如果用函数`urlopen`来下载数据，可以使用下面的代码：
+
+**btc_close_2017.py**
+
+```
+  from __future__ import (absolute_import, division,
+                          print_function, unicode_literals)
+❶ try:
+      # Python 2.x 版本
+      from urllib2 import urlopen
+  except ImportError:
+      # Python 3.x 版本
+      from urllib.request import urlopen 
+  import json
+
+  json_url = 'https://raw.githubusercontent.com/muxuezi/btc/master/btc_close_2017.json'
+❷ response = urlopen(json_url) 
+  # 读取数据
+  req = response.read()
+  # 将数据写入文件
+❸ with open('btc_close_2017_urllib.json','wb') as f: 
+      f.write(req)
+  # 加载 json 格式
+❹ file_urllib = json.loads(req) 
+  print(file_urllib)
+```
+
+首先导入下载文件使用的模块。这里用`try/except`语句（见❶）实现兼容 Python 2.x 和 Python 3.x 代码。`ImportError`可以作为判断 Python 2.*x* 和 Python 3.*x* 的方式：如果用 Python 2.*x* 版本运行代码，`from urllib2 import urlopen`代码就会执行；如果用 Python 3.*x* 版本运行代码，由于没有`urllib2`模块，解释器就会触发`ImportError`，因此`from urllib.request import urlopen`代码就会执行。条条大路通罗马，最终都会导入`urlopen`函数。
+
+然后导入模块`json`，以便之后能够正确地加载文件中的数据。我们的`btc_close_2017.json`文件放在 GitHub 网站上，`urlopen(json_url)`是将`json_url`网址传入`urlopen`函数（见❷）。这行代码执行后， Python 就会向 GitHub 的服务器发送请求。GitHub 的服务器响应请求后把`btc_close_2017.json`文件发送给 Python，之后用`response.read()`就可以读取文件数据。这时，可以将文件数据保存到文件夹中（见❸），btc_close_2017_urllib.json 与 btc_close_2017.json 的内容是一样的。最后，我们用函数`json.load()`（见❹）将文件内容转换成 Python 能够处理的格式，与前面直接下载的文件内容一致。
+
+函数`urlopen`的代码稍微复杂一些，第三方模块`requests`封装了许多常用的方法，让数据下载和读取方式变得非常简单：
+
+```
+  import requests
+
+  json_url = 'https://raw.githubusercontent.com/muxuezi/btc/master/btc_close_2017.json'
+❶ req = requests.get(json_url) 
+  # 将数据写入文件
+  with open('btc_close_2017_request.json','w') as f: 
+❷     f.write(req.text) 
+❸ file_requests = req.json() 
+```
+
+输出结果为：
+
+```
+{'date': '2017-01-01', 'month': '01', 'week': '52', 'weekday': 'Sunday', 'close': '6928.6492'}, 
+{'date': '2017-01-02', 'month': '01', 'week': '1', 'weekday': 'Monday', 'close': '7070.2554'}, 
+--snip-- 
+{'date': '2017-12-11', 'month': '12', 'week': '50', 'weekday': 'Monday', 'close': '110642.88'}, 
+{'date': '2017-12-12', 'month': '12', 'week': '50', 'weekday': 'Tuesday', 'close': '113732.6745'}
+```
+
+`requests`通过`get`方法（见❶）向 GitHub 服务器发送请求。GitHub 服务器响应请求后，返回的结果存储在`req`变量中。`req.text`属性可以直接读取文件数据，返回格式是字符串（见❷），可以像之前一样保存为文件 btc_close_2017_request.json，其内容与 btc_close_2017_urllib.json 是一样的。另外，直接用`req.json()`（见❸）就可以将 btc_close_2017.json 文件的数据转换成 Python 列表`file_requests`，与之前的`file_urllib`内容相同。
+
+```
+print(file_urllib == file_requests)
+```
+
+输出结果为：
+
+```
+True
+```
+
+#### **16.2.2　提取相关的数据**
+
+下面编写一个小程序来提取 btc_close_2017.json 文件中的相关信息：
+
+**btc_close_2017.py**
+
+```
+  import json
+
+  # 将数据加载到一个列表中
+  filename = 'btc_close_2017.json'
+  with open(filename) as f: 
+❶     btc_data = json.load(f) 
+  # 打印每一天的信息
+❷ for btc_dict in btc_data: 
+❸     date = btc_dict['date'] 
+      month = btc_dict['month']
+      week = btc_dict['week']
+      weekday = btc_dict['weekday']
+      close = btc_dict['close']
+      print("{} is month {} week {}, {}, the close price is {} RMB".format(date, month, week, weekday, close))
+```
+
+首先导入模块`json`，然后将数据存储在 btc_data 中（见❶）。在❷处，我们遍历了`btc_data`中的每个元素。每个元素都是一个字典，包含五个键-值对，`btc_dict`就用来存储字典中的每个键-值对。之后就可以取出所有键的值（见❸），并将日期、月份、周数、周几和收盘价相关联的值分别存储到`date`、`month`、`week`、`weekday`与`close`中。接下来，打印每一天的日期、月份、周数、周几和收盘价。输出结果如下：
+
+```
+2017-01-01 is month 01 week 52, Sunday, the close price is 6928.6492 RMB
+2017-01-02 is month 01 week 1, Monday, the close price is 7070.2554 RMB
+2017-01-03 is month 01 week 1, Tuesday, the close price is 7175.1082 RMB
+--snip--
+2017-12-10 is month 12 week 49, Sunday, the close price is 99525.1027 RMB
+2017-12-11 is month 12 week 50, Monday, the close price is 110642.88 RMB
+2017-12-12 is month 12 week 50, Tuesday, the close price is 113732.6745 RMB
+```
+
+现在，我们已经掌握了`json`读取数据的方法。下面，让我们将数据转换为 Pygal 能够处理的格式。
+
+#### **16.2.3　将字符串转换为数字值**
+
+btc_close_2017.json 中的每个键和值都是字符串。为了能在后面的内容中对交易数据进行计算，需要先将表示周数和收盘价的字符串转换为数值。因此我们使用函数`int()`：
+
+**btc_close_2017.py**
+
+```
+--snip--
+
+  # 打印每一天的信息
+  for btc_dict in btc_data: 
+      date = btc_dict['date'] 
+      month = int(btc_dict['month'])
+❶     week = int(btc_dict['week']) 
+      weekday = btc_dict['weekday']
+❷     close = int(btc_dict['close']) 
+      print("{} is month {} week {}, {}, the close price is {} RMB".format(date, month, week, weekday, close))
+```
+
+在❶处，我们将周数的数值都转换为整数格式。将收盘价`close`转换为整数时，出现了`ValueError`异常，如下所示：
+
+```
+--snip--
+❶       5     week = int(btc_dict['week']) 
+        6     weekday = btc_dict['weekday']
+❷ ----> 7     close = int(btc_dict['close']) 
+        8     print("{} is month {} week {}, {}, the close price is {} RMB".format(date, month, week, weekday, close))
+
+  ValueError: invalid literal for int() with base 10: '6928.6492'
+```
+
+在实际工作中，原始数据的格式经常是不统一的，此类数值类型转换造成的`ValueError`异常十分普遍。这里的原因在于，Python 不能直接将包含小数点的字符串`'6928.6492'`转换为整数。为了消除这种错误，需要先将字符串转换为浮点数（`float`），再将浮点数转换为整数（`int`）：
+
+**btc_close_2017.py**
+
+```
+  --snip--
+
+  # 打印每一天的信息
+  for btc_dict in btc_data: 
+      date = btc_dict['date'] 
+      month = int(btc_dict['month'])
+      week = int(btc_dict['week'])
+      weekday = btc_dict['weekday']
+❶     close = int(float(btc_dict['close'])) 
+      print("{} is month {} week {}, {}, the close price is {} RMB".format(date, month, week, weekday, close))
+```
+
+这里首先用函数`float()`将字符串转换为小数（见❶），然后再用函数`int()`去掉小数部分（截尾取整），返回整数部分。现在，再次运行代码，就不会出现异常了。打印出的收盘价信息如下：
+
+```
+2017-01-01 is month 1 week 52, Sunday, the close price is 6928 RMB
+2017-01-02 is month 1 week 1, Monday, the close price is 7070 RMB
+2017-01-03 is month 1 week 1, Tuesday, the close price is 7175 RMB
+--snip--
+2017-12-10 is month 12 week 49, Sunday, the close price is 99525 RMB
+2017-12-11 is month 12 week 50, Monday, the close price is 110642 RMB
+2017-12-12 is month 12 week 50, Tuesday, the close price is 113732 RMB
+```
+
+现在，收盘价都已经成功地先从字符串转换成浮点数，再从浮点数转换成了整数。另外，我们还发现，月份中原来1~9月前面的数字0在转换成整数之后都消失了，周数的数据也根据我们的需求转换成了整数。有了这些数据之后，可以结合 Pygal 的可视化功能来探索一些有趣的信息。
+
+#### **16.2.4　绘制收盘价折线图**
+
+第15章已经介绍了用 Pygal 绘制条形图（bar chart）的方法，也介绍了用 matplotlib 绘制折线图（line chart）的方法。下面用 Pygal 来实现收盘价的折线图。
+
+绘制折线图之前，需要获取 *x* 轴与 *y* 轴数据，因此我们创建了几个列表来存储数据。遍历`btc_data`，将转换为适当格式的数据存储到对应的列表中。对前面的代码做一些简单的调整：
+
+**btc_close_2017.py**
+
+```
+--snip--
+
+# 创建5个列表，分别存储日期和收盘价
+dates = []
+months = []
+weeks = []
+weekdays = []
+close = []
+# 每一天的信息
+for btc_dict in btc_data: 
+    dates.append(btc_dict['date'])
+    months.append(int(btc_dict['month']))
+    weeks.append(int(btc_dict['week']))
+    weekdays.append(btc_dict['weekday'])
+    close.append(int(float(btc_dict['close'])))
+```
+
+有了 *x* 轴与 *y* 轴的数据，就可以绘制折线图了。由于数据点比较多，*x* 轴要显示346个日期，在有限的屏幕上会显得十分拥挤。因此我们需要利用 Pygal 的配置参数，对图形进行适当的调整。代码如下：
+
+**btc_close_2017.py**
+
+```
+  --snip--
+
+  import pygal
+
+❶ line_chart = pygal.Line(x_label_rotation=20, show_minor_x_labels=False) 
+  line_chart.title = '收盘价（¥）'
+  line_chart.x_labels = dates
+  N = 20 # x 轴坐标每隔20天显示一次
+❷ line_chart.x_labels_major = dates[::N] 
+  line_chart.add('收盘价', close)
+  line_chart.render_to_file('收盘价折线图（¥）.svg')
+```
+
+首先导入模块`pygal`，然后在创建`Line`实例时，分别设置了`x_label_rotation`与`show_minor_x_labels`作为初始化参数（见❶）。`x_label_rotation=20`让 *x* 轴上的日期标签顺时针旋转20°，`show_minor_x_labels=False`则告诉图形不用显示所有的 *x* 轴标签。设置了图形的标题和 *x* 轴标签之后，我们配置`x_labels_major`属性，让 *x* 轴坐标每隔20天显示一次（见❷），这样 *x* 轴就不会显得非常拥挤了。最终效果如图16-7所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.007.png)
+
+**图16-7　收盘价折线图（¥）**
+
+从图中可以看出，价格从2017年11月12日到2017年12月12日快速增长，平均每天增值约2500元人民币，图中折线简直就像火箭发射一般，垂直升空。下面对价格做一些简单的探索。
+
+#### **16.2.5　时间序列特征初探**
+
+进行时间序列分析总是期望发现趋势（trend）、周期性（seasonality）和噪声（noise），从而能够描述事实、预测未来、做出决策。从收盘价的折线图可以看出，2017年的总体趋势是非线性的，而且增长幅度不断增大，似乎呈指数分布。但是，我们还发现，在每个季度末（3月、6月和9月）似乎有一些相似的波动。尽管这些波动被增长的趋势掩盖了，不过其中也许有周期性。为了验证周期性的假设，需要首先将非线性的趋势消除。对数变换（log transformation）是常用的处理方法之一。让我们用 Python 标准库的数学模块`math`来解决这个问题。`math`里有许多常用的数学函数，这里用以10为底的对数函数`math.log10`计算收盘价，日期仍然保持不变。这种方式称为半对数（semi-logarithmic）变换。代码如下：
+
+**btc_close_2017.py**
+
+```
+  --snip--
+
+  import pygal
+  import math
+
+  line_chart = pygal.Line(x_label_rotation=20, show_minor_x_labels=False)
+  line_chart.title = '收盘价对数变换（¥）'
+  line_chart.x_labels = dates
+  N = 20 # x 轴坐标每隔20天显示一次
+  line_chart.x_labels_major = dates[::N]
+❶ close_log = [math.log10(_) for _ in close] 
+  line_chart.add('log收盘价', close_log)
+  line_chart.render_to_file('收盘价对数变换折线图（¥）.svg')
+```
+
+现在，用对数变换剔除非线性趋势之后，整体上涨的趋势更接近线性增长。从图16-8中可以清晰地看出，收盘价在每个季度末似乎有显著的周期性——3月、6月和9月都出现了剧烈的波动。那么，12月是不是会再现这一场景呢？下面再看看收盘价的月日均值与周日均值的表现。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.008.png)
+
+**图16-8　收盘价对数变换折线图（¥）**
+
+#### **16.2.6　收盘价均值**
+
+下面再利用 btc_close_2017.json 文件中的数据，绘制2017年前11个月的日均值、前49周（`2017-01-02~2017-12-10`）的日均值，以及每周中各天（`Monday~Sunday`）的日均值。虽然这些日均值的数值不同，但都是一段时间的均值，计算方法是一样的。因此，可以将之前的绘图代码封装成函数，以便重复使用。
+
+**btc_close_2017.py**
+
+```
+  --snip--
+
+❶ from itertools import groupby 
+
+  def draw_line(x_data, y_data, title, y_legend):
+      xy_map = []
+❷     for x, y in groupby(sorted(zip(x_data, y_data)), key=lambda _: _[0]): 
+          y_list = [v for _, v in y]
+❸         xy_map.append([x, sum(y_list) / len(y_list)]) 
+❹     x_unique, y_mean = [*zip(*xy_map)] 
+      line_chart = pygal.Line()
+      line_chart.title = title
+      line_chart.x_labels = x_unique
+      line_chart.add(y_legend, y_mean)
+      line_chart.render_to_file(title+'.svg')
+      return line_chart
+```
+
+由于需要将数据按月份、周数、周几分组，再计算每组的均值，因此我们导入 Python 标准库中模块`itertools`的函数`groupby`（见❶）。然后将 *x* 轴与 *y* 轴的数据合并、排序，再用函数`groupby`分组（见❷）。分组之后，求出每组的均值，存储到`xy_map`变量中（见❸）。最后，将`xy_map`中存储的 *x* 轴与 *y* 轴数据分离（见❹），就可以像之前那样用 Pygal 画图了。下面我们画出收盘价月日均值。由于2017年12月的数据并不完整，我们只取2017年1月到11月的数据。通过`dates`查找`2017-12-01`的索引位置，确定周数和收盘价的取数范围。代码如下所示：
+
+```
+idx_month = dates.index('2017-12-01')
+line_chart_month = draw_line(months[:idx_month], close[:idx_month], '收盘价月日均值（¥）', 
+'月日均值')
+line_chart_month
+```
+
+收盘价月日均值如图16-9所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.009.png)
+
+**图16-9　收盘价月日均值（¥）**
+
+从图16-9中可以看出，除了7月相比上个月有所下降，其他各月都是增长的。11月相比10月的增幅非常惊人，月日均增长了45%。
+
+下面再来绘制前49周（`2017-01-02~2017-12-10`）的日均值。2017年1月1日是周日，归属为2016年第52周，因此2017年的第一周从2017年1月2日开始，取数时需要将第一天去掉。另外，2017年第49周周日是2017年12月10日，因此我们通过`dates`查找`2017-12-11`的索引位置，确定周数和收盘价的取数范围。代码如下所示：
+
+```
+idx_week = dates.index('2017-12-11')
+line_chart_week = draw_line(weeks[1:idx_week], close[1:idx_week], '收盘价周日均值（¥）', '周日均值')
+line_chart_week
+```
+
+收盘价周日均值如图16-10所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.010.png)
+
+**图16-10　收盘价周日均值（¥）**
+
+从图16-10中可以看出，价格与节假日无关。在2017年的各个节假日都没有出现价格低点，包括春节（第4周）、清明节（第14周）、劳动节（第18周）、端午节（第22周）、国庆节（第40周）。
+
+最后，绘制每周中各天的均值。为了使用完整的时间段，还像前面那样取前49周（`2017-01-02~2017-12-10`）的数据，同样通过`dates`查找`2017-12-11`的索引位置，确定周数和收盘价的取数范围。但是，由于这里的周几是字符串，按周一到周日的顺序排列，而不是单词首字母的顺序，绘图时 *x* 轴标签的顺序会有问题。另外，原来的周几都是英文单词，还可以将其调整为中文。因此，需要对前面的程序做一些特殊处理，代码如下所示：
+
+```
+  idx_week = dates.index('2017-12-11')
+❶ wd = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday']
+  weekdays_int = [wd.index(w) + 1 for w in weekdays[1:idx_week]] 
+  line_chart_weekday = draw_line(weekdays_int, close[1:idx_week], '收盘价星期均值（¥）', 
+     '星期均值')
+❷ line_chart_weekday.x_labels = ['周一','周二','周三','周四','周五','周六','周日'] 
+     line_chart_weekday.render_to_file('收盘价星期均值（¥）.svg')
+```
+
+首先，我们列出一周七天的英文单词，然后将`weekdays`的内容替换成1~7的整数（见❶）。这样函数`draw_line`在处理数据时按周几的顺序排列，就会将周一放在列表的第一位，周日放在列表的第七位。图形生成之后，再将图形的 x 轴标签替换为中文（见❷），最终输出的图形如图16-11所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.011.png)
+
+**图16-11　收盘价星期均值（¥）**
+
+从图16-11中可以看出，比特币收盘价在周一最低，周日最高。周一到周四快速拉升，周四是拐点，周五和周四基本持平（其实略低于周四），之后增速放慢。
+
+#### **16.2.7　收盘价数据仪表盘**
+
+前面已经为交易收盘价绘制了五幅图，分别是收盘价对数变换、收盘价月日均值、收盘价周日均值、收盘价星期均值。每个 SVG 文件打开之后都是独立的页面。如果能够将它们整合在一起，就可以很方便地进行长期管理、监测和分析。另外，新的图表也可以十分方便地加入进来，这样就形成了一个数据仪表盘（dashboard）。下面将前面绘制的图整合起来，做一个收盘价数据仪表盘。代码如下：
+
+**btc_close_2017.py**
+
+```
+  --snip--
+
+❶ with open('收盘价 Dashboard.html', 'w', encoding='utf8') as html_file:
+      html_file.write('<html><head><title>收盘价 Dashboard</title><meta charset="utf-8"></head><body>\n')
+      for svg in [
+              '收盘价折线图（¥）.svg', '收盘价对数变换折线图（¥）.svg', '收盘价月日均值（¥）.svg',
+              '收盘价周日均值（¥）.svg', '收盘价星期均值（¥）.svg'
+      ]:
+          html_file.write('    <object type="image/svg+xml" data="{0}" height=500></object>\n'.format(svg)) 
+      html_file.write('</body></html>')
+```
+
+和常见网络应用的数据仪表盘一样，我们的数据仪表盘也是一个完整的网页（HTML 文件）。首先，需要创建一个名为收盘价 Dashboard.html 的网页文件，然后将每幅图都添加到页面中（见❶）。这里设置 SVG 图形的默认高度为500像素，由于 SVG 是矢量图，可以任意缩放且不失真，因此可以通过放大或缩小网页来调整视觉效果。最终效果如图16-12所示，每一幅图都是前面演示过的内容。相信聪明的你一定有更有趣的想法，赶紧动手往数据仪表盘里添加一些新图形吧。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/20.d16z.012.png)
+
+**图16-12　收盘价数据仪表盘**
+
+关于交易收盘价的分析就介绍到这里，内容非常粗糙、极不严谨，仅作为 Python 处理 JSON 文件格式的示例使用。数据背后的故事往往是非常复杂的，即使精通数据分析的技巧，也未必能预见未来。“世事洞明皆学问，人情练达即文章”，在数据分析过程中，这些修炼都是必不可少的，也是非常艰难的挑战。
+
+> **动手试一试**
+>
+> **16-5 分析更完整的数据**：本节仅使用了交易收盘价在2017年的部分数据。如果要全面地分析价格走势，还是应该收集更加完整的数据；目前最早的交易时间数据可以追溯到2012年。如果你感兴趣，可以收集早期的数据进行分析。
+>
+> **16-6 选择你感兴趣的数据**：免费的 JSON 格式数据非常丰富，许多著名的国际组织都在积极分享有价值的数据。例如，Open Knowledge International（https://okfn.org/）上就有许多有趣的 JSON 数据。你也可以用本节的方法获取它们，开启自己的分析项目。
+>
+> **16-7 测试函数 draw_line**：我们编写函数`draw_line`时，没有使用测试方法检验它能否正确工作。请利用你在第11章学到的知识，为这个函数编写合适的测试程序。
+>
+> **16-8 尝试 Python 数据科学工具**：虽然 Python 标准库对数据分析的支持相对有限，但是 Python 具有非常完善的数据科学生态系统，有许多易学易用、高效便捷的第三方开源数据分析工具。除了前面介绍的 matplotlib，还有科学计算工具包 Numpy（http://www.numpy.org/）/Scipy（https://www.scipy.org/）、快速数据分析工具 Pandas（https://pandas.pydata.org/）、机器学习工具 Scikit-learn（[http://scikit-learn.org](http://scikit-learn.org/)），以及让深度学习开发更简单的 Keras（https://keras.io/，它支持 TensorFlow、CNTK 和 Theano）。如果感兴趣，可以用 Pandas 直接读取 JSON 文件数据，并进行格式转换、数据聚合、时间序列分析，结合 Scikit-learn 可以对收盘价进行回归分析与预测。
+
+### **16.3　小结**
+
+在本章中，你学习了：如何使用网上的数据集；如何处理 CSV 和 JSON 文件，以及如何提取你感兴趣的数据；如何使用 matplotlib 来处理以往的天气数据，包括如何使用模块`datetime`，以及如何在同一个图表中绘制多个数据系列；如何使用模块`json`来访问以 JSON 格式存储的交易收盘价数据，并使用 Pygal 绘制图形以探索价格变化的周期性，以及如何将 Pygal 图形组合成数据仪表盘。
+
+有了使用 CSV 和 JSON 文件的经验后，你将能够处理几乎任何要分析的数据。大多数在线数据集都可以以这两种格式中的一种或两种下载。学习使用这两种格式为学习使用其他格式的数据做好了准备。
+
+在下一章，你将编写自动从网上采集数据并对其进行可视化的程序。如果你只是将编程作为业余爱好，学会这些技能可以增加乐趣；如果你有志于成为专业程序员，就必须掌握这些技能。
+
+------
+
+[[1\]](https://gitbook.cn/m/mazi/columns/5ce3cfab3481b33762ae04b6/topics/5ce3cfab3481b33762ae04cb#ch1) 本节为陶俊杰根据原作编写。源代码请见本书主页http://www.ituring.com.cn/book/1861，代码为 Python 3 版本，尽量支持 Python 2 版本，可以在 binder 容器中执行`jupyter notebook`。——编者注
+
+------
+
+
+
+## 第17章　使用 API
+
+### **老齐导读**
+
+此处又要表扬本书了，作为一本入门读物，居然让学习者了解 Git 和 Github，这种做法，我只在两本书里面看到了，除了本书，就是我写得那本书了（哈哈，至少说明我还不那么落伍吧）。
+
+本章向读者提及的 Git 和 Github 网站，是任何打算编程的同学所需的必备技能。所以，非常强烈地建议大家，务必要自己在 Git 上花一些精力学习，有百利而无一害，或者说是一本万利的好事情。
+
+本章中要求读者安装的 requests 包，我在上一章作为拓展内容向大家推荐了。它比 Python 标准库中类似的模块要好用的多，建议多使用。
+
+在按照书上所示代码进行操作之前，为了避免错误，应该先到 github.com 网站上验证一下书中给的地址。在用 requests.get() 函数从某个 API 中读取数据的时候，还可能遇到因为网络问题导致连接请求超时等错误，这时候可以重新执行程序或者切换网络，个别地区可能无论如何都会有问题，此时建议请其他省市的朋友帮忙，将下载下来的内容通过国内网络传过来。
+
+此外，还要提示读者正确理解 17.2 节代码④。这里创建了一个柱形图对象 chart，后续的代码都是调用此对象的方法或者属性，对此对象实施有关操作或者属性值设置——体会面向对象思想。
+
+![enter image description here](https://images.gitbook.cn/9e3ec840-8b2b-11e9-b6ad-75422f81aa28)
+
+> 在本章中，你将学习如何编写一个独立的程序，并对其获取的数据进行可视化。这个程序将使用 **Web 应用编程接口**（API）自动请求网站的特定信息而不是整个网页，再对这些信息进行可视化。由于这样编写的程序始终使用最新的数据来生成可视化，因此即便数据瞬息万变，它呈现的信息也都是最新的。
+
+### **17.1　使用 Web API**
+
+Web API 是网站的一部分，用于与使用非常具体的 URL 请求特定信息的程序交互。这种请求称为 API 调用。请求的数据将以易于处理的格式（如 JSON 或 CSV）返回。依赖于外部数据源的大多数应用程序都依赖于 API 调用，如集成社交媒体网站的应用程序。
+
+#### **17.1.1　Git 和 GitHub**
+
+本章的可视化将基于来自 GitHub 的信息，这是一个让程序员能够协作开发项目的网站。我们将使用 GitHub 的 API 来请求有关该网站中 Python 项目的信息，然后使用 Pygal 生成交互式可视化，以呈现这些项目的受欢迎程度。
+
+GitHub（https://github.com/）的名字源自 Git，Git 是一个分布式版本控制系统，让程序员团队能够协作开发项目。Git 帮助大家管理为项目所做的工作，避免一个人所做的修改影响其他人所做的修改。你在项目中实现新功能时，Git 将跟踪你对每个文件所做的修改。确定代码可行后，你提交所做的修改，而 Git 将记录项目最新的状态。如果你犯了错，想撤销所做的修改，可轻松地返回以前的任何可行状态（要更深入地了解如何使用 Git 进行版本控制，请参阅附录 D）。GitHub 上的项目都存储在仓库中，后者包含与项目相关联的一切：代码、项目参与者的信息、问题或 bug 报告等。
+
+对于喜欢的项目，GitHub 用户可给它加星（star）以表示支持，用户还可跟踪他可能想使用的项目。在本章中，我们将编写一个程序，它自动下载 GitHub 上星级最高的 Python 项目的信息，并对这些信息进行可视化。
+
+#### **17.1.2　使用 API 调用请求数据**
+
+GitHub 的 API 让你能够通过 API 调用来请求各种信息。要知道 API 调用是什么样的，请在浏览器的地址栏中输入如下地址并按回车键：
+
+```
+https://api.github.com/search/repositories?q=language:python&sort=stars
+```
+
+这个调用返回 GitHub 当前托管了多少个 Python 项目，还有有关最受欢迎的 Python 仓库的信息。下面来仔细研究这个调用。第一部分（`https://api.github.com/`）将请求发送到 GitHub 网站中响应 API 调用的部分；接下来的一部分（`search/repositories`）让 API 搜索 GitHub 上的所有仓库。
+
+`repositories`后面的问号指出我们要传递一个实参。`q`表示查询，而等号让我们能够开始指定查询（`q=`）。通过使用`language:python`，我们指出只想获取主要语言为 Python 的仓库的信息。最后一部分（`&sort=stars`）指定将项目按其获得的星级进行排序。
+
+下面显示了响应的前几行。从响应可知，该 URL 并不适合人工输入。
+
+```
+{
+  "total_count": 713062,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 3544424,
+      "name": "httpie",
+      "full_name": "jkbrzt/httpie",
+      --snip--
+```
+
+从第二行输出可知，编写本书时，GitHub 总共有713062个 Python 项目。`"incomplete_results"`的值为`false`，据此我们知道请求是成功的（它并非不完整的）。倘若 GitHub 无法全面处理该 API，它返回的这个值将为`true`。接下来的列表中显示了返回的`"items"`，其中包含 GitHub 上最受欢迎的 Python 项目的详细信息。
+
+#### **17.1.3　安装 requests**
+
+requests 包让 Python 程序能够轻松地向网站请求信息以及检查返回的响应。要安装 requests，请执行类似于下面的命令：
+
+```
+$ pip install --user requests
+```
+
+如果你还没有使用过 pip，请参阅12.2.1节（根据系统的设置，你可能需要使用这个命令的稍微不同的版本）。
+
+#### **17.1.4　处理 API 响应**
+
+下面来编写一个程序，它执行 API 调用并处理结果，找出 GitHub 上星级最高的 Python 项目：
+
+**python_repos.py**
+
+```
+❶ import requests
+
+  # 执行 API 调用并存储响应
+❷ url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
+❸ r = requests.get(url)
+❹ print("Status code:", r.status_code)
+
+  # 将 API 响应存储在一个变量中
+❺ response_dict = r.json()
+
+  # 处理结果
+  print(response_dict.keys())
+```
+
+在❶处，我们导入了模块`requests`。在❷处，我们存储 API 调用的 URL，然后使用`requests`来执行调用（见❸）。我们调用`get()`并将 URL 传递给它，再将响应对象存储在变量`r`中。响应对象包含一个名为`status_code`的属性，它让我们知道请求是否成功了（状态码200表示请求成功）。在❹处，我们打印`status_code`，核实调用是否成功了。
+
+这个 API 返回 JSON 格式的信息，因此我们使用方法`json()`将这些信息转换为一个 Python 字典（见❺）。我们将转换得到的字典存储在`response_dict`中。
+
+最后，我们打印`response_dict`中的键。输出如下：
+
+```
+Status code: 200
+dict_keys(['items', 'total_count', 'incomplete_results'])
+```
+
+状态码为200，因此我们知道请求成功了。响应字典只包含三个键：`'items'`、`'total_count'`和`'incomplete_results'`。
+
+> **注意**　
+>
+> 像这样简单的调用应该会返回完整的结果集，因此完全可以忽略与`'incomplete_results'`相关联的值。但执行更复杂的 API 调用时，程序应检查这个值。
+
+#### **17.1.5　处理响应字典**
+
+将 API 调用返回的信息存储到字典中后，就可以处理这个字典中的数据了。下面来生成一些概述这些信息的输出。这是一种不错的方式，可确认收到了期望的信息，进而可以开始研究感兴趣的信息：
+
+**python_repos.py**
+
+```
+  import requests
+
+  # 执行 API 调用并存储响应
+  url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
+  r = requests.get(url)
+  print("Status code:", r.status_code)
+
+  # 将 API 响应存储在一个变量中
+  response_dict = r.json()
+❶ print("Total repositories:", response_dict['total_count'])
+
+  # 探索有关仓库的信息
+❷ repo_dicts = response_dict['items']
+  print("Repositories returned:", len(repo_dicts))
+
+  # 研究第一个仓库
+❸ repo_dict = repo_dicts[0]
+❹ print("\nKeys:", len(repo_dict))
+❺ for key in sorted(repo_dict.keys()):
+      print(key)
+```
+
+在❶处，我们打印了与`'total_count'`相关联的值，它指出了 GitHub 总共包含多少个 Python 仓库。
+
+与`'items'`相关联的值是一个列表，其中包含很多字典，而每个字典都包含有关一个 Python 仓库的信息。在❷处，我们将这个字典列表存储在`repo_dicts`中。接下来，我们打印`repo_dicts`的长度，以获悉我们获得了多少个仓库的信息。
+
+为更深入地了解返回的有关每个仓库的信息，我们提取了`repo_dicts`中的第一个字典，并将其存储在`repo_dict`中（见❸）。接下来，我们打印这个字典包含的键数，看看其中有多少信息（见❹）。在❺处，我们打印这个字典的所有键，看看其中包含哪些信息。
+
+输出让我们对实际包含的数据有了更清晰的认识：
+
+```
+  Status code: 200
+  Total repositories: 713062
+  Repositories returned: 30
+
+❶ Keys: 68
+  archive_url
+  assignees_url
+  blobs_url
+  --snip--
+  url
+  watchers
+  watchers_count
+```
+
+GitHub 的 API 返回有关每个仓库的大量信息：`repo_dict`包含68个键（见❶）。通过仔细查看这些键，可大致知道可提取有关项目的哪些信息（要准确地获悉 API 将返回哪些信息，要么阅读文档，要么像此处这样使用代码来查看这些信息）。
+
+下面来提取`repo_dict`中与一些键相关联的值：
+
+**python_repos.py**
+
+```
+  --snip--
+  # 研究有关仓库的信息
+  repo_dicts = response_dict['items']
+  print("Repositories returned:", len(repo_dicts))
+
+  # 研究第一个仓库
+  repo_dict = repo_dicts[0]
+
+  print("\nSelected information about first repository:")
+❶ print('Name:', repo_dict['name'])
+❷ print('Owner:', repo_dict['owner']['login'])
+❸ print('Stars:', repo_dict['stargazers_count'])
+  print('Repository:', repo_dict['html_url'])
+❹ print('Created:', repo_dict['created_at'])
+❺ print('Updated:', repo_dict['updated_at'])
+  print('Description:', repo_dict['description'])
+```
+
+在这里，我们打印了表示第一个仓库的字典中与很多键相关联的值。在❶处，我们打印了项目的名称。项目所有者是用一个字典表示的，因此在❷处，我们使用键`owner`来访问表示所有者的字典，再使用键`key`来获取所有者的登录名。在❸处，我们打印项目获得了多少个星的评级，以及项目在 GitHub 仓库的 URL。接下来，我们显示项目的创建时间（见❹）和最后一次更新的时间（见❺）。最后，我们打印仓库的描述。输出类似于下面这样：
+
+```
+Status code: 200
+Total repositories: 713065
+Repositories returned: 30
+
+Selected information about first repository:
+Name: httpie
+Owner: jkbrzt
+Stars: 16101
+Repository: https://github.com/jkbrzt/httpie
+Created: 2012-02-25T12:39:13Z
+Updated: 2015-07-13T14:56:41Z
+Description: CLI HTTP client; user-friendly cURL replacement featuring intuitive UI, JSON support, syntax highlighting, wget-like downloads, extensions, etc.
+```
+
+从上述输出可知，编写本书时，GitHub 上星级最高的 Python 项目为 HTTPie，其所有者为用户 jkbrzt，有16000多个 GitHub 用户给这个项目加星。我们可以看到这个项目的仓库的 URL，其创建时间为2012年2月，且最近更新了。最后，描述指出 HTTPie 用于帮助从终端执行 HTTP 调用（CLI 是**命令行界面**的缩写）。
+
+#### **17.1.6　概述最受欢迎的仓库**
+
+对这些数据进行可视化时，我们需要涵盖多个仓库。下面就来编写一个循环，打印 API 调用返回的每个仓库的特定信息，以便能够在可视化中包含所有这些信息：
+
+**python_repos.py**
+
+```
+  --snip--
+  # 研究有关仓库的信息
+  repo_dicts = response_dict['items']
+  print("Repositories returned:", len(repo_dicts))
+
+❶ print("\nSelected information about each repository:")
+❷ for repo_dict in repo_dicts:
+      print('\nName:', repo_dict['name'])
+      print('Owner:', repo_dict['owner']['login'])
+      print('Stars:', repo_dict['stargazers_count'])
+      print('Repository:', repo_dict['html_url'])
+      print('Description:', repo_dict['description'])
+```
+
+在❶处，我们打印了一条说明性消息。在❷处，我们遍历`repo_dicts`中的所有字典。在这个循环中，我们打印每个项目的名称、所有者、星级、在 GitHub 上的 URL 以及描述：
+
+```
+Status code: 200
+Total repositories: 713067
+Repositories returned: 30
+
+Selected information about each repository:
+
+Name: httpie
+Owner: jkbrzt
+Stars: 16101
+Repository: https://github.com/jkbrzt/httpie
+Description: CLI HTTP client; user-friendly cURL replacement featuring intuitive UI, JSON support, syntax highlighting, wget-like downloads, extensions, etc.
+
+Name: django
+Owner: django
+Stars: 15028
+Repository: https://github.com/django/django
+Description: The Web framework for perfectionists with deadlines.
+--snip--
+
+Name: powerline
+Owner: powerline
+Stars: 4315
+Repository: https://github.com/powerline/powerline
+Description: Powerline is a statusline plugin for vim, and provides statuslines and prompts for several other applications, including zsh, bash, tmux, IPython, Awesome and Qtile.
+```
+
+上述输出中有一些有趣的项目，可能值得再看一眼。但不要在这上面花费太多时间，因为我们即将创建的可视化可让你更容易地看清结果。
+
+#### **17.1.7　监视 API 的速率限制**
+
+大多数 API 都存在速率限制，即你在特定时间内可执行的请求数存在限制。要获悉你是否接近了 GitHub 的限制，请在浏览器中输入https://api.github.com/rate_limit，你将看到类似于下面的响应：
+
+```
+  {
+    "resources": {
+      "core": {
+        "limit": 60,
+        "remaining": 58,
+        "reset": 1426082320
+      },
+❶     "search": {
+❷       "limit": 10,
+❸       "remaining": 8,
+❹       "reset": 1426078803
+      }
+    },
+    "rate": {
+      "limit": 60,
+      "remaining": 58,
+      "reset": 1426082320
+    }
+  }
+```
+
+我们关心的信息是搜索 API 的速率限制（见❶）。从❷处可知，极限为每分钟10个请求，而在当前这一分钟内，我们还可执行8个请求（见❸）。`reset`值指的是配额将重置的 Unix 时间或**新纪元时间**（1970年1月1日午夜后多少秒）（见❹）。用完配额后，你将收到一条简单的响应，由此知道已到达 API 极限。到达极限后，你必须等待配额重置。
+
+> **注意**　
+>
+> 很多 API 都要求你注册获得 API 密钥后才能执行 API 调用。编写本书时，GitHub 没有这样的要求，但获得 API 密钥后，配额将高得多。
+
+### **17.2　使用 Pygal 可视化仓库**
+
+有了一些有趣的数据后，我们来进行可视化，呈现 GitHub 上 Python 项目的受欢迎程度。我们将创建一个交互式条形图：条形的高度表示项目获得了多少颗星。单击条形将带你进入项目在 GitHub 上的主页。下面是首次尝试这样做：
+
+**python_repos.py**
+
+```
+  import requests
+  import pygal
+  from pygal.style import LightColorizedStyle as LCS, LightenStyle as LS
+
+  # 执行 API 调用并存储响应
+  URL = 'https://api.github.com/search/repositories?q=language:python&sort=star'
+  r = requests.get(URL)
+  print("Status code:", r.status_code)
+
+  # 将 API 响应存储在一个变量中
+  response_dict = r.json()
+  print("Total repositories:", response_dict['total_count'])
+
+  # 研究有关仓库的信息
+  repo_dicts = response_dict['items']
+
+❶ names, stars = [], []
+  for repo_dict in repo_dicts:
+❷     names.append(repo_dict['name'])
+      stars.append(repo_dict['stargazers_count'])
+
+  # 可视化
+❸ my_style = LS('#333366', base_style=LCS)
+❹ chart = pygal.Bar(style=my_style, x_label_rotation=45, show_legend=False)
+  chart.title = 'Most-Starred Python Projects on GitHub'
+  chart.x_labels = names
+
+❺ chart.add('', stars)
+  chart.render_to_file('python_repos.svg')
+```
+
+我们首先导入了`pygal`以及要应用于图表的 Pygal 样式。接下来，打印 API 调用响应的状态以及找到的仓库总数，以便获悉 API 调用是否出现了问题。我们不再打印返回的有关项目的信息，因为将通过可视化来呈现这些信息。
+
+在❶处，我们创建了两个空列表，用于存储将包含在图表中的信息。我们需要每个项目的名称，用于给条形加上标签，我们还需要知道项目获得了多少个星，用于确定条形的高度。在循环中，我们将项目的名称和获得的星数附加到这些列表的末尾❷。
+
+接下来，我们使用`LightenStyle`类（别名`LS`）定义了一种样式，并将其基色设置为深蓝色（见❸）。我们还传递了实参`base_style`，以使用`LightColorizedStyle`类（别名`LCS`）。然后，我们使用`Bar()`创建一个简单的条形图，并向它传递了`my_style`（见❹）。我们还传递了另外两个样式实参：让标签绕 *x* 轴旋转45度（`x_label_rotation=45`），并隐藏了图例（`show_legend=False`），因为我们只在图表中绘制一个数据系列。接下来，我们给图表指定了标题，并将属性`x_labels`设置为列表`names`。
+
+由于我们不需要给这个数据系列添加标签，因此在❺处添加数据时，将标签设置成了空字符串。生成的图表如图17-1所示。从中可知，前几个项目的受欢迎程度比其他项目高得多，但所有这些项目在 Python 生态系统中都很重要。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/21.d17z.001.png)
+
+**图17-1　GitHub 上受欢迎程度最高的 Python 项目**
+
+#### **17.2.1　改进 Pygal 图表**
+
+下面来改进这个图表的样式。我们将进行多个方面的定制，因此先来稍微调整代码的结构，创建一个配置对象，在其中包含要传递给`Bar()`的所有定制：
+
+**python_repos.py**
+
+```
+  --snip--
+
+  # 可视化
+  my_style = LS('#333366', base_style=LCS)
+
+❶ my_config = pygal.Config()
+❷ my_config.x_label_rotation = 45
+  my_config.show_legend = False
+❸ my_config.title_font_size = 24
+  my_config.label_font_size = 14
+  my_config.major_label_font_size = 18
+❹ my_config.truncate_label = 15
+❺ my_config.show_y_guides = False
+❻ my_config.width = 1000
+
+❼ chart = pygal.Bar(my_config, style=my_style)
+  chart.title = 'Most-Starred Python Projects on GitHub'
+  chart.x_labels = names
+
+  chart.add('', stars)
+  chart.render_to_file('python_repos.svg')
+```
+
+在❶处，我们创建了一个 Pygal 类`Config`的实例，并将其命名为`my_config`。通过修改`my_config`的属性，可定制图表的外观。在❷处，我们设置了两个属性——`x_label_rotation`和`show_legend`，它们原来是在创建`Bar`实例时以关键字实参的方式传递的。在❸处，我们设置了图表标题、副标签和主标签的字体大小。在这个图表中，副标签是 *x* 轴上的项目名以及 *y* 轴上的大部分数字。主标签是 *y* 轴上为5000整数倍的刻度；这些标签应更大，以与副标签区分开来。在❹处，我们使用`truncate_label`将较长的项目名缩短为15个字符（如果你将鼠标指向屏幕上被截短的项目名，将显示完整的项目名）。接下来，我们将`show_y_guides`设置为`False`，以隐藏图表中的水平线（见❺）。最后，在❻处设置了自定义宽度，让图表更充分地利用浏览器中的可用空间。
+
+在❼处创建`Bar`实例时，我们将`my_config`作为第一个实参，从而通过一个实参传递了所有的配置设置。我们可以通过`my_config`做任意数量的样式和配置修改，而❼处的代码行将保持不变。图17-2显示了重新设置样式后的图表。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/21.d17z.002.png)
+
+**图17-2　改进了图表的样式**
+
+#### **17.2.2　添加自定义工具提示**
+
+在 Pygal 中，将鼠标指向条形将显示它表示的信息，这通常称为**工具提示**。在这个示例中，当前显示的是项目获得了多少个星。下面来创建一个自定义工具提示，以同时显示项目的描述。
+
+来看一个简单的示例，它可视化前三个项目，并给每个项目对应的条形都指定自定义标签。为此，我们向`add()`传递一个字典列表，而不是值列表：
+
+**bar_descriptions.py**
+
+```
+  import pygal
+  from pygal.style import LightColorizedStyle as LCS, LightenStyle as LS
+
+  my_style = LS('#333366', base_style=LCS)
+  chart = pygal.Bar(style=my_style, x_label_rotation=45, show_legend=False)
+
+  chart.title = 'Python Projects'
+  chart.x_labels = ['httpie', 'django', 'flask']
+
+❶ plot_dicts = [
+❷     {'value': 16101, 'label': 'Description of httpie.'},
+      {'value': 15028, 'label': 'Description of django.'},
+      {'value': 14798, 'label': 'Description of flask.'},
+      ]
+
+❸ chart.add('', plot_dicts)
+  chart.render_to_file('bar_descriptions.svg')
+```
+
+在❶处，我们定义了一个名为`plot_dicts`的列表，其中包含三个字典，分别针对项目 HTTPie、Django 和 Flask。每个字典都包含两个键：`'value'`和`'label'`。Pygal 根据与键`'value'`相关联的数字来确定条形的高度，并使用与`'label'`相关联的字符串给条形创建工具提示。例如，❷处的第一个字典将创建一个条形，用于表示一个获得了16101颗星、工具提示为 Description of httpie 的项目。
+
+方法`add()`接受一个字符串和一个列表。这里调用`add()`时，我们传入了一个由表示条形的字典组成的列表（`plot_dicts`）（见❸）。图17-3显示了一个工具提示：除默认工具提示（获得的星数）外，Pygal 还显示了我们传入的自定义提示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/21.d17z.003.png)
+
+**图17-3　每个条形都有自定义的工具提示标签**
+
+#### **17.2.3　根据数据绘图**
+
+为根据数据绘图，我们将自动生成`plot_dicts`，其中包含 API 调用返回的30个项目的信息。
+
+完成这种工作的代码如下：
+
+**python_repos.py**
+
+```
+  --snip--
+  # 研究有关仓库的信息
+  repo_dicts = response_dict['items']
+  print("Number of items:", len(repo_dicts))
+
+❶ names, plot_dicts = [], []
+  for repo_dict in repo_dicts:
+      names.append(repo_dict['name'])
+
+❷     plot_dict = {
+          'value': repo_dict['stargazers_count'],
+          'label': repo_dict['description'],
+          }
+❸     plot_dicts.append(plot_dict)
+
+  # 可视化
+  my_style = LS('#333366', base_style=LCS)
+  --snip--
+
+❹ chart.add('', plot_dicts)
+  chart.render_to_file('python_repos.svg')
+```
+
+在❶处，我们创建了两个空列表`names`和`plot_dicts`。为生成 *x* 轴上的标签，我们依然需要列表`names`。
+
+在循环内部，对于每个项目，我们都创建了字典`plot_dict`（见❷）。在这个字典中，我们使用键`'value'`存储了星数，并使用键`'label'`存储了项目描述。接下来，我们将字典`plot_dict`附加到`plot_dicts`末尾（见❸）。在❹处，我们将列表`plot_dicts`传递给了`add()`。图17-4显示了生成的图表。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/21.d17z.004.png)
+
+**图17-4　将鼠标指向条形将显示项目的描述**
+
+#### **17.2.4　在图表中添加可单击的链接**
+
+Pygal 还允许你将图表中的每个条形用作网站的链接。为此，只需添加一行代码，在为每个项目创建的字典中，添加一个键为`'xlink'`的键—值对：
+
+**python_repos.py**
+
+```
+--snip--
+names, plot_dicts = [], []
+for repo_dict in repo_dicts:
+    names.append(repo_dict['name'])
+
+    plot_dict = {
+        'value': repo_dict['stargazers_count'],
+        'label': repo_dict['description'],
+        'xlink': repo_dict['html_url'],
+        }
+    plot_dicts.append(plot_dict)
+--snip--
+```
+
+Pygal 根据与键`'xlink'`相关联的 URL 将每个条形都转换为活跃的链接。单击图表中的任何条形时，都将在浏览器中打开一个新的标签页，并在其中显示相应项目的 GitHub 页面。至此，你对 API 获取的数据进行了可视化，它是交互性的，包含丰富的信息！
+
+### **17.3　Hacker News API**
+
+为探索如何使用其他网站的 API 调用，我们来看看 Hacker News（http://news.ycombinator.com/）。在 Hacker News 网站，用户分享编程和技术方面的文章，并就这些文章展开积极的讨论。Hacker News 的 API 让你能够访问有关该网站所有文章和评论的信息，且不要求你通过注册获得密钥。
+
+下面的调用返回本书编写时最热门的文章的信息：
+
+```
+https://hacker-news.firebaseio.com/v0/item/9884165.json
+```
+
+响应是一个字典，包含 ID 为9884165的文章的信息：
+
+```
+  {
+❶     'url': 'http://www.bbc.co.uk/news/science-environment-33524589',
+      'type': 'story',
+❷     'title': 'New Horizons: Nasa spacecraft speeds past Pluto',
+❸     'descendants': 141,
+      'score': 230,
+      'time': 1436875181,
+      'text': '',
+      'by': 'nns',
+      'id': 9884165,
+❹     'kids': [9884723, 9885099, 9884789, 9885604, 9885844]
+  }
+```
+
+这个字典包含很多键，如`'url'`（见❶）和`'title'`（见❷）。与键`'descendants'`相关联的值是文章被评论的次数（见❸）。与键`'kids'`相关联的值包含对文章所做的所有评论的 ID（见❹）。每个评论自己也可能有 kid，因此文章的后代（descendant）数量可能比其 kid 数量多。
+
+下面来执行一个 API 调用，返回 Hacker News 上当前热门文章的 ID，再查看每篇排名靠前的文章：
+
+**hn_submissions.py**
+
+```
+  import requests
+
+  from operator import itemgetter
+
+  # 执行 API 调用并存储响应
+❶ url = 'https://hacker-news.firebaseio.com/v0/topstories.json'
+  r = requests.get(url)
+  print("Status code:", r.status_code)
+
+  # 处理有关每篇文章的信息
+❷ submission_ids = r.json()
+❸ submission_dicts = []
+  for submission_id in submission_ids[:30]:
+      # 对于每篇文章，都执行一个 API 调用
+❹     url = ('https://hacker-news.firebaseio.com/v0/item/' +
+              str(submission_id) + '.json')
+      submission_r = requests.get(url)
+      print(submission_r.status_code)
+      response_dict = submission_r.json()
+
+❺     submission_dict = {
+          'title': response_dict['title'],
+          'link': 'http://news.ycombinator.com/item?id=' + str(submission_id),
+❻         'comments': response_dict.get('descendants', 0)
+          }
+      submission_dicts.append(submission_dict)
+
+❼ submission_dicts = sorted(submission_dicts, key=itemgetter('comments'),
+                              reverse=True)
+
+❽ for submission_dict in submission_dicts:
+      print("\nTitle:", submission_dict['title'])
+      print("Discussion link:", submission_dict['link'])
+      print("Comments:", submission_dict['comments'])
+```
+
+首先，我们执行了一个 API 调用，并打印了响应的状态（见❶）。这个 API 调用返回一个列表，其中包含 Hacker News 上当前最热门的500篇文章的 ID。接下来，我们将响应文本转换为一个 Python 列表（见❷），并将其存储在`submission_ids`中。我们将使用这些 ID 来创建一系列字典，其中每个字典都存储了一篇文章的信息。
+
+在❸处，我们创建了一个名为`submission_dicts`的空列表，用于存储前面所说的字典。接下来，我们遍历前30篇文章的 ID。对于每篇文章，我们都执行一个 API 调用，其中的 URL 包含`submission_id`的当前值（见❹）。我们打印每次请求的状态，以便知道请求是否成功了。
+
+在❺处，我们为当前处理的文章创建一个字典，并在其中存储文章的标题以及到其讨论页面的链接。在❻处，我们在这个字典中存储了评论数。如果文章还没有评论，响应字典中将没有键`'descendants'`。不确定某个键是否包含在字典中时，可使用方法`dict.get()`，它在指定的键存在时返回与之相关联的值，并在指定的键不存在时返回你指定的值（这里是0）。最后，我们将`submission_dict`附加到`submission_dicts`末尾。
+
+Hacker News 上的文章是根据总体得分排名的，而总体得分取决于很多因素，其中包含被推荐的次数、评论数以及发表的时间。我们要根据评论数对字典列表`submission_dicts`进行排序，为此，使用了模块`operator`中的函数`itemgetter()`（见❼）。我们向这个函数传递了键`'comments'`，因此它将从这个列表的每个字典中提取与键`'comments'`相关联的值。这样，函数`sorted()`将根据这种值对列表进行排序。我们将列表按降序排列，即评论最多的文章位于最前面。
+
+对列表排序后，我们遍历这个列表（见❽），对于每篇热门文章，都打印其三项信息：标题、到讨论页面的链接以及文章现有的评论数：
+
+```
+Status code: 200
+200
+200
+200
+--snip--
+
+Title: Firefox deactivates Flash by default
+Discussion link: http://news.ycombinator.com/item?id=9883246
+Comments: 231
+
+Title: New Horizons: Nasa spacecraft speeds past Pluto
+Discussion link: http://news.ycombinator.com/item?id=9884165
+Comments: 142
+
+Title: Iran Nuclear Deal Is Reached With World Powers
+Discussion link: http://news.ycombinator.com/item?id=9884005
+Comments: 141
+
+Title: Match Group Buys PlentyOfFish for $575M
+Discussion link: http://news.ycombinator.com/item?id=9884417
+Comments: 75
+
+Title: Our Nexus 4 devices are about to explode
+Discussion link: http://news.ycombinator.com/item?id=9885625
+Comments: 14
+
+--snip--
+```
+
+使用任何 API 来访问和分析信息时，流程都与此类似。有了这些数据后，你就可以进行可视化，指出最近哪些文章引发了最激烈的讨论。
+
+> **动手试一试**
+>
+> **17-1 其他语言**：修改 python_repos.py 中的 API 调用，使其在生成的图表中显示使用其他语言编写的最受欢迎的项目。请尝试语言 JavaScript、Ruby、C、Java、Perl、Haskell 和 Go 等。
+>
+> **17-2 最活跃的讨论**：使用 hn_submissions.py 中的数据，创建一个条形图，显示 Hacker News 上当前最活跃的讨论。条形的高度应对应于文章得到的评论数量，条形的标签应包含文章的标题，而每个条形应是到该文章讨论页面的链接。
+>
+> **17-3 测试 python_repos.py**：在 python_repos.py 中，打印`status_code`的值，以核实 API 调用是否成功了。请编写一个名为 test_python_repos.py 的程序，它使用`unittest`来断言`status_code`的值为200。想想你还可做出哪些断言，如返回的条目数符合预期，仓库总数超过特定的值等。
+
+### **17.4　小结**
+
+在本章中，你学习了：如何使用 API 来编写独立的程序，它们自动采集所需的数据并对其进行可视化；使用 GitHub API 来探索 GitHub 上星级最高的 Python 项目，还大致地了解了 Hacker News API；如何使用 requests 包来自动执行 GitHub API 调用，以及如何处理调用的结果。我们还简要地介绍了一些 Pygal 设置，使用它们可进一步定制生成的图表的外观。
+
+在本书的最后一个项目中，我们将使用 Django 来创建一个 Web 应用程序。

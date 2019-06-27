@@ -1,4 +1,5 @@
 # 9--9.1.1 创建Dog类#################################################################
+# python3编程中的if __name__ == '__main__': 的作用和原理:https://www.jianshu.com/p/c316646e42bc
 # 首字母大写的名称指的是类
 class Dog():
     """一次模拟小狗的简单尝试"""
@@ -159,5 +160,7 @@ my_electricmotor.battery.describe_battery()
 # 对Battery()类中的battery_size属性进行重新赋值
 my_electricmotor.battery.battery_size = 10000
 my_electricmotor.battery.describe_battery()
+
+
 
 

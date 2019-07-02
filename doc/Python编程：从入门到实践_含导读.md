@@ -1,5 +1,3 @@
-[TOC]
-
 # 前言
 
 如何学习编写第一个程序，每个程序员都有不同的故事。我还是个孩子时就开始学习编程了，当时我父亲在计算时代的先锋之一——数字设备公司（Digital Equipment Corporation）工作。我使用一台简陋的计算机编写了第一个程序，这台计算机是父亲在家里的地下室组装而成的，它没有机箱，裸露的主板与键盘相连，显示器是裸露的阴极射线管。我编写的这个程序是一款简单的猜数字游戏，其输出类似于下面这样：
@@ -13914,3 +13912,4095 @@ Comments: 14
 在本章中，你学习了：如何使用 API 来编写独立的程序，它们自动采集所需的数据并对其进行可视化；使用 GitHub API 来探索 GitHub 上星级最高的 Python 项目，还大致地了解了 Hacker News API；如何使用 requests 包来自动执行 GitHub API 调用，以及如何处理调用的结果。我们还简要地介绍了一些 Pygal 设置，使用它们可进一步定制生成的图表的外观。
 
 在本书的最后一个项目中，我们将使用 Django 来创建一个 Web 应用程序。
+
+------
+
+
+
+## 第18章　Django 入门
+
+### **老齐导读**
+
+Django 是 Python 语言生态中进行 Web 开发的框架，也是最流行的框架。
+
+官方网站https://www.djangoproject.com/
+
+目前，Django 有两个版本——Django1.x 和Django2.x，因为图书出版之后的问题，多数图书（包括现在阅读的这本）都是基于 Django1.x 的。如果读者要学习 Django2.x，推荐阅读我写的《跟老齐学 Python：Django 实战（第二版）》。另外，为了便于读者学习，特别是利用本书项目入门，如果安装了 Django2.x——我也推荐安装这个版本，可以参考我总结的一篇关于两个版本差异的文章https://itdiffer.com/article/44
+
+读者在阅读本书的时候，特别建议参考官方文档。
+
+本章主要是熟悉 Django 项目和应用的一般创建流程，并且能够发布静态的网页内容。
+
+![enter image description here](https://images.gitbook.cn/851b2a50-8b2d-11e9-95e5-6f0d9ecb3f92)
+
+> 当今的网站实际上都是富应用程序（rich application），就像成熟的桌面应用程序一样。Python 提供了一组开发 Web 应用程序的卓越工具。在本章中，你将学习如何使用 Django（http://djangoproject.com/）来开发一个名为“学习笔记”（Learning Log）的项目，这是一个在线日志系统，让你能够记录所学习的有关特定主题的知识。
+>
+> 我们将为这个项目制定规范，然后为应用程序使用的数据定义模型。我们将使用 Django 的管理系统来输入一些初始数据，再学习编写视图和模板，让 Django 能够为我们的网站创建网页。
+>
+> Django 是一个 **Web 框架**——一套用于帮助开发交互式网站的工具。Django 能够响应网页请求，还能让你更轻松地读写数据库、管理用户等。在第19章和第20章，我们将改进“学习笔记”项目，再将其部署到活动的服务器，让你和你的朋友能够使用它。
+
+### **18.1　建立项目**
+
+建立项目时，首先需要以规范的方式对项目进行描述，再建立虚拟环境，以便在其中创建项目。
+
+#### **18.1.1　制定规范**
+
+完整的规范详细说明了项目的目标，阐述了项目的功能，并讨论了项目的外观和用户界面。与任何良好的项目规划和商业计划书一样，规范应突出重点，帮助避免项目偏离轨道。这里不会制定完整的项目规划，而只列出一些明确的目标，以突出开发的重点。我们制定的规范如下：
+
+> 我们要编写一个名为“学习笔记”的 Web 应用程序，让用户能够记录感兴趣的主题，并在学习每个主题的过程中添加日志条目。“学习笔记”的主页对这个网站进行描述，并邀请用户注册或登录。用户登录后，就可创建新主题、添加新条目以及阅读既有的条目。
+
+学习新的主题时，记录学到的知识可帮助跟踪和复习这些知识。优秀的应用程序让这个记录过程简单易行。
+
+#### **18.1.2　建立虚拟环境**
+
+要使用 Django，首先需要建立一个虚拟工作环境。**虚拟环境**是系统的一个位置，你可以在其中安装包，并将其与其他 Python 包隔离。将项目的库与其他项目分离是有益的，且为了在第20章将“学习笔记”部署到服务器，这也是必须的。
+
+为项目新建一个目录，将其命名为 learning_log，再在终端中切换到这个目录，并创建一个虚拟环境。如果你使用的是 Python 3，可使用如下命令来创建虚拟环境：
+
+```
+learning_log$ python -m venv ll_env
+learning_log$
+```
+
+这里运行了模块`venv`，并使用它来创建一个名为 ll_env 的虚拟环境。如果这样做管用，请跳到后面的18.1.4节；如果不管用，请阅读18.1.3节。
+
+#### **18.1.3　安装 virtualenv**
+
+如果你使用的是较早的 Python 版本，或者系统没有正确地设置，不能使用模块`venv`，可安装 virtualenv 包。为此，可执行如下命令：
+
+```
+$ pip install --user virtualenv
+```
+
+别忘了，对于这个命令，你可能需要使用稍微不同的版本（如果你没有使用过 pip，请参阅12.2.1节）。
+
+> **注意**　
+>
+> 如果你使用的是 Linux 系统，且上面的做法不管用，可使用系统的包管理器来安装 virtualenv。例如，要在 Ubuntu 系统中安装 virtualenv，可使用命令`sudo apt-get install python-virtualenv`。
+
+在终端中切换到目录 learning_log，并像下面这样创建一个虚拟环境：
+
+```
+learning_log$ virtualenv ll_env
+New python executable in ll_env/bin/python
+Installing setuptools, pip...done.
+learning_log$
+```
+
+> **注意**　
+>
+> 如果你的系统安装了多个 Python 版本，需要指定 virtualenv 使用的版本。例如，命令`virtualenv ll_env --python=python3`创建一个使用 Python 3 的虚拟环境。
+
+#### **18.1.4　激活虚拟环境**
+
+建立虚拟环境后，需要使用下面的命令激活它：
+
+```
+  learning_log$ source ll_env/bin/activate
+❶ (ll_env)learning_log$
+```
+
+这个命令运行 ll_env/bin 中的脚本 activate。环境处于活动状态时，环境名将包含在括号内，如❶处所示。在这种情况下，你可以在环境中安装包，并使用已安装的包。你在 ll_env 中安装的包仅在该环境处于活动状态时才可用。
+
+> **注意**　
+>
+> 如果你使用的是 Windows 系统，请使用命令`ll_env\Scripts\activate`（不包含`source`）来激活这个虚拟环境。
+
+要停止使用虚拟环境，可执行命令`deactivate`：
+
+```
+(ll_env)learning_log$ deactivate
+learning_log$
+```
+
+如果关闭运行虚拟环境的终端，虚拟环境也将不再处于活动状态。
+
+#### **18.1.5　安装 Django**
+
+创建并激活虚拟环境后，就可安装 Django 了：
+
+```
+(ll_env)learning_log$ pip install Django
+Installing collected packages: Django
+Successfully installed Django
+Cleaning up...
+(ll_env)learning_log$
+```
+
+由于我们是在虚拟环境中工作，因此在所有的系统中，安装 Django 的命令都相同：不需要指定标志`--user`，也无需使用`python -m pip install package_name`这样较长的命令。
+
+别忘了，Django 仅在虚拟环境处于活动状态时才可用。
+
+#### **18.1.6　在 Django 中创建项目**
+
+在依然处于活动的虚拟环境的情况下（ll_env 包含在括号内），执行如下命令来新建一个项目：
+
+```
+❶ (ll_env)learning_log$ django-admin startproject learning_log .
+❷ (ll_env)learning_log$ ls
+  learning_log ll_env manage.py
+❸ (ll_env)learning_log$ ls learning_log
+  __init__.py  settings.py  urls.py  wsgi.py
+```
+
+❶处的命令让 Django 新建一个名为 learning_log 的项目。这个命令末尾的句点让新项目使用合适的目录结构，这样开发完成后可轻松地将应用程序部署到服务器。
+
+> **注意**　
+>
+> 千万别忘了这个句点，否则部署应用程序时将遭遇一些配置问题。如果忘记了这个句点，就将创建的文件和文件夹删除（ll_env 除外），再重新运行这个命令。
+
+在❸处，运行了命令`ls`（在 Windows 系统上应为`dir`），结果表明 Django 新建了一个名为 learning_log 的目录。它还创建了一个名为 manage.py 的文件，这是一个简单的程序，它接受命令并将其交给 Django 的相关部分去运行。我们将使用这些命令来管理诸如使用数据库和运行服务器等任务。
+
+目录 learning_log 包含4个文件（见❸），其中最重要的是 settings.py、urls.py 和 wsgi.py。文件 settings.py 指定 Django 如何与你的系统交互以及如何管理项目。在开发项目的过程中，我们将修改其中一些设置，并添加一些设置。文件 urls.py 告诉 Django 应创建哪些网页来响应浏览器请求。文件 wsgi.py 帮助 Django 提供它创建的文件，这个文件名是 web server gateway interface（**Web 服务器网关接口**）的首字母缩写。
+
+#### **18.1.7　创建数据库**
+
+Django 将大部分与项目相关的信息都存储在数据库中，因此我们需要创建一个供 Django 使用的数据库。为给项目“学习笔记”创建数据库，请在处于活动虚拟环境中的情况下执行下面的命令：
+
+```
+  (ll_env)learning_log$ python manage.py migrate
+❶ Operations to perform:
+    Synchronize unmigrated apps: messages, staticfiles
+    Apply all migrations: contenttypes, sessions, auth, admin
+    --snip--
+    Applying sessions.0001_initial... OK
+❷ (ll_env)learning_log$ ls
+  db.sqlite3  learning_log  ll_env  manage.py
+```
+
+我们将修改数据库称为**迁移**数据库。首次执行命令`migrate`时，将让 Django 确保数据库与项目的当前状态匹配。在使用 SQLite（后面将更详细地介绍）的新项目中首次执行这个命令时，Django 将新建一个数据库。在❶处，Django 指出它将创建必要的数据库表，用于存储我们将在这个项目（Synchronize unmigrated apps，**同步未迁移的应用程序**）中使用的信息，再确保数据库结构与当前代码（Apply all migrations，**应用所有的迁移**）匹配。
+
+在❷处，我们运行了命令`ls`，其输出表明 Django 又创建了一个文件——db.sqlite3。SQLite 是一种使用单个文件的数据库，是编写简单应用程序的理想选择，因为它让你不用太关注数据库管理的问题。
+
+#### **18.1.8　查看项目**
+
+下面来核实 Django 是否正确地创建了项目。为此，可执行命令`runserver`，如下所示：
+
+```
+  (ll_env)learning_log$ python manage.py runserver
+  Performing system checks...
+
+❶ System check identified no issues (0 silenced).
+  July 15, 2015 - 06:23:51
+❷ Django version 1.8.4, using settings 'learning_log.settings'
+❸ Starting development server at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+```
+
+Django 启动一个服务器，让你能够查看系统中的项目，了解它们的工作情况。当你在浏览器中输入 URL 以请求网页时，该 Django 服务器将进行响应：生成合适的网页，并将其发送给浏览器。
+
+在❶处，Django 通过检查确认正确地创建了项目；在❷处，它指出了使用的 Django 版本以及当前使用的设置文件的名称；在❸处，它指出了项目的 URL。URL http://127.0.0.1:8000/ 表明项目将在你的计算机（即 localhost）的端口8000上侦听请求。localhost 是一种只处理当前系统发出的请求，而不允许其他任何人查看你正在开发的网页的服务器。
+
+现在打开一款 Web 浏览器，并输入 URL：http://localhost:8000/；如果这不管用，请输入 http://127.0.0.1:8000/。你将看到类似于图18-1所示的页面，这个页面是 Django 创建的，让你知道到目前为止一切正常。现在暂时不要关闭这个服务器。若要关闭这个服务器，按 Ctrl+C 即可。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/22.d18z.001.png)
+
+**图18-1　到目前为止一切正常**
+
+> **注意**　
+>
+> 如果出现错误消息“That port is already in use”（指定端口已被占用），请执行命令`python manage.py runserver 8001`，让 Diango 使用另一个端口；如果这个端口也不可用，请不断执行上述命令，并逐渐增大其中的端口号，直到找到可用的端口。
+
+> **动手试一试**
+>
+> **18-1 新项目**：为更深入地了解 Django 做了些什么，可创建两个空项目，看看 Django 创建了什么。新建一个文件夹，并给它指定简单的名称，如 InstaBook 或 FaceGram（不要在目录 learning_log 中新建该文件夹），在终端中切换到该文件夹，并创建一个虚拟环境。在这个虚拟环境中安装 Django，并执行命令`django-admin.py startproject instabook.`（千万不要忘了这个命令末尾的句点）。
+>
+> 看看这个命令创建了哪些文件和文件夹，并与项目“学习笔记”包含的文件和文件夹进行比较。这样多做几次，直到对 Django 新建项目时创建的东西了如指掌。然后，将项目目录删除——如果你想这样做的话。
+
+### **18.2　创建应用程序**
+
+**Django 项目**由一系列应用程序组成，它们协同工作，让项目成为一个整体。我们暂时只创建一个应用程序，它将完成项目的大部分工作。在第19章，我们将再添加一个管理用户账户的应用程序。
+
+当前，在前面打开的终端窗口中应该还运行着`runserver`。请再打开一个终端窗口（或标签页），并切换到 manage.py 所在的目录。激活该虚拟环境，再执行命令`startapp`：
+
+```
+   learning_log$ source ll_env/bin/activate
+  (ll_env)learning_log$ python manage.py startapp learning_logs
+❶ (ll_env)learning_log$ ls
+  db.sqlite3  learning_log  learning_logs  ll_env  manage.py
+❷ (ll_env)learning_log$ ls learning_logs/
+  admin.py  __init__.py  migrations  models.py  tests.py  views.py
+```
+
+命令`startapp` *appname*让 Django 建立创建应用程序所需的基础设施。如果现在查看项目目录，将看到其中新增了一个文件夹 learning_logs（见❶）。打开这个文件夹，看看 Django 都创建了什么（见❷）。其中最重要的文件是 models.py、admin.py 和 views.py。我们将使用 models.py 来定义我们要在应用程序中管理的数据。admin.py 和 views.py 将在稍后介绍。
+
+#### **18.2.1　定义模型**
+
+我们来想想涉及的数据。每位用户都需要在学习笔记中创建很多主题。用户输入的每个条目都与特定主题相关联，这些条目将以文本的方式显示。我们还需要存储每个条目的时间戳，以便能够告诉用户各个条目都是什么时候创建的。
+
+打开文件 models.py，看看它当前包含哪些内容：
+
+**models.py**
+
+```
+from django.db import models
+
+# 在这里创建模型
+```
+
+这为我们导入了模块 models，还让我们创建自己的模型。模型告诉 Django 如何处理应用程序中存储的数据。在代码层面，模型就是一个类，就像前面讨论的每个类一样，包含属性和方法。下面是表示用户将要存储的主题的模型：
+
+```
+  from django.db import models
+
+  class Topic(models.Model):
+      """用户学习的主题"""
+❶     text = models.CharField(max_length=200)
+❷     date_added = models.DateTimeField(auto_now_add=True)
+
+❸     def __str__(self):
+          """返回模型的字符串表示"""
+          return self.text
+```
+
+我们创建了一个名为`Topic`的类，它继承了`Model`——Django 中一个定义了模型基本功能的类。`Topic`类只有两个属性：`text`和`date_added`。
+
+属性 text 是一个 CharField——由字符或文本组成的数据（见❶）。需要存储少量的文本，如名称、标题或城市时，可使用`CharField`。定义`CharField`属性时，必须告诉 Django 该在数据库中预留多少空间。在这里，我们将`max_length`设置成了200（即200个字符），这对存储大多数主题名来说足够了。
+
+属性`date_added`是一个`DateTimeField`——记录日期和时间的数据（见❷）。我们传递了实参`auto_now_add=True`，每当用户创建新主题时，这都让 Django 将这个属性自动设置成当前日期和时间。
+
+> **注意**　
+>
+> 要获悉可在模型中使用的各种字段，请参阅 Django Model Field Reference（Django 模型字段参考），其网址为https://docs.djangoproject.com/en/1.8/ref/models/fields/。就当前而言，你无需全面了解其中的所有内容，但自己开发应用程序时，这些内容会提供极大的帮助。
+
+我们需要告诉 Django，默认应使用哪个属性来显示有关主题的信息。Django 调用方法`__str__()`来显示模型的简单表示。在这里，我们编写了方法`__str__()`，它返回存储在属性`text`中的字符串（见❸）。
+
+> **注意**　
+>
+> 如果你使用的是 Python 2.7，应调用方法`__unicode__()`，而不是`__str__()`，但其中的代码相同。
+
+#### **18.2.2　激活模型**
+
+要使用模型，必须让 Django 将应用程序包含到项目中。为此，打开 settings.py（它位于目录 learning_log/learning_log 中），你将看到一个这样的片段，即告诉 Django 哪些应用程序安装在项目中：
+
+**settings.py**
+
+```
+--snip--
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+)
+--snip--
+```
+
+这是一个元组，告诉 Django 项目是由哪些应用程序组成的。请将`INSTALLED_APPS`修改成下面这样，将前面的应用程序添加到这个元组中：
+
+```
+--snip--
+INSTALLED_APPS = (
+    --snip--
+    'django.contrib.staticfiles',
+
+    # 我的应用程序
+    'learning_logs',
+)
+--snip--
+```
+
+通过将应用程序编组，在项目不断增大，包含更多的应用程序时，有助于对应用程序进行跟踪。这里新建了一个名为 My apps 的片段，当前它只包含应用程序 learning_logs。
+
+接下来，需要让 Django 修改数据库，使其能够存储与模型`Topic`相关的信息。为此，在终端窗口中执行下面的命令：
+
+```
+(ll_env)learning_log$ python manage.py makemigrations learning_logs
+Migrations for 'learning_logs':
+  0001_initial.py:
+    - Create model Topic
+(ll_env)learning_log$
+```
+
+命令`makemigrations`让 Django 确定该如何修改数据库，使其能够存储与我们定义的新模型相关联的数据。输出表明 Django 创建了一个名为 0001_initial.py 的迁移文件，这个文件将在数据库中为模型`Topic`创建一个表。
+
+下面来应用这种迁移，让 Django 替我们修改数据库：
+
+```
+  (ll_env)learning_log$ python manage.py migrate
+  --snip--
+  Running migrations:
+    Rendering model states... DONE
+❶   Applying learning_logs.0001_initial... OK
+```
+
+这个命令的大部分输出都与我们首次执行命令 migrate 的输出相同。我们需要检查的是❶处的输出行，在这里，Django 确认为`learning_logs`应用迁移时一切正常（`OK`）。
+
+每当需要修改“学习笔记”管理的数据时，都采取如下三个步骤：修改 models.py；对`learning_logs`调用`makemigrations`；让 Django 迁移项目。
+
+#### **18.2.3　Django 管理网站**
+
+为应用程序定义模型时，Django 提供的管理网站（admin site）让你能够轻松地处理模型。网站的管理员可使用管理网站，但普通用户不能使用。在本节中，我们将建立管理网站，并通过它使用模型`Topic`来添加一些主题。
+
+**1. 创建超级用户**
+
+Django 允许你创建具备所有权限的用户——超级用户。权限决定了用户可执行的操作。最严格的权限设置只允许用户阅读网站的公开信息；注册了的用户通常可阅读自己的私有数据，还可查看一些只有会员才能查看的信息。为有效地管理 Web 应用程序，网站所有者通常需要访问网站存储的所有信息。优秀的管理员会小心对待用户的敏感信息，因为用户对其访问的应用程序有极大的信任。
+
+为在 Django 中创建超级用户，请执行下面的命令并按提示做：
+
+```
+  (ll_env)learning_log$ python manage.py createsuperuser
+❶ Username (leave blank to use 'ehmatthes'): ll_admin
+❷ Email address:
+❸ Password:
+  Password (again):
+  Superuser created successfully.
+  (ll_env)learning_log$
+```
+
+你执行命令`createsuperuser`时，Django 提示你输入超级用户的用户名（见❶）。这里我们输入的是 ll_admin，但你可以输入任何用户名，比如电子邮件地址，也可让这个字段为空（见❷）。你需要输入密码两次（见❸）。
+
+> **注意**　
+>
+> 可能会对网站管理员隐藏有些敏感信息。例如，Django 并不存储你输入的密码，而存储从该密码派生出来的一个字符串——散列值。每当你输入密码时，Django 都计算其散列值，并将结果与存储的散列值进行比较。如果这两个散列值相同，就通过了身份验证。通过存储散列值，即便黑客获得了网站数据库的访问权，也只能获取其中存储的散列值，而无法获得密码。在网站配置正确的情况下，几乎无法根据散列值推导出原始密码。
+
+**2. 向管理网站注册模型**
+
+Django 自动在管理网站中添加了一些模型，如`User`和`Group`，但对于我们创建的模型，必须手工进行注册。
+
+我们创建应用程序`learning_logs`时，Django 在 models.py 所在的目录中创建了一个名为 admin.py 的文件：
+
+**admin.py**
+
+```
+from django.contrib import admin
+
+# 在这里注册你的模型
+```
+
+为向管理网站注册`Topic`，请输入下面的代码：
+
+```
+  from django.contrib import admin
+
+❶ from learning_logs.models import Topic
+
+❷ admin.site.register(Topic)
+```
+
+这些代码导入我们要注册的模型`Topic`（见❶），再使用`admin.site.register()`（见❷）让 Django 通过管理网站管理我们的模型。
+
+现在，使用超级用户账户访问管理网站：访问 http://localhost:8000/admin/，并输入你刚创建的超级用户的用户名和密码，你将看到类似于图18-2所示的屏幕。这个网页让你能够添加和修改用户和用户组，还可以管理与刚才定义的模型`Topic`相关的数据。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/22.d18z.002.png)
+
+**图18-2　包含模型Topic的管理网站**
+
+> **注意**　
+>
+> 如果你在浏览器中看到一条消息，指出访问的网页不可用，请确认你在终端窗口中运行着 Django 服务器。如果没有，请激活虚拟环境，并执行命令`python manage.py runserver`。
+
+**3. 添加主题**
+
+向管理网站注册`Topic`后，我们来添加第一个主题。为此，单击 Topics 进入主题网页，它几乎是空的，这是因为我们还没有添加任何主题。单击 Add，你将看到一个用于添加新主题的表单。在第一个方框中输入`Chess`，再单击 Save，这将返回到主题管理页面，其中包含刚创建的主题。
+
+下面再创建一个主题，以便有更多的数据可供使用。再次单击 Add，并创建另一个主题`Rock Climbing`。当你单击 Save 时，将重新回到主题管理页面，其中包含主题 Chess 和 Rock Climbing。
+
+#### **18.2.4　定义模型 Entry**
+
+要记录学到的国际象棋和攀岩知识，需要为用户可在学习笔记中添加的条目定义模型。每个条目都与特定主题相关联，这种关系被称为多对一关系，即多个条目可关联到同一个主题。
+
+下面是模型`Entry`的代码：
+
+**models.py**
+
+```
+  from django.db import models
+
+  class Topic(models.Model):
+      --snip--
+
+❶ class Entry(models.Model):
+      """学到的有关某个主题的具体知识"""
+❷     topic = models.ForeignKey(Topic)
+❸     text = models.TextField()
+      date_added = models.DateTimeField(auto_now_add=True)
+
+❹     class Meta:
+          verbose_name_plural = 'entries'
+
+      def __str__(self):
+          """返回模型的字符串表示"""
+
+❺         return self.text[:50] + "..."
+```
+
+像`Topic`一样，`Entry`也继承了 Django 基类`Model`（见❶）。第一个属性`topic`是一个`ForeignKey`实例（见❷）。外键是一个数据库术语，它引用了数据库中的另一条记录；这些代码将每个条目关联到特定的主题。每个主题创建时，都给它分配了一个键（或 ID）。需要在两项数据之间建立联系时，Django 使用与每项信息相关联的键。稍后我们将根据这些联系获取与特定主题相关联的所有条目。
+
+接下来是属性`text`，它是一个`TextField`实例（见❸）。这种字段不需要长度限制，因为我们不想限制条目的长度。属性`date_added`让我们能够按创建顺序呈现条目，并在每个条目旁边放置时间戳。
+
+在❹处，我们在`Entry`类中嵌套了`Meta`类。`Meta`存储用于管理模型的额外信息，在这里，它让我们能够设置一个特殊属性，让 Django 在需要时使用`Entries`来表示多个条目。如果没有这个类， Django 将使用 Entrys 来表示多个条目。最后，方法`__str__()`告诉 Django，呈现条目时应显示哪些信息。由于条目包含的文本可能很长，我们让 Django 只显示`text`的前50个字符（见❺）。我们还添加了一个省略号，指出显示的并非整个条目。
+
+#### **18.2.5　迁移模型 Entry**
+
+由于我们添加了一个新模型，因此需要再次迁移数据库。你将慢慢地对这个过程了如指掌：修改 models.py，执行命令`python manage.py makemigrations`*app_name*，再执行命令`python manage.py migrate`。
+
+下面来迁移数据库并查看输出：
+
+```
+  (ll_env)learning_log$ python manage.py makemigrations learning_logs
+  Migrations for 'learning_logs':
+❶   0002_entry.py:
+      - Create model Entry
+  (ll_env)learning_log$ python manage.py migrate
+  Operations to perform:
+    --snip--
+❷   Applying learning_logs.0002_entry... OK
+```
+
+生成了一个新的迁移文件——0002_entry.py，它告诉 Django 如何修改数据库，使其能够存储与模型`Entry`相关的信息（见❶）。执行命令`migrate`，我们发现 Django 应用了这种迁移且一切顺利（见❷）。
+
+#### **18.2.6　向管理网站注册 Entry**
+
+我们还需要注册模型`Entry`。为此，需要将 admin.py 修改成类似于下面这样：
+
+**admin.py**
+
+```
+from django.contrib import admin
+
+from learning_logs.models import Topic, Entry
+
+admin.site.register(Topic)
+admin.site.register(Entry)
+```
+
+返回到 http://localhost:8000/admin/，你将看到 learning_logs 下列出了 Entries。单击 Entries 的 Add 链接，或者单击 Entries 再选择 Add entry。你将看到一个下拉列表，让你能够选择要为哪个主题创建条目，还有一个用于输入条目的文本框。从下拉列表中选择 Chess，并添加一个条目。下面是我添加的第一个条目。
+
+> The opening is the first part of the game, roughly the first ten moves or so. In the opening, it's a good idea to do three things— bring out your bishops and knights, try to control the center of the board, and castle your king.（国际象棋的第一个阶段是开局，大致是前10步左右。在开局阶段，最好做三件事情：将象和马调出来；努力控制棋盘的中间区域；用车将王护住。）
+>
+> Of course, these are just guidelines. It will be important to learn when to follow these guidelines and when to disregard these suggestions.（当然，这些只是指导原则。学习什么情况下遵守这些原则、什么情况下不用遵守很重要。）
+
+当你单击 Save 时，将返回到主条目管理页面。在这里，你将发现使用`text[:50]`作为条目的字符串表示的好处：管理界面中，只显示了条目的开头部分而不是其所有文本，这使得管理多个条目容易得多。
+
+再来创建一个国际象棋条目，并创建一个攀岩条目，以提供一些初始数据。下面是第二个国际象棋条目。
+
+> In the opening phase of the game, it's important to bring out your bishops and knights. These pieces are powerful and maneuverable enough to play a significant role in the beginning moves of a game.（在国际象棋的开局阶段，将象和马调出来很重要。这些棋子威力大，机动性强，在开局阶段扮演着重要角色。）
+
+下面是第一个攀岩条目：
+
+> One of the most important concepts in climbing is to keep your weight on your feet as much as possible. There's a myth that climbers can hang all day on their arms. In reality, good climbers have practiced specific ways of keeping their weight over their feet whenever possible.（最重要的攀岩概念之一是尽可能让双脚承受体重。有谬误认为攀岩者能依靠手臂的力量坚持一整天。实际上，优秀的攀岩者都经过专门训练，能够尽可能让双脚承受体重。）
+
+继续往下开发“学习笔记”时，这三个条目可为我们提供使用的数据。
+
+#### **18.2.7　Django shell**
+
+输入一些数据后，就可通过交互式终端会话以编程方式查看这些数据了。这种交互式环境称为 Django shell，是测试项目和排除其故障的理想之地。下面是一个交互式 shell 会话示例：
+
+```
+  (ll_env)learning_log$ python manage.py shell
+❶ >>> from learning_logs.models import Topic
+  >>> Topic.objects.all()
+  [, ]
+```
+
+在活动的虚拟环境中执行时，命令`python manage.py shell`启动一个 Python 解释器，可使用它来探索存储在项目数据库中的数据。在这里，我们导入了模块`learning_logs.models`中的模型`Topic`（见❶），然后使用方法`Topic.objects.all()`来获取模型`Topic`的所有实例；它返回的是一个列表，称为查询集（queryset）。
+
+我们可以像遍历列表一样遍历查询集。下面演示了如何查看分配给每个主题对象的 ID：
+
+```
+>>> topics = Topic.objects.all()
+>>> for topic in topics:
+...   print(topic.id, topic)
+...
+1 Chess
+2 Rock Climbing
+```
+
+我们将返回的查询集存储在`topics`中，然后打印每个主题的`id`属性和字符串表示。从输出可知，主题 Chess 的 ID 为1，而 Rock Climbing 的 ID 为2。
+
+知道对象的 ID 后，就可获取该对象并查看其任何属性。下面来看看主题 Chess 的属性`text`和`date_added`的值：
+
+```
+>>> t = Topic.objects.get(id=1)
+>>> t.text
+'Chess'
+>>> t.date_added
+datetime.datetime(2015, 5, 28, 4, 39, 11, 989446, tzinfo=)
+```
+
+我们还可以查看与主题相关联的条目。前面我们给模型`Entry`定义了属性`topic`，这是一个`ForeignKey`，将条目与主题关联起来。利用这种关联，Django 能够获取与特定主题相关联的所有条目，如下所示：
+
+```
+❶ >>> t.entry_set.all()
+  [, ]
+```
+
+为通过外键关系获取数据，可使用相关模型的小写名称、下划线和单词 set（见❶）。例如，假设你有模型`Pizza`和`Topping`，而 Topping 通过一个外键关联到`Pizza`；如果你有一个名为`my_pizza`的对象，表示一张比萨，就可使用代码`my_pizza.topping_set.all()`来获取这张比萨的所有配料。
+
+编写用户可请求的网页时，我们将使用这种语法。确认代码能获取所需的数据时，shell 很有帮助。如果代码在 shell 中的行为符合预期，那么它们在项目文件中也能正确地工作。如果代码引发了错误或获取的数据不符合预期，那么在简单的 shell 环境中排除故障要比在生成网页的文件中排除故障容易得多。我们不会太多地使用 shell，但应继续使用它来熟悉对存储在项目中的数据进行访问的 Django 语法。
+
+> **注意**　
+>
+> 每次修改模型后，你都需要重启 shell，这样才能看到修改的效果。要退出 shell 会话，可按 Ctr+D；如果你使用的是 Windows 系统，应按 Ctr+Z，再按回车键。
+
+> **动手试一试**
+>
+> **18-2 简短的条目**：当前，Django 在管理网站或 shell 中显示`Entry`实例时，模型`Entry`的方法`__str__()`都在它的末尾加上省略号。请在方法`__str__()`中添加一条`if`语句，以便仅在条目长度超过50字符时才添加省略号。使用管理网站来添加一个长度少于50字符的条目，并核实显示它时没有省略号。
+>
+> **18-3 Django API**：编写访问项目中的数据的代码时，你编写的是查询。请浏览有关如何查询数据的文档，其网址为https://docs.djangoproject.com/en/7.8/topics/db/queries/。其中大部分内容都是你不熟悉的，但等你自己开发项目时，这些内容会很有用。
+>
+> **18-4 比萨店**：新建一个名为`pizzeria`的项目，并在其中添加一个名为`pizzas`的应用程序。定义一个名为`Pizza`的模型，它包含字段`name`，用于存储比萨名称，如 Hawaiian 和 Meat Lovers。定义一个名为`Topping`的模型，它包含字段`pizza`和`name`，其中字段`pizza`是一个关联到`Pizza`的外键，而字段`name`用于存储配料，如`pineapple`、`Canadian bacon`和`sausage`。
+>
+> 向管理网站注册这两个模型，并使用管理网站输入一些比萨名和配料。使用 shell 来查看你输入的数据。
+
+### **18.3　创建网页：学习笔记主页**
+
+使用 Django 创建网页的过程通常分三个阶段：定义 URL、编写视图和编写模板。首先，你必须定义 URL 模式。URL 模式描述了 URL 是如何设计的，让 Django 知道如何将浏览器请求与网站 URL 匹配，以确定返回哪个网页。
+
+每个 URL 都被映射到特定的**视图**——视图函数获取并处理网页所需的数据。视图函数通常调用一个模板，后者生成浏览器能够理解的网页。为明白其中的工作原理，我们来创建学习笔记的主页。我们将定义该主页的 URL、编写其视图函数并创建一个简单的模板。
+
+鉴于我们只是要确保“学习笔记”按要求的那样工作，我们将暂时让这个网页尽可能简单。Web 应用程序能够正常运行后，设置样式可使其更有趣，但中看不中用的应用程序毫无意义。就目前而言，主页只显示标题和简单的描述。
+
+#### **18.3.1　映射 URL**
+
+用户通过在浏览器中输入 URL 以及单击链接来请求网页，因此我们需要确定项目需要哪些 URL。主页的 URL 最重要，它是用户用来访问项目的基础 URL。当前，基础 URL（http://localhost:8000/）返回默认的 Django 网站，让我们知道正确地建立了项目。我们将修改这一点，将这个基础 URL 映射到“学习笔记”的主页。
+
+打开项目主文件夹 learning_log 中的文件 urls.py，你将看到如下代码：
+
+**urls.py**
+
+```
+❶ from django.conf.urls import include, url
+  from django.contrib import admin
+
+❷ urlpatterns = [
+❸     url(r'^admin/', include(admin.site.urls)),
+  ]
+```
+
+前两行导入了为项目和管理网站管理 URL 的函数和模块（见❶）。这个文件的主体定义了变量`urlpatterns`（见❷）。在这个针对整个项目的 urls.py 文件中，变量`urlpatterns`包含项目中的应用程序的 URL。❸处的代码包含模块`admin.site.urls`，该模块定义了可在管理网站中请求的所有 URL。
+
+我们需要包含 learning_logs 的 URL：
+
+```
+  from django.conf.urls import include, url
+  from django.contrib import admin
+
+  urlpatterns = [
+      url(r'^admin/', include(admin.site.urls)),
+❶     url(r'', include('learning_logs.urls', namespace='learning_logs')),
+  ]
+```
+
+在❶处，我们添加了一行代码来包含模块`learning_logs.urls`。这行代码包含实参`namespace`，让我们能够将`learning_logs`的 URL 同项目中的其他 URL 区分开来，这在项目开始扩展时很有帮助。
+
+默认的 urls.py 包含在文件夹 learning_log 中，现在我们需要在文件夹 learning_logs 中创建另一个 urls.py 文件：
+
+**urls.py**
+
+```
+❶ """定义 learning_logs 的 URL 模式"""
+
+❷ from django.conf.urls import url
+
+❸ from . import views
+
+❹ urlpatterns = [
+      # 主页
+❺     url(r'^$', views.index, name='index'),
+  ]
+```
+
+为弄清楚当前位于哪个 urls.py 文件中，我们在这个文件开头添加了一个文档字符串（见❶）。接下来，我们导入了函数`url`，因为我们需要使用它来将 URL 映射到视图（见❷）。我们还导入了模块`views`（见❸），其中的句点让 Python 从当前的 urls.py 模块所在的文件夹中导入视图。在这个模块中，变量`urlpatterns`是一个列表，包含可在应用程序`learning_logs`中请求的网页（见❹）。
+
+实际的 URL 模式是一个对函数`url()`的调用，这个函数接受三个实参（见❺）。第一个是一个正则表达式。Django 在`urlpatterns`中查找与请求的 URL 字符串匹配的正则表达式，因此正则表达式定义了 Django 可查找的模式。
+
+我们来看看正则表达式`r'^$'`。其中的`r`让 Python 将接下来的字符串视为原始字符串，而引号告诉 Python 正则表达式始于和终于何处。脱字符（`^`）让 Python 查看字符串的开头，而美元符号让 Python 查看字符串的末尾。总体而言，这个正则表达式让 Python 查找开头和末尾之间没有任何东西的 URL。Python 忽略项目的基础 URL（http://localhost:8000/），因此这个正则表达式与基础 URL 匹配。其他 URL 都与这个正则表达式不匹配。如果请求的 URL 不与任何 URL 模式匹配，Django 将返回一个错误页面。
+
+`url()`的第二个实参（见❺）指定了要调用的视图函数。请求的 URL 与前述正则表达式匹配时，Django 将调用`views.index`（这个视图函数将在下一节编写）。第三个实参将这个 URL 模式的名称指定为 index，让我们能够在代码的其他地方引用它。每当需要提供到这个主页的链接时，我们都将使用这个名称，而不编写 URL。
+
+> **注意**　
+>
+> 正则表达式通常被称为 regex，几乎每种编程语言都使用它。它们的用途多得难以置信，但需要经过一定的练习才能熟悉。如果你不明白前面介绍的内容，也不用担心，你在完成这个项目的过程中，将会看到很多正则表达式。
+
+#### **18.3.2　编写视图**
+
+视图函数接受请求中的信息，准备好生成网页所需的数据，再将这些数据发送给浏览器——这通常是使用定义了网页是什么样的模板实现的。
+
+learning_logs 中的文件 views.py 是你执行命令`python manage.py startapp`时自动生成的，当前其内容如下：
+
+**views.py**
+
+```
+from django.shortcuts import render
+
+# 在这里创建视图
+```
+
+当前，这个文件只导入了函数`render()`，它根据视图提供的数据渲染响应。下面的代码演示了该如何为主页编写视图：
+
+```
+from django.shortcuts import render
+
+def index(request):
+    """学习笔记的主页"""
+    return render(request, 'learning_logs/index.html')
+```
+
+URL 请求与我们刚才定义的模式匹配时，Django 将在文件 views.py 中查找函数`index()`，再将请求对象传递给这个视图函数。在这里，我们不需要处理任何数据，因此这个函数只包含调用`render()`的代码。这里向函数`render()`提供了两个实参：原始请求对象以及一个可用于创建网页的模板。下面来编写这个模板。
+
+#### **18.3.3　编写模板**
+
+模板定义了网页的结构。模板指定了网页是什么样的，而每当网页被请求时，Django 将填入相关的数据。模板让你能够访问视图提供的任何数据。我们的主页视图没有提供任何数据，因此相应的模板非常简单。
+
+在文件夹 learning_logs 中新建一个文件夹，并将其命名为 templates。在文件夹 templates 中，再新建一个文件夹，并将其命名为 learning_logs。这好像有点多余（我们在文件夹 learning_logs 中创建了文件夹 templates，又在这个文件夹中创建了文件夹 learning_logs），但建立了 Django 能够明确解读的结构，即便项目很大，包含很多应用程序亦如此。在最里面的文件夹 learning_logs 中，新建一个文件，并将其命名为 index.html，再在这个文件中编写如下代码：
+
+**index.html**
+
+```
+<p>Learning Log</p>
+
+<p>Learning Log helps you keep track of your learning, for any topic you're
+learning about.</p>
+```
+
+这个文件非常简单。对于不熟悉 HTML 的读者，这里解释一下：标签`<p></p>`标识段落；标签`<p>`指出了段落的开头位置，而标签`</p>`指出了段落的结束位置。这里定义了两个段落：第一个充当标题，第二个阐述了用户可使用“学习笔记”来做什么。
+
+现在，如果你请求这个项目的基础 URL——http://localhost:8000/，将看到刚才创建的网页，而不是默认的 Django 网页。Django 接受请求的 URL，发现该 URL 与模式`r'^$'`匹配，因此调用函数`views.index()`，这将使用 index.html 包含的模板来渲染网页，结果如图18-3所示。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/22.d18z.003.png)
+
+**图18-3　学习笔记的主页**
+
+创建网页的过程看起来可能很复杂，但将 URL、视图和模板分离的效果实际上很好。这让我们能够分别考虑项目的不同方面，且在项目很大时，让各个参与者可专注于其最擅长的方面。例如，数据库专家可专注于模型，程序员可专注于视图代码，而 Web 设计人员可专注于模板。
+
+> **动手试一试**
+>
+> **18-5 膳食规划程序**：假设你要创建一个应用程序，帮助用户规划一周的膳食。为此，新建一个文件夹，并将其命名为 meal_planner，再在这个文件夹中新建一个 Django 项目。接下来，新建一个名为`meal_plans`的应用程序，并为这个项目创建一个简单的主页。
+>
+> **18-6 比萨店主页**：在你为完成练习18-4而创建的项目 Pizzeria 中，添加一个主页。
+
+### **18.4　创建其他网页**
+
+制定创建网页的流程后，可以开始扩充“学习笔记”项目了。我们将创建两个显示数据的网页，其中一个列出所有的主题，另一个显示特定主题的所有条目。对于每个网页，我们都将指定 URL 模式，编写一个视图函数，并编写一个模板。但这样做之前，我们先创建一个父模板，项目中的其他模板都将继承它。
+
+#### **18.4.1　模板继承**
+
+创建网站时，几乎都有一些所有网页都将包含的元素。在这种情况下，可编写一个包含通用元素的父模板，并让每个网页都继承这个模板，而不必在每个网页中重复定义这些通用元素。这种方法能让你专注于开发每个网页的独特方面，还能让修改项目的整体外观容易得多。
+
+**1. 父模板**
+
+我们首先来创建一个名为 base.html 的模板，并将其存储在 index.html 所在的目录中。这个文件包含所有页面都有的元素；其他的模板都继承 base.html。当前，所有页面都包含的元素只有顶端的标题。我们将在每个页面中包含这个模板，因此我们将这个标题设置为到主页的链接：
+
+**base.html**
+
+```
+  <p>
+❶   <a href="{% url 'learning_logs:index' %}">Learning Log</a>
+  </p>
+
+❷ {% block content %}{% endblock content %}
+```
+
+这个文件的第一部分创建一个包含项目名的段落，该段落也是一个到主页的链接。为创建链接，我们使用了一个**模板标签**，它是用大括号和百分号（`{% %}`）表示的。模板标签是一小段代码，生成要在网页中显示的信息。在这个实例中，模板标签`{% url 'learning_logs:index' %}`生成一个 URL，该 URL 与 learning_logs/urls.py 中定义的名为`index`的 URL 模式匹配（见❶）。在这个示例中，`learning_logs`是一个**命名空间**，而`index`是该命名空间中一个名称独特的 URL 模式。
+
+在简单的 HTML 页面中，链接是使用**锚**标签定义的：
+
+```
+<a href="link_url">link text</a>
+```
+
+让模板标签来生成 URL，可让链接保持最新容易得多。要修改项目中的 URL，只需修改 urls.py 中的 URL 模式，这样网页被请求时，Django 将自动插入修改后的 URL。在我们的项目中，每个网页都将继承 base.html，因此从现在开始，每个网页都包含到主页的链接。
+
+在❶处，我们插入了一对块标签。这个块名为`content`，是一个占位符，其中包含的信息将由子模板指定。
+
+子模板并非必须定义父模板中的每个块，因此在父模板中，可使用任意多个块来预留空间，而子模板可根据需要定义相应数量的块。
+
+> **注意**　
+>
+> 在 Python 代码中，我们几乎总是缩进四个空格。相比于 Python 文件，模板文件的缩进层级更多，因此每个层级通常只缩进两个空格。
+
+**2. 子模板**
+
+现在需要重新编写 index.html，使其继承 base.html，如下所示：
+
+**index.html**
+
+```
+❶ {% extends "learning_logs/base.html" %}
+
+❷ {% block content %}
+    <p>Learning Log helps you keep track of your learning, for any topic you're
+    learning about.</p>
+❸ {% endblock content %}
+```
+
+如果将这些代码与原来的 index.html 进行比较，可发现我们将标题 Learning Log 替换成了从父模板那里继承的代码（见❶）。子模板的第一行必须包含标签`{% extends %}`，让 Django 知道它继承了哪个父模板。文件 base.html 位于文件夹 learning_logs 中，因此父模板路径中包含 learning_logs。这行代码导入模板 base.html 的所有内容，让 index.html 能够指定要在`content`块预留的空间中添加的内容。
+
+在❷处，我们插入了一个名为`content`的`{% block %}`标签，以定义`content`块。不是从父模板继承的内容都包含在`content`块中，在这里是一个描述项目“学习笔记”的段落。在❸处，我们使用标签`{% endblock content %}`指出了内容定义的结束位置。
+
+模板继承的优点开始显现出来了：在子模板中，只需包含当前网页特有的内容。这不仅简化了每个模板，还使得网站修改起来容易得多。要修改很多网页都包含的元素，只需在父模板中修改该元素，你所做的修改将传导到继承该父模板的每个页面。在包含数十乃至数百个网页的项目中，这种结构使得网站改进起来容易而且快捷得多。
+
+> **注意**　
+>
+> 在大型项目中，通常有一个用于整个网站的父模板——base.html，且网站的每个主要部分都有一个父模板。每个部分的父模板都继承 base.html，而网站的每个网页都继承相应部分的父模板。这让你能够轻松地修改整个网站的外观、网站任何一部分的外观以及任何一个网页的外观。这种配置提供了一种效率极高的工作方式，让你乐意不断地去改进网站。
+
+#### **18.4.2　显示所有主题的页面**
+
+有了高效的网页创建方法，就能专注于另外两个网页了：显示全部主题的网页以及显示特定主题中条目的网页。所有主题页面显示用户创建的所有主题，它是第一个需要使用数据的网页。
+
+**1. URL 模式**
+
+首先，我们来定义显示所有主题的页面的 URL。通常，使用一个简单的 URL 片段来指出网页显示的信息；我们将使用单词 topics，因此 URL http://localhost:8000/topics/ 将返回显示所有主题的页面。下面演示了该如何修改 learning_logs/urls.py：
+
+**urls.py**
+
+```
+  """为 learning_logs 定义 URL 模式"""
+  --snip--
+  urlpatterns = [
+      # 主页
+      url(r'^$', views.index, name='index'),
+
+      # 显示所有的主题
+❶     url(r'^topics/$', views.topics, name='topics'),
+  ]
+```
+
+我们只是在用于主页 URL 的正则表达式中添加了`topics/`（见❶）。Django 检查请求的 URL 时，这个模式与这样的 URL 匹配：基础 URL 后面跟着`topics`。可以在末尾包含斜杠，也可以省略它，但单词`topics`后面不能有任何东西，否则就与该模式不匹配。其 URL 与该模式匹配的请求都将交给 views.py 中的函数`topics()`进行处理。
+
+**2. 视图**
+
+函数`topics()`需要从数据库中获取一些数据，并将其发送给模板。我们需要在 views.py 中添加的代码如下：
+
+**views.py**
+
+```
+  from django.shortcuts import render
+
+❶ from .models import Topic
+
+  def index(request):
+      --snip--
+
+❷ def topics(request):
+      """显示所有的主题"""
+❸     topics = Topic.objects.order_by('date_added')
+❹     context = {'topics': topics}
+❺     return render(request, 'learning_logs/topics.html', context)
+```
+
+我们首先导入了与所需数据相关联的模型（见❶）。函数`topics()`包含一个形参：Django 从服务器那里收到的`request`对象（见❷）。在❸处，我们查询数据库——请求提供`Topic`对象，并按属性`date_added`对它们进行排序。我们将返回的查询集存储在`topics`中。
+
+在❹处，我们定义了一个将要发送给模板的上下文。上下文是一个字典，其中的键是我们将在模板中用来访问数据的名称，而值是我们要发送给模板的数据。在这里，只有一个键—值对，它包含我们将在网页中显示的一组主题。创建使用数据的网页时，除对象`request`和模板的路径外，我们还将变量`context`传递给`render()`（见❺）。
+
+**3. 模板**
+
+显示所有主题的页面的模板接受字典`context`，以便能够使用`topics()`提供的数据。请创建一个文件，将其命名为 topics.html，并存储到 index.html 所在的目录中。下面演示了如何在这个模板中显示主题：
+
+**topics.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+
+  {% block content %}
+
+    <p>Topics</p>
+
+❶   <ul>
+❷     {% for topic in topics %}
+❸       <li>{{ topic }}</li>
+❹     {% empty %}
+        <li>No topics have been added yet.</li>
+❺     {% endfor %}
+❻   </ul>
+
+   {% endblock content %}
+```
+
+就像模板 index.html 一样，我们首先使用标签`{% extends %}`来继承 base.html，再开始定义`content`块。这个网页的主体是一个项目列表，其中列出了用户输入的主题。在标准 HTML 中，项目列表被称为无序列表，用标签`<ul></ul>`表示。包含所有主题的项目列表始于❶处。
+
+在❷处，我们使用了一个相当于`for`循环的模板标签，它遍历字典`context`中的列表`topics`。模板中使用的代码与 Python 代码存在一些重要差别：Python 使用缩进来指出哪些代码行是`for`循环的组成部分，而在模板中，每个`for`循环都必须使用`{% endfor %}`标签来显式地指出其结束位置。因此在模板中，循环类似于下面这样：
+
+```
+{% for item in list %}
+    do something with each item
+{% endfor %}
+```
+
+在循环中，我们要将每个主题转换为一个项目列表项。要在模板中打印变量，需要将变量名用双花括号括起来。每次循环时，❸处的代码`{{ topic }}`都被替换为`topic`的当前值。这些花括号不会出现在网页中，它们只是用于告诉 Django 我们使用了一个模板变量。HTML 标签`<li></li>`表示一个项目列表项，在标签对`<ul></ul>`内部，位于标签`<li>`和`</li>`之间的内容都是一个项目列表项。
+
+在❹处，我们使用了模板标签`{% empty %}`，它告诉 Django 在列表`topics`为空时该怎么办：这里是打印一条消息，告诉用户还没有添加任何主题。最后两行分别结束`for`循环（见❺）和项目列表（见❻）。
+
+现在需要修改父模板，使其包含到显示所有主题的页面的链接：
+
+**base.html**
+
+```
+  <p>
+❶   <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
+❷   <a href="{% url 'learning_logs:topics' %}">Topics</a>
+  </p>
+
+  {% block content %}{% endblock content %}
+```
+
+我们在到主页的链接后面添加了一个连字符（见❶），然后添加了一个到显示所有主题的页面的链接——使用的也是模板标签`url`（见❷）。这一行让 Django 生成一个链接，它与 learning_logs/ urls.py 中名为`topics`的 URL 模式匹配。
+
+现在如果你刷新浏览器中的主页，将看到链接 Topics。单击这个链接，将看到类似于图18-4所示的网页。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/22.d18z.004.png)
+
+**图18-4　显示所有主题的网页**
+
+#### **18.4.3　显示特定主题的页面**
+
+接下来，我们需要创建一个专注于特定主题的页面——显示该主题的名称及该主题的所有条目。同样，我们将定义一个新的 URL 模式，编写一个视图并创建一个模板。我们还将修改显示所有主题的网页，让每个项目列表项都是一个链接，单击它将显示相应主题的所有条目。
+
+**1. URL 模式**
+
+显示特定主题的页面的 URL 模式与前面的所有 URL 模式都稍有不同，因为它将使用主题的`id`属性来指出请求的是哪个主题。例如，如果用户要查看主题 Chess（其`id`为1）的详细页面，URL 将为 http://localhost:8000/topics/1/。下面是与这个 URL 匹配的模式，它包含在 learning_logs/urls.py 中：
+
+**urls.py**
+
+```
+--snip--
+urlpatterns = [
+    --snip--
+    # 特定主题的详细页面
+    url(r'^topics/(?P<topic_id>\d+)/$', views.topic, name='topic'),
+]
+```
+
+我们来详细研究这个 URL 模式中的正则表达式——`r'^topics/(?P<topic_id>\d+)/$'`。`r`让 Django 将这个字符串视为原始字符串，并指出正则表达式包含在引号内。这个表达式的第二部分（`/(?P<topic_id>\d+)/`）与包含在两个斜杠内的整数匹配，并将这个整数存储在一个名为`topic_id`的实参中。这部分表达式两边的括号捕获 URL 中的值；`?P<topic_id>`将匹配的值存储到`topic_id`中；而表达式`\d+`与包含在两个斜杆内的任何数字都匹配，不管这个数字为多少位。
+
+发现 URL 与这个模式匹配时，Django 将调用视图函数`topic()`，并将存储在`topic_id`中的值作为实参传递给它。在这个函数中，我们将使用`topic_id`的值来获取相应的主题。
+
+**2. 视图**
+
+函数`topic()`需要从数据库中获取指定的主题以及与之相关联的所有条目，如下所示：
+
+**views.py**
+
+```
+  --snip--
+❶ def topic(request, topic_id):
+      """显示单个主题及其所有的条目"""
+❷     topic = Topic.objects.get(id=topic_id)
+❸     entries = topic.entry_set.order_by('-date_added')
+❹     context = {'topic': topic, 'entries': entries}
+❺     return render(request, 'learning_logs/topic.html', context)
+```
+
+这是第一个除`request`对象外还包含另一个形参的视图函数。这个函数接受正则表达式`(?P<topic_id>\d+)`捕获的值，并将其存储到`topic_id`中（见❶）。在❷处，我们使用`get()`来获取指定的主题，就像前面在 Django shell 中所做的那样。在❸处，我们获取与该主题相关联的条目，并将它们按`date_added`排序：`date_added`前面的减号指定按降序排列，即先显示最近的条目。我们将主题和条目都存储在字典`context`中（见❹），再将这个字典发送给模板 topic.html（见❺）。
+
+> **注意**　
+>
+> ❷处和❸处的代码被称为查询，因为它们向数据库查询特定的信息。在自己的项目中编写这样的查询时，先在 Django shell 中进行尝试大有裨益。相比于编写视图和模板，再在浏览器中检查结果，在 shell 中执行代码可更快地获得反馈。
+
+**3. 模板**
+
+这个模板需要显示主题的名称和条目的内容；如果当前主题不包含任何条目，我们还需向用户指出这一点：
+
+**topic.html**
+
+```
+  {% extends 'learning_logs/base.html' %}
+
+  {% block content %}
+
+❶   <p>Topic: {{ topic }}</p>
+
+    <p>Entries:</p>
+❷   <ul>
+❸   {% for entry in entries %}
+      <li>
+❹       <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
+❺       <p>{{ entry.text|linebreaks }}</p>
+      </li>
+❻   {% empty %}
+      <li>
+        There are no entries for this topic yet.
+      </li>
+    {% endfor %}
+    </ul>
+
+  {% endblock content %}
+```
+
+像这个项目的其他页面一样，这里也继承了 base.html。接下来，我们显示当前的主题（见❶），它存储在模板变量`{{ topic }}`中。为什么可以使用变量`topic`呢？因为它包含在字典`context`中。接下来，我们开始定义一个显示每个条目的项目列表（见❷），并像前面显示所有主题一样遍历条目（见❸）。
+
+每个项目列表项都将列出两项信息：条目的时间戳和完整的文本。为列出时间戳（见❹），我们显示属性`date_added`的值。在 Django 模板中，竖线（`|`）表示模板过滤器——对模板变量的值进行修改的函数。过滤器`date: 'M d, Y H:i'`以这样的格式显示时间戳：January 1, 2015 23:00。接下来的一行显示`text`的完整值，而不仅仅是`entry`的前50个字符。过滤器`linebreaks`（见❺）将包含换行符的长条目转换为浏览器能够理解的格式，以免显示为一个不间断的文本块。在❻处，我们使用模板标签`{% empty %}`打印一条消息，告诉用户当前主题还没有条目。
+
+**4. 将显示所有主题的页面中的每个主题都设置为链接**
+
+在浏览器中查看显示特定主题的页面前，我们需要修改模板 topics.html，让每个主题都链接到相应的网页，如下所示：
+
+**topics.html**
+
+```
+--snip--
+    {% for topic in topics %}
+      <li>
+        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
+      </li>
+    {% empty %}
+--snip--
+```
+
+我们使用模板标签`url`根据 learning_logs 中名为`topic`的 URL 模式来生成合适的链接。这个 URL 模式要求提供实参`topic_id`，因此我们在模板标签`url`中添加了属性`topic.id`。现在，主题列表中的每个主题都是一个链接，链接到显示相应主题的页面，如 http://localhost:8000/topics/1/。
+
+如果你刷新显示所有主题的页面，再单击其中的一个主题，将看到类似于图18-5所示的页面。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/22.d18z.005.png)
+
+**图18-5　特定主题的详细页面，其中显示了该主题的所有条目**
+
+> **动手试一试**
+>
+> **18-7 模板文档**：请浏览 Django 模板文档，其网址为https://docs.djangoproject.com/en/1.8/ref/templates/。自己开发项目时，可再回过头来参考该文档。
+>
+> **18-8 比萨店页面**：在练习18-6中开发的项目 Pizzeria 中添加一个页面，它显示供应的比萨的名称。然后，将每个比萨名称都设置成一个链接，单击这种链接将显示一个页面，其中列出了相应比萨的配料。请务必使用模板继承来高效地创建页面。
+
+### **18.5　小结**
+
+在本章中，你首先学习了如何使用 Django 框架来创建 Web 应用程序。你制定了简要的项目规范，在虚拟环境中安装了 Django，创建了一个项目，并核实该项目已正确地创建。你学习了如何创建应用程序，以及如何定义表示应用程序数据的模型。你学习了数据库，以及在你修改模型后，Django 可为你迁移数据库提供什么样的帮助。你学习了如何创建可访问管理网站的超级用户，并使用管理网站输入了一些初始数据。
+
+你还探索了 Django shell，它让你能够在终端会话中处理项目的数据。你学习了如何定义 URL、创建视图函数以及编写为网站创建网页的模板。最后，你使用了模板继承，它可简化各个模板的结构，并使得修改网站更容易。
+
+在第19章，我们将创建对用户友好而直观的网页，让用户无需通过管理网站就能添加新的主题和条目，以及编辑既有的条目。我们还将添加一个用户注册系统，让用户能够创建账户和自己的学习笔记。让任意数量的用户都能与之交互，是 Web 应用程序的核心所在。
+
+------
+
+
+
+## 第19章　用户账户
+
+### **老齐导读**
+
+本章解决一个重要问题：网站中的数据如何与注册用户关联。学习步骤主要是：
+
+- 先学习如何通过表单向服务器提交数据，这是为后面的用户登录、注册等操作奠定基础；
+- 利用 Django 中的已有的关于用户管理的工具，完成用户登录、退出（注销）、注册三项关于用户的基本操作；
+- 将用户与数据产生关联。
+
+你在学习本章内容的时候，虽然感觉操作比较多，但是，都是围绕每个应用的基本操作进行的，即：
+
+- 创建应用
+- 配置系统 URL 和应用 URL
+- 视图文件（views.py）中编辑视图函数（有的是利用 Django 默认的）
+- 模型文件（models.py）中编写数据模型（不都是必须的）
+- 表单文件（forms.py）中编写表单类（不都是必须的）
+- 创建模板文件，并编写模板文件（.html，一般是必须的，除非使用默认模板）
+
+![enter image description here](https://images.gitbook.cn/4905ee40-8b2f-11e9-8ddb-795e9b2d0980)
+
+> Web 应用程序的核心是让任何用户都能够注册账户并能够使用它，不管用户身处何方。在本章中，你将创建一些表单，让用户能够添加主题和条目，以及编辑既有的条目。你还将学习 Django 如何防范对基于表单的网页发起的常见攻击，这让你无需花太多时间考虑确保应用程序安全的问题。
+>
+> 然后，我们将实现一个用户身份验证系统。你将创建一个注册页面，供用户创建账户，并让有些页面只能供已登录的用户访问。接下来，我们将修改一些视图函数，使得用户只能看到自己的数据。你将学习如何确保用户数据的安全。
+
+### **19.1　让用户能够输入数据**
+
+建立用于创建用户账户的身份验证系统之前，我们先来添加几个页面，让用户能够输入数据。我们将让用户能够添加新主题、添加新条目以及编辑既有条目。
+
+当前，只有超级用户能够通过管理网站输入数据。我们不想让用户与管理网站交互，因此我们将使用 Django 的表单创建工具来创建让用户能够输入数据的页面。
+
+#### **19.1.1　添加新主题**
+
+首先来让用户能够添加新主题。创建基于表单的页面的方法几乎与前面创建网页一样：定义一个 URL，编写一个视图函数并编写一个模板。一个主要差别是，需要导入包含表单的模块 forms.py。
+
+**1. 用于添加主题的表单**
+
+让用户输入并提交信息的页面都是表单，哪怕它看起来不像表单。用户输入信息时，我们需要进行验证，确认提供的信息是正确的数据类型，且不是恶意的信息，如中断服务器的代码。然后，我们再对这些有效信息进行处理，并将其保存到数据库的合适地方。这些工作很多都是由 Django 自动完成的。
+
+在 Django 中，创建表单的最简单方式是使用 ModelForm，它根据我们在第18章定义的模型中的信息自动创建表单。创建一个名为 forms.py 的文件，将其存储到 models.py 所在的目录中，并在其中编写你的第一个表单：
+
+**forms.py**
+
+```
+  from django import forms
+
+  from .models import Topic
+
+❶ class TopicForm(forms.ModelForm):
+      class Meta:
+❷         model = Topic
+❸         fields = ['text']
+❹         labels = {'text': ''}
+```
+
+我们首先导入了模块`forms`以及要使用的模型`Topic`。在❶处，我们定义了一个名为`TopicForm`的类，它继承了`forms.ModelForm`。
+
+最简单的`ModelForm`版本只包含一个内嵌的`Meta`类，它告诉 Django 根据哪个模型创建表单，以及在表单中包含哪些字段。在❷处，我们根据模型`Topic`创建一个表单，该表单只包含字段`text`（见❸）。❹处的代码让 Django 不要为字段`text`生成标签。
+
+**2. URL 模式new_topic**
+
+这个新网页的 URL 应简短而具有描述性，因此当用户要添加新主题时，我们将切换到 http://localhost:8000/new_topic/。下面是网页`new_topic`的 URL 模式，我们将其添加到 learning_logs/urls.py 中：
+
+**urls.py**
+
+```
+--snip--
+urlpatterns = [
+    --snip--
+    # 用于添加新主题的网页
+    url(r'^new_topic/$', views.new_topic, name='new_topic'),
+]
+```
+
+这个 URL 模式将请求交给视图函数`new_topic()`，接下来我们将编写这个函数。
+
+**3. 视图函数new_topic()**
+
+函数`new_topic()`需要处理两种情形：刚进入`new_topic`网页（在这种情况下，它应显示一个空表单）；对提交的表单数据进行处理，并将用户重定向到网页`topics`：
+
+**views.py**
+
+```
+  from django.shortcuts import render
+  from django.http import HttpResponseRedirect
+  from django.core.urlresolvers import reverse
+
+  from .models import Topic
+  from .forms import TopicForm
+
+  --snip--
+  def new_topic(request):
+      """添加新主题"""
+❶     if request.method != 'POST':
+          # 未提交数据：创建一个新表单
+❷         form = TopicForm()
+      else:
+          # POST 提交的数据,对数据进行处理
+❸         form = TopicForm(request.POST)
+❹         if form.is_valid():
+❺             form.save()
+❻             return HttpResponseRedirect(reverse('learning_logs:topics'))
+
+❼     context = {'form': form}
+      return render(request, 'learning_logs/new_topic.html', context)
+```
+
+我们导入了`HttpResponseRedirect`类，用户提交主题后我们将使用这个类将用户重定向到网页`topics`。函数`reverse()`根据指定的 URL 模型确定 URL，这意味着 Django 将在页面被请求时生成 URL。我们还导入了刚才创建的表单`TopicForm`。
+
+**4. GET 请求和 POST 请求**
+
+创建 Web 应用程序时，将用到的两种主要请求类型是 GET 请求和 POST 请求。对于只是从服务器读取数据的页面，使用 GET 请求；在用户需要通过表单提交信息时，通常使用 POST 请求。处理所有表单时，我们都将指定使用 POST 方法。还有一些其他类型的请求，但这个项目没有使用。
+
+函数`new_topic()`将请求对象作为参数。用户初次请求该网页时，其浏览器将发送 GET 请求；用户填写并提交表单时，其浏览器将发送 POST 请求。根据请求的类型，我们可以确定用户请求的是空表单（GET 请求）还是要求对填写好的表单进行处理（POST 请求）。
+
+❶处的测试确定请求方法是 GET 还是 POST。如果请求方法不是 POST，请求就可能是 GET，因此我们需要返回一个空表单（即便请求是其他类型的，返回一个空表单也不会有任何问题）。我们创建一个`TopicForm`实例（见❷），将其存储在变量`form`中，再通过上下文字典将这个表单发送给模板（见❼）。由于实例化`TopicForm`时我们没有指定任何实参，Django 将创建一个可供用户填写的空表单。
+
+如果请求方法为 POST，将执行`else`代码块，对提交的表单数据进行处理。我们使用用户输入的数据（它们存储在`request.POST`中）创建一个`TopicForm`实例（见❸），这样对象`form`将包含用户提交的信息。
+
+要将提交的信息保存到数据库，必须先通过检查确定它们是有效的（见❹）。函数`is_valid()`核实用户填写了所有必不可少的字段（表单字段默认都是必不可少的），且输入的数据与要求的字段类型一致（例如，字段`text`少于200个字符，这是我们在第18章中的 models.py 中指定的）。这种自动验证避免了我们去做大量的工作。如果所有字段都有效，我们就可调用`save()`（见❺），将表单中的数据写入数据库。保存数据后，就可离开这个页面了。我们使用`reverse()`获取页面`topics`的 URL，并将其传递给`HttpResponseRedirect()`（见❻），后者将用户的浏览器重定向到页面`topics`。在页面`topics`中，用户将在主题列表中看到他刚输入的主题。
+
+**5. 模板 new_topic**
+
+下面来创建新模板 new_topic.html，用于显示我们刚创建的表单：
+
+**new_topic.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+
+  {% block content %}
+    <p>Add a new topic:</p>
+
+❶   <form action="{% url 'learning_logs:new_topic' %}" method='post'>
+❷     {% csrf_token %}
+❸     {{ form.as_p }}
+❹     <button name="submit">add topic</button>
+    </form>
+
+  {% endblock content %}
+```
+
+这个模板继承了 base.html，因此其基本结构与项目“学习笔记”的其他页面相同。在❶处，我们定义了一个 HTML 表单。实参`action`告诉服务器将提交的表单数据发送到哪里，这里我们将它发回给视图函数`new_topic()`。实参`method`让浏览器以 POST 请求的方式提交数据。
+
+Django 使用模板标签`{% csrf_token %}`（见❷）来防止攻击者利用表单来获得对服务器未经授权的访问（这种攻击被称为**跨站请求伪造**）。在❸处，我们显示表单，从中可知 Django 使得完成显示表单等任务有多简单：我们只需包含模板变量`{{ form.as_p }}`，就可让 Django 自动创建显示表单所需的全部字段。修饰符`as_p`让 Django 以段落格式渲染所有表单元素，这是一种整洁地显示表单的简单方式。
+
+Django 不会为表单创建提交按钮，因此我们在❹处定义了一个这样的按钮。
+
+**6. 链接到页面new_topic**
+
+接下来，我们在页面`topics`中添加一个到页面`new_topic`的链接：
+
+**topics.html**
+
+```
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+
+  <p>Topics</p>
+
+  <ul>
+    --snip--
+  </ul>
+
+  <a href="{% url 'learning_logs:new_topic' %}">Add a new topic:</a>
+
+{% endblock content %}
+```
+
+这个链接放在了既有主题列表的后面。图19-1显示了生成的表单。请使用这个表单来添加几个新主题。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/23.d19z.001.png)
+
+**图19-1　用于添加新主题的页面**
+
+#### **19.1.2　添加新条目**
+
+现在用户可以添加新主题了，但他们还想添加新条目。我们将再次定义 URL，编写视图函数和模板，并链接到添加新条目的网页。但在此之前，我们需要在 forms.py 中再添加一个类。
+
+**1. 用于添加新条目的表单**
+
+我们需要创建一个与模型`Entry`相关联的表单，但这个表单的定制程度比`TopicForm`要高些：
+
+**forms.py**
+
+```
+  from django import forms
+
+  from .models import Topic, Entry
+
+  class TopicForm(forms.ModelForm):
+      --snip--
+
+  class EntryForm(forms.ModelForm):
+      class Meta:
+          model = Entry
+          fields = ['text']
+❶         labels = {'text': ''}
+❷         widgets = {'text': forms.Textarea(attrs={'cols': 80})}
+```
+
+我们首先修改了`import`语句，使其除导入`Topic`外，还导入`Entry`。新类`EntryForm`继承了`forms.ModelForm`，它包含的`Meta`类指出了表单基于的模型以及要在表单中包含哪些字段。这里也给字段`'text'`指定了一个空标签（见❶）。
+
+在❷处，我们定义了属性`widgets`。**小部件**（widget）是一个 HTML 表单元素，如单行文本框、多行文本区域或下拉列表。通过设置属性`widgets`，可覆盖 Django 选择的默认小部件。通过让 Django 使用`forms.Textarea`，我们定制了字段`'text'`的输入小部件，将文本区域的宽度设置为80列，而不是默认的40列。这给用户提供了足够的空间，可以编写有意义的条目。
+
+**2. URL 模式new_entry**
+
+在用于添加新条目的页面的 URL 模式中，需要包含实参`topic_id`，因为条目必须与特定的主题相关联。该 URL 模式如下，我们将它添加到了 learning_logs/urls.py 中：
+
+**urls.py**
+
+```
+--snip--
+urlpatterns = [
+    --snip--
+    # 用于添加新条目的页面
+    url(r'^new_entry/(?P<topic_id>\d+)/$', views.new_entry, name='new_entry'),
+]
+```
+
+这个 URL 模式与形式为 http://localhost:8000/new_entry/*id*/ 的 URL 匹配，其中*id*是一个与主题 ID 匹配的数字。代码`(?P<topic_id>\d+)`捕获一个数字值，并将其存储在变量`topic_id`中。请求的 URL 与这个模式匹配时，Django 将请求和主题 ID 发送给函数`new_entry()`。
+
+**3. 视图函数 new_entry()**
+
+视图函数`new_entry()`与函数`new_topic()`很像：
+
+**views.py**
+
+```
+  from django.shortcuts import render
+  --snip--
+
+  from .models import Topic
+  from .forms import TopicForm, EntryForm
+
+  --snip--
+  def new_entry(request, topic_id):
+      """在特定的主题中添加新条目"""
+❶     topic = Topic.objects.get(id=topic_id)
+
+❷     if request.method != 'POST':
+          # 未提交数据,创建一个空表单
+❸         form = EntryForm()
+      else:
+          # POST 提交的数据,对数据进行处理
+❹         form = EntryForm(data=request.POST)
+          if form.is_valid():
+❺             new_entry = form.save(commit=False)
+❻             new_entry.topic = topic
+              new_entry.save()
+❼             return HttpResponseRedirect(reverse('learning_logs:topic',
+                                          args=[topic_id]))
+
+      context = {'topic': topic, 'form': form}
+      return render(request, 'learning_logs/new_entry.html', context)
+```
+
+我们修改了`import`语句，在其中包含了刚创建的`EntryForm`。`new_entry()`的定义包含形参`topic_id`，用于存储从 URL 中获得的值。渲染页面以及处理表单数据时，都需要知道针对的是哪个主题，因此我们使用`topic_id`来获得正确的主题（见❶）。
+
+在❷处，我们检查请求方法是 POST 还是 GET。如果是 GET 请求，将执行`if`代码块：创建一个空的`EntryForm`实例（见❸）。如果请求方法为 POST，我们就对数据进行处理：创建一个`EntryForm`实例，使用`request`对象中的 POST 数据来填充它（见❹）；再检查表单是否有效，如果有效，就设置条目对象的属性`topic`，再将条目对象保存到数据库。
+
+调用`save()`时，我们传递了实参`commit=False`（见❺），让 Django 创建一个新的条目对象，并将其存储到`new_entry`中，但不将它保存到数据库中。我们将`new_entry`的属性`topic`设置为在这个函数开头从数据库中获取的主题（见❻），然后调用`save()`，且不指定任何实参。这将把条目保存到数据库，并将其与正确的主题相关联。
+
+在❼处，我们将用户重定向到显示相关主题的页面。调用`reverse()`时，需要提供两个实参：要根据它来生成 URL 的 URL 模式的名称；列表`args`，其中包含要包含在 URL 中的所有实参。在这里，列表`args`只有一个元素——`topic_id`。接下来，调用`HttpResponseRedirect()`将用户重定向到显示新增条目所属主题的页面，用户将在该页面的条目列表中看到新添加的条目。
+
+**4. 模板new_entry**
+
+从下面的代码可知，模板`new_entry`类似于模板`new_topic`：
+
+**new_entry.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+
+  {% block content %}
+
+❶   <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+
+    <p>Add a new entry:</p>
+❷   <form action="{% url 'learning_logs:new_entry' topic.id %}" method='post'>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button name='submit'>add entry</button>
+    </form>
+
+  {% endblock content %}
+```
+
+我们在页面顶端显示了主题（见❶），让用户知道他是在哪个主题中添加条目；该主题名也是一个链接，可用于返回到该主题的主页面。
+
+表单的实参`action`包含 URL 中的`topic_id`值，让视图函数能够将新条目关联到正确的主题（见❷）。除此之外，这个模板与模板 new_topic.html 完全相同。
+
+**5. 链接到页面new_entry**
+
+接下来，我们需要在显示特定主题的页面中添加到页面`new_entry`的链接：
+
+**topic.html**
+
+```
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+
+  <p>Topic: {{ topic }}</p>
+
+  <p>Entries:</p>
+  <p>
+    <a href="{% url 'learning_logs:new_entry' topic.id %}">add new entry</a>
+  </p>
+  <ul>
+  --snip—
+  </ul>
+
+{% endblock content %}
+```
+
+我们在显示条目前添加链接，因为在这种页面中，执行的最常见的操作是添加新条目。图19-2显示了页面`new_entry`。现在用户可以添加新主题，还可以在每个主题中添加任意数量的条目。请在一些既有主题中添加一些新条目，尝试使用一下页面`new_entry`。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/23.d19z.002.png)
+
+**图19-2　页面new_entry**
+
+#### **19.1.3　编辑条目**
+
+下面来创建一个页面，让用户能够编辑既有的条目。
+
+**1. URL 模式edit_entry**
+
+这个页面的 URL 需要传递要编辑的条目的 ID。修改后的 learning_logs/urls.py 如下：
+
+**urls.py**
+
+```
+--snip--
+urlpatterns = [
+    --snip--
+    # 用于编辑条目的页面
+    url(r'^edit_entry/(?P<entry_id>\d+)/$', views.edit_entry,
+        name='edit_entry'),
+]
+```
+
+在 URL（如 http://localhost:8000/edit_entry/1/）中传递的 ID 存储在形参`entry_id`中。这个 URL 模式将预期匹配的请求发送给视图函数`edit_entry()`。
+
+**2. 视图函数edit_entry()**
+
+页面`edit_entry`收到 GET 请求时，`edit_entry()`将返回一个表单，让用户能够对条目进行编辑。该页面收到 POST 请求（条目文本经过修订）时，它将修改后的文本保存到数据库中：
+
+**views.py**
+
+```
+  from django.shortcuts import render
+  --snip--
+
+  from .models import Topic, Entry
+  from .forms import TopicForm, EntryForm
+  --snip--
+
+  def edit_entry(request, entry_id):
+      """编辑既有条目"""
+❶     entry = Entry.objects.get(id=entry_id)
+      topic = entry.topic
+
+      if request.method != 'POST':
+          # 初次请求，使用当前条目填充表单
+❷         form = EntryForm(instance=entry)
+      else:
+          # POST 提交的数据，对数据进行处理
+❸         form = EntryForm(instance=entry, data=request.POST)
+          if form.is_valid():
+❹             form.save()
+❺             return HttpResponseRedirect(reverse('learning_logs:topic',
+                                          args=[topic.id]))
+
+      context = {'entry': entry, 'topic': topic, 'form': form}
+      return render(request, 'learning_logs/edit_entry.html', context)
+```
+
+我们首先需要导入模型`Entry`。在❶处，我们获取用户要修改的条目对象，以及与该条目相关联的主题。在请求方法为 GET 时将执行的`if`代码块中，我们使用实参`instance=entry`创建一个`EntryForm`实例（见❷）。这个实参让 Django 创建一个表单，并使用既有条目对象中的信息填充它。用户将看到既有的数据，并能够编辑它们。
+
+处理 POST 请求时，我们传递实参`instance=entry`和`data=request.POST`（见❸），让 Django 根据既有条目对象创建一个表单实例，并根据`request.POST`中的相关数据对其进行修改。然后，我们检查表单是否有效，如果有效，就调用`save()`，且不指定任何实参（见❹）。接下来，我们重定向到显示条目所属主题的页面（见❺），用户将在其中看到其编辑的条目的新版本。
+
+**3. 模板edit_entry**
+
+下面是模板 edit_entry.html，它与模板 new_entry.html 类似：
+
+**edit_entry.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+
+  {% block content %}
+
+    <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+
+    <p>Edit entry:</p>
+
+❶   <form action="{% url 'learning_logs:edit_entry' entry.id %}" method='post'>
+      {% csrf_token %}
+      {{ form.as_p }}
+❷     <button name="submit">save changes</button>
+    </form>
+
+  {% endblock content %}
+```
+
+在❶处，实参`action`将表单发回给函数`edit_entry()`进行处理。在标签`{% url %}`中，我们将条目 ID 作为一个实参，让视图对象能够修改正确的条目对象。我们将提交按钮命名为 save changes，以提醒用户：单击该按钮将保存所做的编辑，而不是创建一个新条目（见❷）。
+
+**4. 链接到页面edit_entry**
+
+现在，在显示特定主题的页面中，需要给每个条目添加到页面`edit_entry`的链接：
+
+**topic.html**
+
+```
+--snip--
+  {% for entry in entries %}
+    <li>
+      <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
+      <p>{{ entry.text|linebreaks }}</p>
+      <p>
+        <a href="{% url 'learning_logs:edit_entry' entry.id %}">edit entry</a>
+      </p>
+    </li>
+--snip--
+```
+
+我们将编辑链接放在每个条目的日期和文本后面。在循环中，我们使用模板标签`{% url %}`根据 URL 模式`edit_entry`和当前条目的 ID 属性（`entry.id`）来确定 URL。链接文本为`"edit entry"`，它出现在页面中每个条目的后面。图19-3显示了包含这些链接时，显示特定主题的页面是什么样的。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/23.d19z.003.png)
+
+**图19-3　每个条目都有一个用于对其进行编辑的链接**
+
+至此，“学习笔记”已具备了需要的大部分功能。用户可添加主题和条目，还可根据需要查看任何一组条目。在下一节，我们将实现一个用户注册系统，让任何人都可向“学习笔记”申请账户，并创建自己的主题和条目。
+
+> **动手试一试**
+>
+> **19-1 博客**：新建一个 Django 项目，将其命名为 Blog。在这个项目中，创建一个名为 blogs 的应用程序，并在其中创建一个名为`BlogPost`的模型。这个模型应包含`title`、`text`和`date_added`等字段。为这个项目创建一个超级用户，并使用管理网站创建几个简短的帖子。创建一个主页，在其中按时间顺序显示所有的帖子。
+>
+> 创建两个表单，其中一个用于发布新帖子，另一个用于编辑既有的帖子。
+>
+> 尝试填写这些表单，确认它们能够正确地工作。
+
+### **19.2　创建用户账户**
+
+在这一节，我们将建立一个用户注册和身份验证系统，让用户能够注册账户，进而登录和注销。我们将创建一个新的应用程序，其中包含与处理用户账户相关的所有功能。我们还将对模型`Topic`稍做修改，让每个主题都归属于特定用户。
+
+#### **19.2.1　应用程序 users**
+
+我们首先使用命令`startapp`来创建一个名为`users`的应用程序：
+
+```
+  (ll_env)learning_log$ python manage.py startapp users
+  (ll_env)learning_log$ ls
+❶ db.sqlite3  learning_log  learning_logs  ll_env  manage.py  users
+  (ll_env)learning_log$ ls users
+❷ admin.py __init__.py migrations models.py tests.py views.py
+```
+
+这个命令新建一个名为 users 的目录（见❶），其结构与应用程序`learning_logs`相同（见❷）。
+
+**1. 将应用程序users添加到 settings.py 中**
+
+在 settings.py 中，我们需要将这个新的应用程序添加到`INSTALLED_APPS`中，如下所示：
+
+**settings.py**
+
+```
+--snip--
+INSTALLED_APPS = (
+    --snip--
+    # 我的应用程序
+    'learning_logs',
+    'users',
+)
+--snip--
+```
+
+这样，Django 将把应用程序`users`包含到项目中。
+
+**2. 包含应用程序users的 URL**
+
+接下来，我们需要修改项目根目录中的 urls.py，使其包含我们将为应用程序`users`定义的 URL：
+
+**urls.py**
+
+```
+from django.conf.urls import include, url
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^users/', include('users.urls', namespace='users')),
+    url(r'', include('learning_logs.urls', namespace='learning_logs')),
+]
+```
+
+我们添加了一行代码，以包含应用程序`users`中的文件 urls.py。这行代码与任何以单词 users 打头的 URL（如 http://localhost:8000/users/login/）都匹配。我们还创建了命名空间`'users'`，以便将应用程序`learning_logs`的 URL 同应用程序`users`的 URL 区分开来。
+
+#### **19.2.2　登录页面**
+
+我们首先来实现登录页面的功能。为此，我们将使用 Django 提供的默认登录视图，因此 URL 模式会稍有不同。在目录 learning_log/users/ 中，新建一个名为 urls.py 的文件，并在其中添加如下代码：
+
+**urls.py**
+
+```
+  """为应用程序 users 定义 URL 模式"""
+
+  from django.conf.urls import url
+❶ from django.contrib.auth.views import login
+
+  from . import views
+
+  urlpatterns = [
+      # 登录页面
+❷     url(r'^login/$', login, {'template_name': 'users/login.html'},
+          name='login'),
+  ]
+```
+
+我们首先导入了默认视图`login`（见❶）。登录页面的 URL 模式与 URL http://localhost:8000/users/login/ 匹配（见❷）。这个 URL 中的单词 users 让 Django 在 users/urls.py 中查找，而单词 login 让它将请求发送给 Django 默认视图`login`（请注意，视图实参为`login`，而不是`views.login`）。鉴于我们没有编写自己的视图函数，我们传递了一个字典，告诉 Django 去哪里查找我们将编写的模板。这个模板包含在应用程序`users`而不是`learning_logs`中。
+
+**1. 模板 login.html**
+
+用户请求登录页面时，Django 将使用其默认视图`login`，但我们依然需要为这个页面提供模板。为此，在目录 learning_log/users/ 中，创建一个名为 templates 的目录，并在其中创建一个名为 users 的目录。以下是模板 login.html，你应将其存储到目录 learning_log/users/templates/users/ 中：
+
+**login.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+
+  {% block content %}
+
+❶   {% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+
+❷   <form method="post" action="{% url 'users:login' %}">
+    {% csrf_token %}
+❸   {{ form.as_p }}
+
+❹   <button name="submit">log in</button>
+❺   <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+    </form>
+
+  {% endblock content %}
+```
+
+这个模板继承了 base.html，旨在确保登录页面的外观与网站的其他页面相同。请注意，一个应用程序中的模板可继承另一个应用程序中的模板。
+
+如果表单的`errors`属性被设置，我们就显示一条错误消息（见❶），指出输入的用户名—密码对与数据库中存储的任何用户名—密码对都不匹配。
+
+我们要让登录视图处理表单，因此将实参`action`设置为登录页面的URL（见❷）。登录视图将一个表单发送给模板，在模板中，我们显示这个表单（见❸）并添加一个提交按钮（见❹）。在❺处，我们包含了一个隐藏的表单元素——`'next'`，其中的实参`value`告诉 Django 在用户成功登录后将其重定向到什么地方——在这里是主页。
+
+**2. 链接到登录页面**
+
+下面在 base.html 中添加到登录页面的链接，让所有页面都包含它。用户已登录时，我们不想显示这个链接，因此将它嵌套在一个`{% if %}`标签中：
+
+**base.html**
+
+```
+  <p>
+    <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
+    <a href="{% url 'learning_logs:topics' %}">Topics</a> -
+❶   {% if user.is_authenticated %}
+❷     Hello, {{ user.username }}.
+    {% else %}
+❸     <a href="{% url 'users:login' %}">log in</a>
+    {% endif %}
+  </p>
+
+  {% block content %}{% endblock content %}
+```
+
+在 Django 身份验证系统中，每个模板都可使用变量`user`，这个变量有一个`is_authenticated`属性：如果用户已登录，该属性将为`True`，否则为`False`。这让你能够向已通过身份验证的用户显示一条消息，而向未通过身份验证的用户显示另一条消息。
+
+在这里，我们向已登录的用户显示一条问候语（见❶）。对于已通过身份验证的用户，还设置了属性`username`，我们使用这个属性来个性化问候语，让用户知道他已登录（见❷）。在❸处，对于还未通过身份验证的用户，我们再显示一个到登录页面的链接。
+
+**3. 使用登录页面**
+
+前面建立了一个用户账户，下面来登录一下，看看登录页面是否管用。请访问 http://localhost:8000/admin/，如果你依然是以管理员的身份登录的，请在页眉上找到注销链接并单击它。
+
+注销后，访问 http://localhost:8000/users/login/，你将看到类似于图19-4所示的登录页面。输入你在前面设置的用户名和密码，将进入页面 index。。在这个主页的页眉中，显示了一条个性化问候语，其中包含你的用户名。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/23.d19z.004.png)
+
+**图19-4　登录页面**
+
+#### **19.2.3　注销**
+
+现在需要提供一个让用户注销的途径。我们不创建用于注销的页面，而让用户只需单击一个链接就能注销并返回到主页。为此，我们将为注销链接定义一个 URL 模式，编写一个视图函数，并在 base.html 中添加一个注销链接。
+
+**1. 注销 URL**
+
+下面的代码为注销定义了 URL 模式，该模式与 URL http://locallwst:8000/users/logout/ 匹配。修改后的 users/urls.py 如下：
+
+**urls.py**
+
+```
+--snip--
+urlpatterns = [
+    # 登录页面
+    --snip--
+    # 注销
+    url(r'^logout/$', views.logout_view, name='logout'),
+]
+```
+
+这个 URL 模式将请求发送给函数`logout_view()`。这样给这个函数命名，旨在将其与我们将在其中调用的函数`logout()`区分开来（请确保你修改的是 users/urls.py，而不是 learning_log/ urls.py）。
+
+**2. 视图函数logout_view()**
+
+函数`logout_view()`很简单：只是导入 Django 函数`logout()`，并调用它，再重定向到主页。请打开 users/views.py，并输入下面的代码：
+
+**views.py**
+
+```
+  from django.http import HttpResponseRedirect
+  from django.core.urlresolvers import reverse
+❶ from django.contrib.auth import logout
+
+  def logout_view(request):
+      """注销用户"""
+❷     logout(request)
+❸     return HttpResponseRedirect(reverse('learning_logs:index'))
+```
+
+我们从 django.contrib.auth 中导入了函数`logout()`（见❶）。在❷处，我们调用了函数`logout()`，它要求将`request`对象作为实参。然后，我们重定向到主页（见❸）。
+
+**3. 链接到注销视图**
+
+现在我们需要添加一个注销链接。我们在 base.html 中添加这种链接，让每个页面都包含它；我们将它放在标签`{% if user.is_authenticated %}`中，使得仅当用户登录后才能看到它：
+
+**base.html**
+
+```
+--snip—
+  {% if user.is_authenticated %}
+    Hello, {{ user.username }}.
+    <a href="{% url 'users:logout' %}">log out</a>
+  {% else %}
+    <a href="{% url 'users:login' %}">log in</a>
+  {% endif %}
+--snip--
+```
+
+图19-5显示了用户登录后看到的主页。这里的重点是创建能够正确工作的网站，因此几乎没有设置任何样式。确定所需的功能都能正确运行后，我们将设置这个网站的样式，使其看起来更专业。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/23.d19z.005.png)
+
+**图19-5　包含个性化问候语和注销链接的主页**
+
+#### **19.2.4　注册页面**
+
+下面来创建一个让新用户能够注册的页面。我们将使用 Django 提供的表单`UserCreationForm`，但编写自己的视图函数和模板。
+
+**1. 注册页面的 URL 模式**
+
+下面的代码定义了注册页面的 URL 模式，它也包含在 users/urls.py 中：
+
+**urls.py**
+
+```
+--snip--
+urlpatterns = [
+    # 登录页面
+    --snip--
+    # 注册页面
+    url(r'^register/$', views.register, name='register'),
+]
+```
+
+这个模式与 URL http://localhost:8000/users/register/ 匹配，并将请求发送给我们即将编写的函数`register()`。
+
+**2. 视图函数register()**
+
+在注册页面首次被请求时，视图函数`register()`需要显示一个空的注册表单，并在用户提交填写好的注册表单时对其进行处理。如果注册成功，这个函数还需让用户自动登录。请在 users/views.py 中添加如下代码：
+
+**views.py**
+
+```
+  from django.shortcuts import render
+  from django.http import HttpResponseRedirect
+  from django.core.urlresolvers import reverse
+  from django.contrib.auth import login, logout, authenticate
+  from django.contrib.auth.forms import UserCreationForm
+
+  def logout_view(request):
+  --snip--
+
+  def register(request):
+      """注册新用户"""
+      if request.method != 'POST':
+          # 显示空的注册表单
+❶         form = UserCreationForm()
+      else:
+          # 处理填写好的表单
+❷         form = UserCreationForm(data=request.POST)
+
+❸         if form.is_valid():
+❹             new_user = form.save()
+              # 让用户自动登录，再重定向到主页
+❺             authenticated_user = authenticate(username=new_user.username,
+                  password=request.POST['password1'])
+❻             login(request, authenticated_user)
+❼             return HttpResponseRedirect(reverse('learning_logs:index'))
+
+      context = {'form': form}
+      return render(request, 'users/register.html', context)
+```
+
+我们首先导入了函数`render()`，然后导入了函数`login()`和`authenticate()`，以便在用户正确地填写了注册信息时让其自动登录。我们还导入了默认表单`UserCreationForm`。在函数`register()`中，我们检查要响应的是否是 POST 请求。如果不是，就创建一个`UserCreationForm`实例，且不给它提供任何初始数据（见❶）。
+
+如果响应的是 POST 请求，我们就根据提交的数据创建一个`UserCreationForm`实例（见❷），并检查这些数据是否有效：就这里而言，是用户名未包含非法字符，输入的两个密码相同，以及用户没有试图做恶意的事情。
+
+如果提交的数据有效，我们就调用表单的方法`save()`，将用户名和密码的散列值保存到数据库中（见❹）。方法`save()`返回新创建的用户对象，我们将其存储在`new_user`中。
+
+保存用户的信息后，我们让用户自动登录，这包含两个步骤。首先，我们调用`authenticate()`，并将实参`new_user.username`和密码传递给它（见❺）。用户注册时，被要求输入密码两次；由于表单是有效的，我们知道输入的这两个密码是相同的，因此可以使用其中任何一个。在这里，我们从表单的 POST 数据中获取与键`'password1'`相关联的值。如果用户名和密码无误，方法`authenticate()`将返回一个通过了身份验证的用户对象，而我们将其存储在`authenticated_user`中。接下来，我们调用函数`login()`，并将对象`request`和`authenticated_user`传递给它（见❻），这将为新用户创建有效的会话。最后，我们将用户重定向到主页（见❼），其页眉中显示了一条个性化的问候语，让用户知道注册成功了。
+
+**3. 注册模板**
+
+注册页面的模板与登录页面的模板类似，请务必将其保存到 login.html 所在的目录中：
+
+**register.html**
+
+```
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+
+  <form method="post" action="{% url 'users:register' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button name="submit">register</button>
+    <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+  </form>
+
+{% endblock content %}
+```
+
+这里也使用了方法`as_p`，让 Django 在表单中正确地显示所有的字段，包括错误消息——如果用户没有正确地填写表单。
+
+**4. 链接到注册页面**
+
+接下来，我们添加这样的代码，即在用户没有登录时显示到注册页面的链接：
+
+**base.html**
+
+```
+--snip--
+  {% if user.is_authenticated %}
+    Hello, {{ user.username }}.
+    <a href="{% url 'users:logout' %}">log out</a>
+  {% else %}
+    <a href="{% url 'users:register' %}">register</a> -
+    <a href="{% url 'users:login' %}">log in</a>
+  {% endif %}
+--snip--
+```
+
+现在，已登录的用户看到的是个性化的问候语和注销链接，而未登录的用户看到的是注册链接和登录链接。请尝试使用注册页面创建几个用户名各不相同的用户账户。
+
+在下一节，我们将对一些页面进行限制，仅让已登录的用户访问它们，我们还将确保每个主题都属于特定用户。
+
+> **注意**　
+>
+> 这里的注册系统允许用户创建任意数量的账户。有些系统要求用户确认其身份：发送一封确认邮件，用户回复后其账户才生效。通过这样做，系统生成的垃圾账户将比这里使用的简单系统少。然而，学习创建应用程序时，完全可以像这里所做的那样，使用简单的用户注册系统。
+
+> **动手试一试**
+>
+> **19-2 博客账户**：在你为完成练习19-1而开发的项目 Blog 中，添加一个用户身份验证和注册系统。让已登录的用户在屏幕上看到其用户名，并让未注册的用户看到一个到注册页面的链接。
+
+### **19.3　让用户拥有自己的数据**
+
+用户应该能够输入其专有的数据，因此我们将创建一个系统，确定各项数据所属的用户，再限制对页面的访问，让用户只能使用自己的数据。
+
+在本节中，我们将修改模型`Topic`，让每个主题都归属于特定用户。这也将影响条目，因为每个条目都属于特定的主题。我们先来限制对一些页面的访问。
+
+#### **19.3.1　使用 @login_required 限制访问**
+
+Django 提供了装饰器`@login_required`，让你能够轻松地实现这样的目标：对于某些页面，只允许已登录的用户访问它们。**装饰器**（decorator）是放在函数定义前面的指令，Python 在函数运行前，根据它来修改函数代码的行为。下面来看一个示例。
+
+**1. 限制对topics页面的访问**
+
+每个主题都归特定用户所有，因此应只允许已登录的用户请求`topics`页面。为此，在 learning_logs/views.py 中添加如下代码：
+
+**views.py**
+
+```
+--snip--
+from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
+
+from .models import Topic, Entry
+--snip--
+
+@login_required
+def topics(request):
+    """显示所有的主题"""
+    --snip--
+```
+
+我们首先导入了函数`login_required()`。我们将`login_required()`作为装饰器用于视图函数`topics()`——在它前面加上符号`@`和`login_required`，让 Python 在运行`topics()`的代码前先运行`login_required()`的代码。
+
+`login_required()`的代码检查用户是否已登录，仅当用户已登录时，Django 才运行`topics()`的代码。如果用户未登录，就重定向到登录页面。
+
+为实现这种重定向，我们需要修改 settings.py，让 Django 知道到哪里去查找登录页面。请在 settings.py 末尾添加如下代码：
+
+**settings.py**
+
+```
+"""
+项目 learning_log 的 Django 设置
+--snip--
+
+# 我的设置
+LOGIN_URL = '/users/login/'
+```
+
+现在，如果未登录的用户请求装饰器`@login_required`的保护页面，Django 将重定向到 settings.py 中的`LOGIN_URL`指定的 URL。
+
+要测试这个设置，可注销并进入主页。然后，单击链接 Topics，这将重定向到登录页面。接下来，使用你的账户登录，并再次单击主页中的 Topics 链接，你将看到 topics 页面。
+
+**2. 全面限制对项目“学习笔记”的访问**
+
+Django 让你能够轻松地限制对页面的访问，但你必须针对要保护哪些页面做出决定。最好先确定项目的哪些页面不需要保护，再限制对其他所有页面的访问。你可以轻松地修改过于严格的访问限制，其风险比不限制对敏感页面的访问更低。
+
+在项目“学习笔记”中，我们将不限制对主页、注册页面和注销页面的访问，并限制对其他所有页面的访问。
+
+在下面的 learning_logs/views.py 中，对除`index()`外的每个视图都应用了装饰器`@login_required`：
+
+**views.py**
+
+```
+--snip--
+@login_required
+def topics(request):
+    --snip--
+
+@login_required
+def topic(request, topic_id):
+    --snip--
+
+@login_required
+def new_topic(request):
+    --snip--
+
+@login_required
+def new_entry(request, topic_id):
+    --snip--
+
+@login_required
+def edit_entry(request, entry_id):
+    --snip--
+```
+
+如果你在未登录的情况下尝试访问这些页面，将被重定向到登录页面。另外，你还不能单击到`new_topic`等页面的链接。但如果你输入 URL http://localhost:8000/new_topic/，将重定向到登录页面。对于所有与私有用户数据相关的 URL，都应限制对它们的访问。
+
+#### **19.3.2　将数据关联到用户**
+
+现在，需要将数据关联到提交它们的用户。我们只需将最高层的数据关联到用户，这样更低层的数据将自动关联到用户。例如，在项目“学习笔记”中，应用程序的最高层数据是主题，而所有条目都与特定主题相关联。只要每个主题都归属于特定用户，我们就能确定数据库中每个条目的所有者。
+
+下面来修改模型`Topic`，在其中添加一个关联到用户的外键。这样做后，我们必须对数据库进行迁移。最后，我们必须对有些视图进行修改，使其只显示与当前登录的用户相关联的数据。
+
+**1. 修改模型 Topic**
+
+对 models.py 的修改只涉及两行代码：
+
+**models.py**
+
+```
+from django.db import models
+from django.contrib.auth.models import User
+
+class Topic(models.Model):
+   """用户要学习的主题"""
+    text = models.CharField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User)
+
+    def __str__(self):
+        """返回模型的字符串表示"""
+        return self.text
+
+class Entry(models.Model):
+    --snip--
+```
+
+我们首先导入了`django.contrib.auth`中的模型`User`，然后在`Topic`中添加了字段`owner`，它建立到模型`User`的外键关系。
+
+**2. 确定当前有哪些用户**
+
+我们迁移数据库时，Django 将对数据库进行修改，使其能够存储主题和用户之间的关联。为执行迁移，Django 需要知道该将各个既有主题关联到哪个用户。最简单的办法是，将既有主题都关联到同一个用户，如超级用户。为此，我们需要知道该用户的 ID。
+
+下面来查看已创建的所有用户的 ID。为此，启动一个 Django shell 会话，并执行如下命令：
+
+```
+  (venv)learning_log$ python manage.py shell
+❶ >>> from django.contrib.auth.models import User
+❷ >>> User.objects.all()
+  [, , ]
+❸ >>> for user in User.objects.all():
+  ...     print(user.username, user.id)
+  ...
+  ll_admin 1
+  eric 2
+  willie 3
+  >>>
+```
+
+在❶处，我们在 shell 会话中导入了模型`User`。然后，我们查看到目前为止都创建了哪些用户（见❷）。输出中列出了三个用户：ll_admin、eric 和 willie。
+
+在❸处，我们遍历用户列表，并打印每位用户的用户名和 ID。Django 询问要将既有主题关联到哪个用户时，我们将指定其中的一个 ID 值。
+
+**3. 迁移数据库**
+
+知道用户 ID 后，就可以迁移数据库了。
+
+```
+❶ (venv)learning_log$ python manage.py makemigrations learning_logs
+❷ You are trying to add a non-nullable field 'owner' to topic without a default;
+  we can't do that (the database needs something to populate existing rows).
+❸ Please select a fix:
+   1) Provide a one-off default now (will be set on all existing rows)
+   2) Quit, and let me add a default in models.py
+❹ Select an option: 1
+❺ Please enter the default value now, as valid Python
+  The datetime and django.utils.timezone modules are available, so you can do e.g. timezone.now()
+❻ >>> 1
+  Migrations for 'learning_logs':
+    0003_topic_owner.py:
+      - Add field owner to topic
+```
+
+我们首先执行了命令`makemigrations`（见❶）。在❷处的输出中，Django 指出我们试图给既有模型`Topic`添加一个必不可少（不可为空）的字段，而该字段没有默认值。在❸处，Django 给我们提供了两种选择：要么现在提供默认值，要么退出并在 models.py 中添加默认值。在❹处，我们选择了第一个选项，因此 Django 让我们输入默认值（见❺）。
+
+为将所有既有主题都关联到管理用户 ll_admin，我输入了用户 ID 值1（见❻）。并非必须使用超级用户，而可使用已创建的任何用户的 ID。接下来，Django 使用这个值来迁移数据库，并生成了迁移文件 0003_topic_owner.py，它在模型`Topic`中添加字段`owner`。
+
+现在可以执行迁移了。为此，在活动的虚拟环境中执行下面的命令：
+
+```
+  (venv)learning_log$ python manage.py migrate
+  Operations to perform:
+    Synchronize unmigrated apps: messages, staticfiles
+    Apply all migrations: learning_logs, contenttypes, sessions, admin, auth
+  --snip--
+  Running migrations:
+    Rendering model states... DONE
+❶   Applying learning_logs.0003_topic_owner... OK
+  (venv)learning_log$
+```
+
+Django 应用新的迁移，结果一切顺利（见❶）。
+
+为验证迁移符合预期，可在 shell 会话中像下面这样做：
+
+```
+❶ >>> from learning_logs.models import Topic
+❷ >>> for topic in Topic.objects.all():
+  ...     print(topic, topic.owner)
+  ...
+  Chess ll_admin
+  Rock Climbing ll_admin
+  >>>
+```
+
+我们从`learning_logs.models`中导入`Topic`（见❶），再遍历所有的既有主题，并打印每个主题及其所属的用户（见❷）。正如你看到的，现在每个主题都属于用户 ll_admin。
+
+> **注意**　
+>
+> 你可以重置数据库而不是迁移它，但如果这样做，既有的数据都将丢失。一种不错的做法是，学习如何在迁移数据库的同时确保用户数据的完整性。如果你确实想要一个全新的数据库，可执行命令`python manage.py flush`，这将重建数据库的结构。如果你这样做，就必须重新创建超级用户，且原来的所有数据都将丢失。
+
+#### **19.3.3　只允许用户访问自己的主题**
+
+当前，不管你以哪个用户的身份登录，都能够看到所有的主题。我们来改变这种情况，只向用户显示属于自己的主题。
+
+在 views.py 中，对函数`topics()`做如下修改：
+
+**views.py**
+
+```
+--snip--
+@login_required
+def topics(request):
+    """显示所有的主题"""
+    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    context = {'topics': topics}
+    return render(request, 'learning_logs/topics.html', context)
+--snip--
+```
+
+用户登录后，`request`对象将有一个`user`属性，这个属性存储了有关该用户的信息。代码`Topic.objects.filter(owner=request.user)`让Django只从数据库中获取`owner`属性为当前用户的`Topic`对象。由于我们没有修改主题的显示方式，因此无需对页面 topics 的模板做任何修改。
+
+要查看结果，以所有既有主题关联到的用户的身份登录，并访问 topics 页面，你将看到所有的主题。然后，注销并以另一个用户的身份登录，topics 页面将不会列出任何主题。
+
+#### **19.3.4　保护用户的主题**
+
+我们还没有限制对显示单个主题的页面的访问，因此任何已登录的用户都可输入类似于 http://localhost:8000/topics/1/ 的 URL，来访问显示相应主题的页面。
+
+你自己试一试就明白了。以拥有所有主题的用户的身份登录，访问特定的主题，并复制该页面的 URL，或将其中的 ID 记录下来。然后，注销并以另一个用户的身份登录，再输入显示前述主题的页面的 URL。虽然你是以另一个用户登录的，但依然能够查看该主题中的条目。
+
+为修复这种问题，我们在视图函数`topic()`获取请求的条目前执行检查：
+
+**views.py**
+
+```
+  from django.shortcuts import render
+❶ from django.http import HttpResponseRedirect, Http404
+  from django.core.urlresolvers import reverse
+  --snip--
+
+  @login_required
+  def topic(request, topic_id):
+      """显示单个主题及其所有的条目"""
+      topic = Topic.objects.get(id=topic_id)
+      # 确认请求的主题属于当前用户
+❷     if topic.owner != request.user:
+          raise Http404
+
+      entries = topic.entry_set.order_by('-date_added')
+      context = {'topic': topic, 'entries': entries}
+      return render(request, 'learning_logs/topic.html', context)
+  --snip--
+```
+
+服务器上没有请求的资源时，标准的做法是返回404响应。在这里，我们导入了异常`Http404`（见❶），并在用户请求它不能查看的主题时引发这个异常。收到主题请求后，我们在渲染网页前检查该主题是否属于当前登录的用户。如果请求的主题不归当前用户所有，我们就引发`Http404`异常（见❷），让 Django 返回一个404错误页面。
+
+现在，如果你试图查看其他用户的主题条目，将看到 Django 发送的消息 Page Not Found。在第20章，我们将对这个项目进行配置，让用户看到更合适的错误页面。
+
+#### **19.3.5　保护页面 edit_entry**
+
+页面`edit_entry`的 URL 为 http://localhost:8000/edit_entry/*entry_id*/，其中*entry_id*是一个数字。下面来保护这个页面，禁止用户通过输入类似于前面的 URL 来访问其他用户的条目：
+
+**views.py**
+
+```
+--snip--
+@login_required
+def edit_entry(request, entry_id):
+    """编辑既有条目"""
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+    if topic.owner != request.user:
+        raise Http404
+
+    if request.method != 'POST':
+        # 初次请求，使用当前条目的内容填充表单
+        --snip--
+```
+
+我们获取指定的条目以及与之相关联的主题，然后检查主题的所有者是否是当前登录的用户，如果不是，就引发`Http404`异常。
+
+#### **19.3.6　将新主题关联到当前用户**
+
+当前，用于添加新主题的页面存在问题，因此它没有将新主题关联到特定用户。如果你尝试添加新主题，将看到错误消息`IntegrityError`，指出`learning_logs_topic.user_id`不能为`NULL`。Django 的意思是说，创建新主题时，你必须指定其`owner`字段的值。
+
+由于我们可以通过`request`对象获悉当前用户，因此存在一个修复这种问题的简单方案。请添加下面的代码，将新主题关联到当前用户：
+
+**views.py**
+
+```
+  --snip--
+  @login_required
+  def new_topic(request):
+      """添加新主题"""
+      if request.method != 'POST':
+          # 没有提交的数据,创建一个空表单
+          form = TopicForm()
+      else:
+          # POST 提交的数据,对数据进行处理
+          form = TopicForm(request.POST)
+          if form.is_valid():
+❶             new_topic = form.save(commit=False)
+❷             new_topic.owner = request.user
+❸             new_topic.save()
+              return HttpResponseRedirect(reverse('learning_logs:topics'))
+
+      context = {'form': form}
+      return render(request, 'learning_logs/new_topic.html', context)
+   --snip--
+```
+
+我们首先调用`form.save()`，并传递实参`commit=False`，这是因为我们先修改新主题，再将其保存到数据库中（见❶）。接下来，将新主题的`owner`属性设置为当前用户（见❷）。最后，对刚定义的主题实例调用`save()`（见❸）。现在主题包含所有必不可少的数据，将被成功地保存。
+
+现在，这个项目允许任何用户注册，而每个用户想添加多少新主题都可以。每个用户都只能访问自己的数据，无论是查看数据、输入新数据还是修改旧数据时都如此。
+
+> **动手试一试**
+>
+> **19-3 重构**：在 views.py 中，我们在两个地方核实主题关联到的用户为当前登录的用户。请将执行这种检查的代码放在一个名为`check_topic_owner()`的函数中，并在恰当的地方调用这个函数。
+>
+> **19-4 保护页面new_entry**：一个用户可在另一个用户的学习笔记中添加条目，方法是输入这样的 URL，即其中包含输入另一个用户的主题的 ID。为防范这种攻击，请在保存新条目前，核实它所属的主题归当前用户所有。
+>
+> **19-5 受保护的博客**：在你创建的项目 Blog 中，确保每篇博文都与特定用户相关联。确保任何用户都可访问所有的博文，但只有已登录的用户能够发表博文以及编辑既有博文。在让用户能够编辑其博文的视图中，在处理表单前确认用户编辑的是他自己发表的博文。
+
+### **19.4　小结**
+
+在本章中，你学习了如何使用表单来让用户添加新主题、添加新条目和编辑既有条目。接下来，你学习了如何实现用户账户。你让老用户能够登录和注销，并学习了如何使用 Django 提供的表单`UserCreationForm`让用户能够创建新账户。
+
+建立简单的用户身份验证和注册系统后，你通过使用装饰器`@login_required`禁止未登录的用户访问特定页面。然后，你通过使用外键将数据关联到特定用户，还学习了如何执行要求指定默认数据的数据库迁移。
+
+最后，你学习了如何修改视图函数，让用户只能看到属于他的数据。你使用方法`filter()`来获取合适的数据，并学习了如何将请求的数据的所有者同当前登录的用户进行比较。
+
+该让哪些数据可随便访问，该对哪些数据进行保护呢？这可能并非总是那么显而易见，但通过不断地练习就能掌握这种技能。在本章中，我们就该如何保护用户数据所做的决策表明，与人合作开发项目是个不错的主意：有人对项目进行检查的话，更容易发现其薄弱环节。
+
+至此，我们创建了一个功能齐备的项目，它运行在本地计算机上。在本书的最后一章，我们将设置这个项目的样式，使其更漂亮；我们还将把它部署到一台服务器上，让任何人都可通过互联网注册并创建账户。
+
+------
+
+
+
+## 第20章　设置应用程序的样式并对其进行部署
+
+### **老齐导读**
+
+如果你将来有意图做 Web 开发，可能会遇到如下情况：
+
+小微团队（甚至可能就你自己，你是老板找来的第一个跟他一起改变世界的程序员），此时所有开发者都要会前端、后端，以及生产环境部署。本章的内容是这方面的开始。
+
+大型团队，内部分工非常明确，貌似只需要会后端 Django 部分即可。但事实上，如果某个开发者能够视野开阔（前后端都熟悉），那么会有更大的优势。
+
+有媒体不断宣扬“全栈”，虽然真正的“全栈”不多见——需要时间、项目等方面的积累，但是本着“未雨绸缪”的职业发展原则，还是能多学就多学。
+
+本章显示了如何用第三方应用优化页面样式。第三方应用，是的一大特色，推荐网站https://djangopackages.org/，供读者在项目中来此处搜索相关应用。
+
+本章的另外一部分重要内容就是网站部署。在下图中，显示了网站部署的几种空间。书中演示了国外的一个网站，但是有种种原因，不一定能够完成书中的操作。对此，请读者理解我们的网络环境。可以根据下图中的提示找到某种替代方法。
+
+![enter image description here](https://images.gitbook.cn/cbaae850-8b2f-11e9-bf27-d36a1bb36f12)
+
+> 当前，项目“学习笔记”功能已齐备，但未设置样式，也只是在本地计算机上运行。在本章中，我们将以简单而专业的方式设置这个项目的样式，再将其部署到一台服务器上，让世界上的任何人都能够建立账户。
+>
+> 为设置样式，我们将使用 Bootstrap 库，这是一组工具，用于为 Web 应用程序设置样式，使其在任何现代设备上都看起来很专业，无论是大型的平板显示器还是智能手机。为此，我们将使用应用程序 django-bootstrap3，这也让你能够练习使用其他 Django 开发人员开发的应用程序。
+>
+> 我们将把项目“学习笔记”部署到 Heroku，这个网站让你能够将项目推送到其服务器，让任何有网络连接的人都可使用它。我们还将使用版本控制系统 Git 来跟踪对这个项目所做的修改。
+>
+> 完成项目“学习笔记”后，你将能够开发简单的 Web 应用程序，让它们看起来很漂亮，再将它们部署到服务器。你还能够利用更高级的学习资源来提高技能。
+
+### **20.1　设置项目“学习笔记”的样式**
+
+我们一直专注于项目“学习笔记”的功能，而没有考虑样式设置的问题，这是有意为之的。这是一种不错的开发方法，因为能正确运行的应用程序才是有用的。当然，应用程序能够正确运行后，外观就显得很重要了，因为漂亮的应用程序才能吸引用户使用它。
+
+在本节中，我将简要地介绍应用程序 django-bootstrap3，并演示如何将其继承到项目中，为部署项目做好准备。
+
+#### **20.1.1　应用程序 django-bootstrap3**
+
+我们将使用 django-bootstrap3 来将 Bootstrap 继承到项目中。这个应用程序下载必要的 Bootstrap 文件，将它们放到项目的合适位置，让你能够在项目的模板中使用样式设置指令。
+
+为安装 django-bootstrap3，在活动的虚拟环境中执行如下命令：
+
+```
+(ll_env)learning_log$ pip install django-bootstrap3
+--snip--
+Successfully installed django-bootstrap3
+```
+
+接下来，需要在 settings.py 的`INSTALLED_APPS`中添加如下代码，在项目中包含应用程序 django-boostrap3：
+
+**settings.py**
+
+```
+--snip--
+INSTALLED_APPS = (
+    --snip--
+    'django.contrib.staticfiles',
+
+    # 第三方应用程序
+    'bootstrap3',
+
+    # 我的应用程序
+    'learning_logs',
+    'users',
+)
+--snip--
+```
+
+新建一个用于指定其他开发人员开发的应用程序的片段，将其命名为“第三方应用程序”，并在其中添加`'bootstrap3'`。大多数应用程序都需要包含在`INSTALLED_APPS`中，为确定这一点，请阅读要使用的应用程序的设置说明。
+
+我们需要让 django-bootstrap3 包含 jQuery，这是一个 JavaScript 库，让你能够使用 Bootstrap 模板提供的一些交互式元素。请在 settings.py 的末尾添加如下代码：
+
+**settings.py**
+
+```
+--snip--
+# 我的设置
+LOGIN_URL = '/users/login/'
+
+# django-bootstrap3 的设置
+BOOTSTRAP3 = {
+    'include_jquery': True,
+    }
+```
+
+这些代码让你无需手工下载 jQuery 并将其放到正确的地方。
+
+#### **20.1.2　使用 Bootstrap 来设置项目“学习笔记”的样式**
+
+Bootstrap 基本上就是一个大型的样式设置工具集，它还提供了大量的模板，你可将它们应用于项目以创建独特的总体风格。对 Bootstrap 初学者来说，这些模板比各个样式设置工具使用起来要容易得多。要查看 Bootstrap 提供的模板，可访问 http://getbootstrap.com/，单击 Getting Started，再向下滚动到 Examples 部分，并找到 Navbars in action。我们将使用模板 Static top navbar，它提供了简单的顶部导航条、页面标题和用于放置页面内容的容器。
+
+图20-1显示了对 base.html 应用这个 Bootstrap 模板并对 index.html 做细微修改后的主页。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/24.d20z.001.png)
+
+**图20-1　项目“学习笔记”的主页——使用 Bootstrap 设置样式后**
+
+知道要获得的效果后，接下来的内容理解起来将更容易。
+
+#### **20.1.3　修改 base.html**
+
+我们需要修改模板 base.html，以使用前述 Bootstrap 模板。我们把新的 base.html 分成几个部分进行介绍。
+
+**1. 定义 HTML 头部**
+
+对 base.html 所做的第一项修改是，在这个文件中定义 HTML 头部，使得显示“学习笔记”的每个页面时，浏览器标题栏都显示这个网站的名称。我们还将添加一些在模板中使用 Bootstrap 所需的信息。删除 base.html 的全部代码，并输入下面的代码：
+
+**base.html**
+
+```
+❶ {% load bootstrap3 %}
+
+❷ <!DOCTYPE html>
+❸ <html lang="en">
+❹   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+❺     <title>Learning Log</title>
+
+❻     {% bootstrap_css %}
+      {% bootstrap_javascript %}
+
+❼   </head>
+```
+
+在❶处，我们加载了 django-bootstrap3 中的模板标签集。接下来，我们将这个文件声明为使用英语（见❸）编写的 HTML 文档（见❷）。HTML 文件分为两个主要部分：**头部**（head）和**主体**（body）；在这个文件中，头部始于❹处。HTML 文件的头部不包含任何内容：它只是将正确显示页面所需的信息告诉浏览器。在❺处，我们包含了一个`title`元素，在浏览器中打开网站“学习笔记”的页面时，浏览器的标题栏将显示该元素的内容。
+
+在❻处，我们使用了 django-bootstrap3 的一个自定义模板标签，它让 Django 包含所有的 Bootstrap 样式文件。接下来的标签启用你可能在页面中使用的所有交互式行为，如可折叠的导航栏。❼处为结束标签`</head>`。
+
+**2. 定义导航栏**
+
+下面来定义页面顶部的导航栏：
+
+```
+  --snip--
+    </head>
+
+    <body>
+
+      <!-- Static navbar -->
+❶     <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+
+          <div class="navbar-header">
+❷           <button type="button" class="navbar-toggle collapsed"
+                data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+            </button>
+❸           <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
+                Learning Log</a>
+          </div>
+
+❹         <div id="navbar" class="navbar-collapse collapse">
+❺           <ul class="nav navbar-nav">
+❻             <li><a href="{% url 'learning_logs:topics' %}">Topics</a></li>
+            </ul>
+
+❼           <ul class="nav navbar-nav navbar-right">
+              {% if user.is_authenticated %}
+                <li><a>Hello, {{ user.username }}.</a></li>
+                <li><a href="{% url 'users:logout' %}">log out</a></li>
+              {% else %}
+                <li><a href="{% url 'users:register' %}">register</a></li>
+                <li><a href="{% url 'users:login' %}">log in</a></li>
+              {% endif %}
+❽           </ul>
+          </div><!--/.nav-collapse -->
+
+        </div>
+      </nav>
+```
+
+第一个元素为起始标签`<body>`。HTML 文件的主体包含用户将在页面上看到的内容。❶处是一个`<nav>`元素，表示页面的导航链接部分。对于这个元素内的所有内容，都将根据**选择器**（selector）`navbar`、`navbar-default`和`navbar-static-top`定义的 Bootstrap 样式规则来设置样式。选择器决定了特定样式规则将应用于页面上的哪些元素。
+
+在❷处，这个模板定义了一个按钮，它将在浏览器窗口太窄、无法水平显示整个导航栏时显示出来。如果用户单击这个按钮，将出现一个下拉列表，其中包含所有的导航元素。在用户缩小浏览器窗口或在屏幕较小的移动设备上显示网站时，`collapse`会使导航栏折叠起来。
+
+在❸处，我们在导航栏的最左边显示项目名，并将其设置为到主页的链接，因为它将出现在这个项目的每个页面中。
+
+在❹处，我们定义了一组让用户能够在网站中导航的链接。导航栏其实就是一个以`<ul>`打头的列表（见❺），其中每个链接都是一个列表项（`<li>`）。要添加更多的链接，可插入更多使用下述结构的行：
+
+```
+<li><a href="{% url 'learning_logs:title' %}">Title</a></li>
+```
+
+这行表示导航栏中的一个链接。这个链接是直接从 base.html 的前一个版本中复制而来的。
+
+在❼处，我们添加了第二个导航链接列表，这里使用的选择器为`navbar-right`。选择器`navbar-right`设置一组链接的样式，使其出现在导航栏右边——登录链接和注册链接通常出现在这里。在这里，我们要么显示问候语和注销链接，要么显示注册链接和登录链接。这部分余下的代码结束包含导航栏的元素（见❽）。
+
+**3. 定义页面的主要部分**
+
+base.html 的剩余部分包含页面的主要部分：
+
+```
+  --snip--
+      </nav>
+
+❶     <div class="container">
+
+        <div class="page-header">
+❷         {% block header %}{% endblock header %}
+        </div>
+        <div>
+❸         {% block content %}{% endblock content %}
+        </div>
+
+      </div> <!-- /container -->
+
+    </body>
+  </html>
+```
+
+❶处是一个`<div>`起始标签，其 class 属性为`container`。div 是网页的一部分，可用于任何目的，并可通过边框、元素周围的空间（外边距）、内容和边框之间的间距（内边距）、背景色和其他样式规则来设置其样式。这个 div 是一个容器，其中包含两个元素：一个新增的名为`header`的块（见❷）以及我们在第18章使用的`content`块（见❸）。`header`块的内容告诉用户页面包含哪些信息以及用户可在页面上执行哪些操作；其 class 属性值`page-header`将一系列样式应用于这个块。`content`块是一个独立的 div，未使用 class 属性指定样式。
+
+如果你在浏览器中加载“学习笔记”的主页，将看到一个类似于图20-1所示的专业级导航栏。请尝试调整窗口的大小，使其非常窄；此时导航栏将变成一个按钮，如果你单击这个按钮，将打开一个下拉列表，其中包含所有的导航链接。
+
+> **注意**　
+>
+> 这个简化的 Bootstrap 模板适用于最新的浏览器，而较早的浏览器可能不能正确地渲染某些样式。完整的模板可在http://getbootstrap.com/getting-started/#examples/ 找到，它几乎在所有浏览器中都管用。
+
+#### **20.1.4　使用 jumbotron 设置主页的样式**
+
+下面来使用新定义的`header`块及另一个名为 jumbotron 的 Bootstrap 元素修改主页。jumbotron 元素是一个大框，相比于页面的其他部分显得鹤立鸡群，你想在其中包含什么东西都可以；它通常用于在主页中呈现项目的简要描述。我们还可以修改主页显示的消息。index.html 的代码如下：
+
+**index.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+
+❶ {% block header %}
+❷   <div class='jumbotron'>
+      <h1>Track your learning.</h1>
+    </div>
+  {% endblock header %}
+
+  {% block content %}
+❸   <h2>
+      <a href="{% url 'users:register' %}">Register an account</a> to make
+      your own Learning Log, and list the topics you're learning about.
+    </h2>
+    <h2>
+      Whenever you learn something new about a topic, make an entry
+      summarizing what you've learned.
+    </h2>
+  {% endblock content %}
+```
+
+在❶处，我们告诉 Django，我们要定义`header`块包含的内容。在一个`jumbotron`元素（见❷）中，我们放置了一条简短的标语——Track your Learning，让首次访问者大致知道“学习笔记”是做什么用的。
+
+在❸处，我们通过添加一些文本，做了更详细的说明。我们邀请用户建立账户，并描述了用户可执行的两种主要操作：添加新主题以及在主题中创建条目。现在的主页类似于图20-1所示，与设置样式前相比，有了很大的改进。
+
+#### **20.1.5　设置登录页面的样式**
+
+我们改进了登录页面的整体外观，但还未改进登录表单，下面来让表单与页面的其他部分一致：
+
+**login.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+❶ {% load bootstrap3 %}
+
+❷ {% block header %}
+    <h2>Log in to your account.</h2>
+  {% endblock header %}
+
+  {% block content %}
+
+❸   <form method="post" action="{% url 'users:login' %}" class="form">
+      {% csrf_token %}
+❹     {% bootstrap_form form %}
+
+❺     {% buttons %}
+        <button name="submit" class="btn btn-primary">log in</button>
+      {% endbuttons %}
+
+      <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+    </form>
+
+  {% endblock content %}
+```
+
+在❶处，我们在这个模板中加载了 bootstrap3 模板标签。在❷处，我们定义了`header`块，它描述了这个页面是做什么用的。注意，我们从这个模板中删除了`{% if form.errors %}`代码块，因为 django-bootstrap3 会自动管理表单错误。
+
+在❸处，我们添加了属性`class="form"`；然后使用模板标签`{% bootstrap_form %}`来显示表单（见❹）；这个标签替换了我们在第19章使用的标签`{{ form.as_p }}`。模板标签`{% booststrap_form %}`将 Bootstrap 样式规则应用于各个表单元素。❺处是 bootstrap3 起始模板标签`{% buttons %}`，它将 Bootstrap 样式应用于按钮。
+
+图20-2显示了现在渲染的登录表单。这个页面比以前整洁得多，其风格一致，用途明确。如果你尝试使用错误的用户名或密码登录，将发现消息的样式与整个网站也是一致的，毫无违和感。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/24.d20z.002.png)
+
+**图20-2　使用 Bootstrap 设置样式后的登录页面**
+
+#### **20.1.6　设置new_topic页面的样式**
+
+下面来让其他网页的风格也一致。首先来修改`new_topic`页面
+
+**new_topic.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+❶ {% load bootstrap3 %}
+
+  {% block header %}
+    <h2>Add a new topic:</h2>
+  {% endblock header %}
+
+  {% block content %}
+
+❷   <form action="{% url 'learning_logs:new_topic' %}" method='post'
+        class="form">
+
+      {% csrf_token %}
+❸     {% bootstrap_form form %}
+
+❹     {% buttons %}
+        <button name="submit" class="btn btn-primary">add topic</button>
+      {% endbuttons %}
+
+    </form>
+
+  {% endblock content %}
+```
+
+这里的大多数修改都类似于对 login.html 所做的修改：在❶处加载 bootstrap3，添加`header`块并在其中包含合适的消息；接下来，我们在标签`<form>`中添加属性`class="form"`（见❷），使用模板标签`{% bootstrap_form %}`代替`{{ form.as_p }}`（见❸），并使用 bootstrap3 结构来定义提交按钮（见❹）。如果你现在登录并导航到`new_topic`页面，将发现其外观类似于登录页面。
+
+#### **20.1.7　设置 topics 页面的样式**
+
+下面来确保用于查看信息的页面的样式也是合适的，首先来设置 topics 页面的样式：
+
+**topics.html**
+
+```
+  {% extends "learning_logs/base.html" %}
+
+❶ {% block header %}
+    <h1>Topics</h1>
+  {% endblock header %}
+
+  {% block content %}
+
+    <ul>
+      {% for topic in topics %}
+        <li>
+❷         <h3>
+            <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
+          </h3>
+        </li>
+      {% empty %}
+        <li>No topics have been added yet.</li>
+      {% endfor %}
+    </ul>
+
+❸   <h3><a href="{% url 'learning_logs:new_topic' %}">Add new topic</h3>
+
+  {% endblock content %}
+```
+
+我们不需要标签`{% load bootstrap3 %}`，因为我们在这个文件中没有使用任何 bootstrap3 自定义标签。我们在`header`块中添加了标题 Topics（见❶）。为设置每个主题的样式，我们将它们都设置为`<h3>`元素，让它们在页面上显得大些（见❷）；对于添加新主题的链接，也做了同样的处理（见❸）。
+
+#### **20.1.8　设置 topic 页面中条目的样式**
+
+topic 页面包含的内容比其他大部分页面都多，因此需要做的样式设置工作要多些。我们将使用 **Bootstrap 面板**（panel）来突出每个条目。面板是一个带预定义样式的 div，非常适合用于显示主题的条目：
+
+**topic.html**
+
+```
+  {% extends 'learning_logs/base.html' %}
+
+❶ {% block header %}
+    <h2>{{ topic }}</h2>
+  {% endblock header %}
+
+  {% block content %}
+    <p>
+      <a href="{% url 'learning_logs:new_entry' topic.id %}">add new entry</a>
+    </p>
+
+    {% for entry in entries %}
+❷     <div class="panel panel-default">
+❸       <div class="panel-heading">
+❹         <h3>
+            {{ entry.date_added|date:'M d, Y H:i' }}
+❺           <small>
+              <a href="{% url 'learning_logs:edit_entry' entry.id %}">
+                edit entry</a>
+            </small>
+          </h3>
+        </div>
+❻       <div class="panel-body">
+          {{ entry.text|linebreaks }}
+        </div>
+      </div> <!-- panel -->
+    {% empty %}
+      There are no entries for this topic yet.
+    {% endfor %}
+
+  {% endblock content %}
+```
+
+我们首先将主题放在了`header`块中（见❶）。然后，我们删除了这个模板中以前使用的无序列表结构。在❷处，我们创建了一个面板式 div 元素（而不是将每个条目作为一个列表项），其中包含两个嵌套的 div：一个面板标题（`panel-heading`）div（见❸）和一个面板主体（`panel-body`）div（见❹）。其中面板标题 div 包含条目的创建日期以及用于编辑条目的链接，它们都被设置为`<h3>`元素，而对于编辑条目的链接，还使用了标签`<small>`，使其比时间戳小些（见❺）。
+
+❻处是面板主体 div，其中包含条目的实际文本。注意，只修改了影响页面外观的元素，对在页面中包含信息的 Django 代码未做任何修改。
+
+图20-3显示了修改后的 topic 页面。“学习笔记”的功能没有任何变化，但显得更专业了，对用户会更有吸引力。
+
+![{%}](http://www.ituring.com.cn/figures/2016/PythonProgramme/24.d20z.003.png)
+
+**图20-3　使用 Bootstrap 设置样式后的 topic 页面**
+
+> **注意**　
+>
+> 要使用其他 Bootstrap 模板，可采用与本章类似的流程：将这个模板复制到 base.html 中，并修改包含实际内容的元素，以使用该模板来显示项目的信息；然后，使用 Bootstrap 的样式设置工具来设置各个页面中内容的样式。
+
+> **动手试一试**
+>
+> **20-1 其他表单**：我们对登录页面和`add_topic`页面应用了 Bootstrap 样式。请对其他基于表单的页面做类似的修改：`new_entry`页面、`edit_entry`页面和注册页面。
+>
+> **20-2 设置博客的样式**：对于你在第19章创建的项目 Blog，使用 Bootstrap 来设置其样式。
+
+### **20.2　部署“学习笔记”**
+
+至此，项目“学习笔记”的外观显得很专业了，下面来将其部署到一台服务器，让任何有网络连接的人都能够使用它。为此，我们将使用 Heroku，这是一个基于 Web 的平台，让你能够管理 Web 应用程序的部署。我们将让“学习笔记”在 Heroku 上运行。
+
+在 Windows 系统上的部署过程与在 Linux 和 OS X 系统上稍有不同。如果你使用的是 Windows，请阅读各节的“注意”，它们指出了在 Windows 系统上需要采取的不同做法。
+
+#### **20.2.1　建立 Heroku 账户**
+
+要建立账户，请访问 https://heroku.com/，并单击其中的一个注册链接。注册账户是免费的，Heroku 提供了免费试用服务，让你能够将项目部署到服务器并对其进行测试。
+
+> **注意**　
+>
+> Heroku 提供的免费试用服务存在一些限制，如可部署的应用程序数量以及用户访问应用程序的频率。但这些限制都很宽松，让你完全能够在不支付任何费用的情况下练习部署应用程序。
+
+#### **20.2.2　安装 Heroku Toolbelt**
+
+要将项目部署到 Heroku 的服务器并对其进行管理，需要使用 Heroku Toolbelt 提供的工具。要安装最新的 Heroku Toolbelt 版本，请访问https://toolbelt.heroku.com/，并根据你使用的操作系统按相关的说明做：使用只包含一行的终端命令，或下载并运行安装程序。
+
+#### **20.2.3　安装必要的包**
+
+你还需安装很多包，以帮助在服务器上支持 Django 项目提供的服务。为此，在活动的虚拟环境中执行如下命令：
+
+```
+(ll_env)learning_log$ pip install dj-database-url
+(ll_env)learning_log$ pip install dj-static
+(ll_env)learning_log$ pip install static3
+(ll_env)learning_log$ pip install gunicorn
+```
+
+务必逐个地执行这些命令，这样你就能知道哪些包未能正确地安装。`dj-database-url`包帮助 Django 与 Heroku 使用的数据库进行通信，`dj-static`和`static3`包帮助 Django 正确地管理静态文件，而`gunicorn`是一个服务器软件，能够在在线环境中支持应用程序提供的服务。（静态文件包括样式规则和 JavaScript 文件。）
+
+> **注意**　
+>
+> 在 Windows 系统中，有些必不可少的包可能无法安装，因此如果在你尝试安装有些这样的包时出现错误消息，也不用担心。重要的是让 Heroku 在部署中安装这些包，下一节就将这样做。
+
+#### **20.2.4　创建包含包列表的文件 requirements.txt**
+
+Heroku 需要知道我们的项目依赖于哪些包，因此我们将使用 pip 来生成一个文件，其中列出了这些包。同样，进入活动虚拟环境，并执行如下命令：
+
+```
+(ll_env)learning_log$ pip freeze > requirements.txt
+```
+
+命令`freeze`让 pip 将项目中当前安装的所有包的名称都写入到文件 requirements.txt 中。请打开文件 requirements.txt，查看项目中安装的包及其版本（如果你使用的是 Windows 系统，看到的内容可能不全）：
+
+**requirements.txt**
+
+```
+Django==1.8.4
+dj-database-url==0.3.0
+dj-static==0.0.6
+django-bootstrap3==6.2.2
+gunicorn==19.3.0
+static3==0.6.1
+```
+
+“学习笔记”依赖于6个特定版本的包，因此需要在相应的环境中才能正确地运行。我们部署“学习笔记”时，Heroku 将安装 requirements.txt 列出的所有包，从而创建一个环境，其中包含我们在本地使用的所有包。有鉴于此，我们可以信心满满，深信项目部署到 Heroku 后，行为将与它在本地系统上的完全相同。当你在自己的系统上开发并维护各种项目时，这将是一个巨大的优点。
+
+接下来，我们需要在包列表中添加`psycopg2`，它帮助 Heroku 管理活动数据库。为此，打开文件 requirements.txt，并添加代码行`psycopg2>=2.6.1`。这将安装2.6.1版的 psycopg2——如果有更高的版本，则安装更高的版本：
+
+**requirements.txt**
+
+```
+Django==1.8.4
+dj-database-url==0.3.0
+dj-static==0.0.6
+django-bootstrap3==6.2.2
+gunicorn==19.3.0
+static3==0.6.1
+psycopg2>=2.6.1
+```
+
+如果有必不可少的包在你的系统中没有安装，请将其添加到文件 requirements.txt 中。最终的文件 requirements.txt 应包含上面列出的每个包。如果在你的系统中，requirements.txt 列出的包的版本与上面列出的不同，请保留原来的版本号。
+
+> **注意**　
+>
+> 如果你使用的是 Windows 系统，请确保文件 requirements.txt 的内容与前面列出的一致，而不要管你在系统中能够安装哪些包。
+
+#### **20.2.5　指定 Python 版本**
+
+如果你没有指定 Python 版本，Heroku 将使用其当前的 Python 默认版本。下面来确保 Heroku 使用我们使用的 Python 版本。为此，在活动的虚拟环境中，执行命令`python --version`：
+
+```
+(ll_env)learning_log$ python --version
+Python 3.5.0
+```
+
+上面的输出表明，我使用的是 Python 3.5.0。请在 manage.py 所在的文件夹中新建一个名为 runtime.txt 的文件，并在其中输入如下内容：
+
+**runtime.txt**
+
+```
+python-3.5.0
+```
+
+这个文件应只包含一行内容，以上面所示的格式指定了你使用的 Python 版本；请确保输入小写的`python`，在它后面输入一个连字符，再输入由三部分组成的版本号。
+
+> **注意**　
+>
+> 如果出现错误消息，指出不能使用你指定的 Python 版本，请访问https://devcenter.heroku.com/ 并单击 Python，再单击链接 Specifying a Python Runtime。浏览打开的文章，了解支持的 Python 版本，并使用与你使用的 Python 版本最接近的版本。
+
+#### **20.2.6　为部署到 Heroku 而修改 settings.py**
+
+现在需要在 settings.py 末尾添加一个片段，在其中指定一些 Heroku 环境设置：
+
+**settings.py**
+
+```
+  --snip--
+  # django-bootstrap3 设置
+  BOOTSTRAP3 = {
+      'include_jquery': True,
+      }
+
+  # Heroku 设置
+❶ if os.getcwd() == '/app':
+❷     import dj_database_url
+      DATABASES = {
+          'default': dj_database_url.config(default='postgres://localhost')
+      }
+
+      # 让 request.is_secure() 承认 X-Forwarded-Proto 头
+❸     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+      # 支持所有的主机头（host header）
+❹     ALLOWED_HOSTS = ['*']
+
+      # 静态资产配置
+❺     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+      STATIC_ROOT = 'staticfiles'
+      STATICFILES_DIRS = (
+          os.path.join(BASE_DIR, 'static'),
+      )
+```
+
+在❶处，我们使用了函数`getcwd()`，它获取**当前的工作目录**（当前运行的文件所在的目录）。在 Heroku 部署中，这个目录总是/app。在本地部署中，这个目录通常是项目文件夹的名称（就我们的项目而言，为 learning_log）。这个`if`测试确保仅当项目被部署到 Heroku 时，才运行这个代码块。这种结构让我们能够将同一个设置文件用于本地开发环境和在线服务器。
+
+在❷处，我们导入了`dj_database_url`，用于在 Heroku 上配置服务器。Heroku 使用 PostgreSQL（也叫 Postgres）——一种比 SQLite 更高级的数据库；这些设置对项目进行配置，使其在 Heroku 上使用 Postgres 数据库。其他设置的作用分别如下：支持 HTTPS 请求（见❸）；让 Django 能够使用 Heroku 的 URL 来提供项目提供的服务（见❹）；设置项目，使其能够在 Heroku 上正确地提供静态文件（见❺）。
+
+#### **20.2.7　创建启动进程的 Procfile**
+
+Procfile 告诉 Heroku 启动哪些进程，以便能够正确地提供项目提供的服务。这个文件只包含一行，你应将其命名为 Procfile（其中的 P 为大写），不指定文件扩展名，并保存到 manage.py 所在的目录中。
+
+Procfile 的内容如下：
+
+**Procfile**
+
+```
+web: gunicorn learning_log.wsgi --log-file -
+```
+
+这行代码让 Heroku 将 gunicorn 用作服务器，并使用 learning_log/wsgi.py 中的设置来启动应用程序。标志`log-file`告诉 Heroku 应将哪些类型的事件写入日志。
+
+#### **20.2.8　为部署到 Heroku 而修改 wsgi.py**
+
+为部署到 Heroku，我们还需修改 wsgi.py，因为 Heroku 需要的设置与我们一直在使用的设置稍有不同：
+
+**wsgi.py**
+
+```
+--snip--
+import os
+
+from django.core.wsgi import get_wsgi_application
+from dj_static import Cling
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learning_log.settings")
+application = Cling(get_wsgi_application())
+```
+
+我们导入了帮助正确地提供静态文件的 Cling，并使用它来启动应用程序。这些代码在本地也适用，因此无需将其放在`if`代码块内。
+
+#### **20.2.9　创建用于存储静态文件的目录**
+
+在 Heroku 上，Django 搜集所有的静态文件，并将它们放在一个地方，以便能够高效地管理它们。我们将创建一个用于存储这些静态文件的目录。在文件夹 learning_log 中，有一个名称也为 learning_log 的子文件夹。在这个子文件夹中，新建一个名为 static 的文件夹，因此这个文件夹的路径为 learning_log/learning_log/static/。我们还需在这个文件夹中创建一个占位文件，因为项目被推送到 Heroku 时，它将不会包含原来为空的文件夹。在目录 static/中，创建一个名为 placeholder.txt 的文件：
+
+**placeholder.txt**
+
+```
+This file ensures that learning_log/static/ will be added to the project.
+Django will collect static files and place them in learning_log/static/.
+```
+
+上述内容没有什么特别之处，只是指出了在项目中添加这个文件的原因。
+
+#### **20.2.10　在本地使用 gunicorn 服务器**
+
+如果你使用的是 Linux 或 OS X，可在部署到 Heroku 前尝试在本地使用 gunicorn 服务器。为此，在活动的虚拟环境中，执行命令`heroku local`以启动 Procfile 指定的进程：
+
+```
+  (ll_env)learning_log$ heroku local
+  Installing Heroku Toolbelt v4... done
+  --snip--
+  forego | starting web.1 on port 5000
+❶ web.1  | [2015-08-13 22:00:45 -0800] [12875] [INFO] Starting gunicorn 19.3.0
+❷ web.1  | [2015-08-13 22:00:45 -0800] [12875] [INFO] Listening at:
+      http://0.0.0.0:5000 (12875)
+❸ web.1  | [2015-08-13 22:00:45 -0800] [12878] [INFO] Booting worker with pid: 12878
+```
+
+首次执行命令`heroku local`时，将安装 Heroku Toolbelt 中的很多包。这里的输出表明启动了 gunicorn，其进程 id 为12875（见❶）。❷处的输出表明，gunicorn 在端口5000上侦听请求。另外，gunicorn 还启动了一个工作进程（12878），用于帮助处理请求（见❸）。
+
+为确认一切运行正常，请访问 http://localhost:5000/，你将看到“学习笔记”的主页，就像使用 Django 服务器（runserver）时一样。为停止`heroku local`启动的进程，请按 Ctrl+C，你将在本地开发中继续使用`runserver`。
+
+> **注意**　
+>
+> gunicorn 不能在 Windows 系统上运行，因此如果你使用的是 Windows 系统，请跳过这一步。但这不会影响你将项目部署到 Heroku。
+
+#### **20.2.11　使用 Git 跟踪项目文件**
+
+如果你阅读完了第17章，就知道 Git 是一个版本控制程序，让你能够在每次成功实现新功能后都拍摄项目代码的快照。无论出现什么问题（如实现新功能时不小心引入了 bug），你都可以轻松地恢复到最后一个可行的快照。每个快照都被称为**提交**。
+
+使用 Git 意味着你在试着实现新功能时无需担心破坏项目。将项目部署到服务器时，需要确保部署的是可行版本。如果你想更详细地了解 Git 和版本控制，请参阅附录 D。
+
+**1. 安装 Git**
+
+Heroku Toolbelt 包含 Git，因此它应该已经安装到了你的系统中。然而，在安装 Heroku Toolbelt 之前打开的终端窗口中无法访问 Git，因此请打开一个新的终端窗口，并在其中执行命令`git --version`：
+
+```
+(ll_env)learning_log$ git --version
+git version 2.5.0
+```
+
+如果由于某种原因出现了错误消息，请参阅附录 D 中的 Git 安装说明。
+
+**2. 配置 Git**
+
+Git 跟踪谁修改了项目，即便项目由一个人开发时亦如此。为进行跟踪，Git 需要知道你的用户名和 email。因此，你必须提供用户名，但对于练习项目，可随便伪造一个 email：
+
+```
+(ll_env)learning_log$ git config --global user.name "ehmatthes"
+(ll_env)learning_log$ git config --global user.email "eric@example.com"
+```
+
+如果你忘记了这一步，当你首次提交时，Git 将提示你提供这些信息。
+
+**3. 忽略文件**
+
+我们无需让 Git 跟踪项目中的每个文件，因此将让 Git 忽略一些文件。为此，在 manage.py 所在的文件夹中创建一个名为.gitignore 的文件。注意，这个文件名以句点打头，且不包含扩展名。在这个文件中输入如下内容：
+
+**.gitignore**
+
+```
+ll_env/
+__pycache__/
+*.sqlite3
+```
+
+我们让 Git 忽略目录 ll_env，因为我们随时都可以自动重新创建它。我们还指定不跟踪目录 __pycache__，这个目录包含 Django 运行.py 文件时自动创建的.pyc 文件。我们没有跟踪对本地数据库的修改，因为这是一个糟糕的做法：如果你在服务器上使用的是 SQLite，当你将项目推送到服务器时，可能会不小心用本地测试数据库覆盖在线数据库。
+
+> **注意**　
+>
+> 如果你使用的是 Python 2.7，请将`_pycache_`替换为`*.pyc`，因为 Python 2.7 不会创建目录__pycache__。
+
+**4. 提交项目**
+
+我们需要为“学习笔记”初始化一个 Git 仓库，将所有必要的文件都加入到这个仓库中，并提交项目的初始状态，如下所示：
+
+```
+❶ (ll_env)learning_log$ git init
+  Initialized empty Git repository in /home/ehmatthes/pcc/learning_log/.git/
+❷ (ll_env)learning_log$ git add .
+❸ (ll_env)learning_log$ git commit -am "Ready for deployment to heroku."
+  [master (root-commit) dbc1d99] Ready for deployment to heroku.
+   43 files changed, 746 insertions(+)
+   create mode 100644 .gitignore
+   create mode 100644 Procfile
+   --snip--
+   create mode 100644 users/views.py
+❹ (ll_env)learning_log$ git status
+  # On branch master
+  nothing to commit, working directory clean
+  (ll_env)learning_log$
+```
+
+在❶处，我们执行命令`git init`，在“学习笔记”所在的目录中初始化一个空仓库。在❷处，我们执行了命令`git add .`（千万别忘了这个句点），它将未被忽略的文件都添加到这个仓库中。在❸处，我们执行了命令`git commit -am`*commit message*，其中的标志`-a`让 Git 在这个提交中包含所有修改过的文件，而标志`-m`让 Git 记录一条日志消息。
+
+在❹处，我们执行了命令`git status`，输出表明当前位于分支 master 中，而工作目录是**干净**（clean）的。每当你要将项目推送到 Heroku 时，都希望看到这样的状态。
+
+#### **20.2.12　推送到 Heroku**
+
+我们终于为将项目推送到 Heroku 做好了准备。在活动的虚拟环境中，执行下面的命令：
+
+```
+❶ (ll_env)learning_log$ heroku login
+  Enter your Heroku credentials.
+  Email: eric@example.com
+  Password (typing will be hidden):
+  Logged in as eric@example.com
+❷ (ll_env)learning_log$ heroku create
+  Creating afternoon-meadow-2775... done, stack is cedar-14
+  https://afternoon-meadow-2775.herokuapp.com/ |
+      https://git.heroku.com/afternoon-meadow-2775.git
+  Git remote heroku added
+❸ (ll_env)learning_log$ git push heroku master
+  --snip--
+  remote: -----> Launching... done, v6
+❹ remote:        https://afternoon-meadow-2775.herokuapp.com/ deployed to Heroku
+  remote: Verifying deploy.... done.
+  To https://git.heroku.com/afternoon-meadow-2775.git
+     bdb2a35..62d711d  master -> master
+  (ll_env)learning_log$
+```
+
+首先，在终端会话中，使用你在 https://heroku.com/ 创建账户时指定的用户名和密码来登录 Heroku（见❶）。然后，让 Heroku 创建一个空项目（见❷）。Heroku 生成的项目名由两个单词和一个数字组成，你以后可修改这个名称。接下来，我们执行命令`git push heroku master`（见❸），它让 Git 将项目的分支 master 推送到 Heroku 刚才创建的仓库中；Heroku 随后使用这些文件在其服务器上创建项目。❹处列出了用于访问这个项目的 URL。
+
+执行这些命令后，项目就部署好了，但还未对其做全面的配置。为核实正确地启动了服务器进程，请执行命令`heroku ps`：
+
+```
+  (ll_env)learning_log$ heroku ps
+❶ Free quota left: 17h 40m
+❷ === web (Free): `gunicorn learning_log.wsgi __log-file -`
+  web.1: up 2015/08/14 07:08:51 (~ 10m ago)
+  (ll_env)learning_log$
+```
+
+输出指出了在接下来的24小时内，项目还可在多长时间内处于活动状态（见❶）。编写本书时，Heroku 允许免费部署在24小时内最多可以有18小时处于活动状态。项目的活动时间超过这个限制后，将显示标准的服务器错误页面，稍后我们将设置这个错误页面。在❷处，我们发现启动了 Procfile 指定的进程。
+
+现在，我们可以使用命令`heroku open`在浏览器中打开这个应用程序了：
+
+```
+(ll_env)learning_log$ heroku open
+Opening afternoon-meadow-2775... done
+```
+
+你也可以启动浏览器并输入 Heroku 告诉你的 URL，但上述命令可实现同样的结果。你将看到“学习笔记”的主页，其样式设置正确无误，但你还无法使用这个应用程序，因为我们还没有建立数据库。
+
+> **注意**　
+>
+> 部署到 Heroku 的流程会不断变化。如果你遇到无法解决的问题，请通过查看 Heroku 文档来获取帮助。为此，可访问https://devcenter.heroku.com/，单击 Python，再单击链接 Getting Started with Django。如果你看不懂这些文档，请参阅附录 C 提供的建议。
+
+#### **20.2.13　在 Heroku 上建立数据库**
+
+为建立在线数据库，我们需要再次执行命令`migrate`，并应用在开发期间生成的所有迁移。要对 Heroku 项目执行 Django 和 Python 命令，可使用命令`heroku run`。下面演示了如何对 Heroku 部署执行命令`migrate`：
+
+```
+❶ (ll_env)learning_log$ heroku run python manage.py migrate
+❷ Running `python manage.py migrate` on afternoon-meadow-2775... up, run.2435
+    --snip--
+❸ Running migrations:
+    --snip--
+    Applying learning_logs.0001_initial... OK
+    Applying learning_logs.0002_entry... OK
+    Applying learning_logs.0003_topic_user... OK
+    Applying sessions.0001_initial... OK
+  (ll_env)learning_log$
+```
+
+我们首先执行了命令`heroku run python manage.py migrate`（见❶）；Heroku 随后创建一个终端会话来执行命令`migrate`（见❷）。在❸处，Django 应用默认迁移以及我们在开发“学习笔记”期间生成的迁移。
+
+现在如果你访问这个部署的应用程序，将能够像在本地系统上一样使用它。然而，你看不到你在本地部署中输入的任何数据，因为它们没有复制到在线服务器。一种通常的做法是不将本地数据复制到在线部署中，因为本地数据通常是测试数据。
+
+你可以分享“学习笔记”的 Heroku URL，让任何人都可以使用它。在下一节，我们将再完成几个任务，以结束部署过程并让你能够继续开发“学习笔记”。
+
+#### **20.2.14　改进 Heroku 部署**
+
+在本节中，我们将通过创建超级用户来改进部署，就像在本地一样。我们还将让这个项目更安全：将`DEBUG`设置为`False`，让用户在错误消息中看不到额外的信息，以防他们使用这些信息来攻击服务器。
+
+**1. 在 Heroku 上创建超级用户**
+
+我们知道可使用命令`heroku run`来执行一次性命令，但也可这样执行命令：在连接到了 Heroku 服务器的情况下，使用命令`heroku run bash`来打开 Bash 终端会话。Bash 是众多 Linux 终端运行的语言。我们将使用 Bash 终端会话来创建超级用户，以便能够访问在线应用程序的管理网站：
+
+```
+  (ll_env)learning_log$ heroku run bash
+  Running `bash` on afternoon-meadow-2775... up, run.6244
+❶ ~ $ ls
+  learning_log learning_logs manage.py Procfile requirements.txt runtime.txt users
+  staticfiles
+❷ ~ $ python manage.py createsuperuser
+  Username (leave blank to use 'u41907'): ll_admin
+  Email address:
+  Password:
+  Password (again):
+  Superuser created successfully.
+❸ ~ $ exit
+  exit
+  (ll_env)learning_log$
+```
+
+在❶处，我们执行命令`ls`，以查看服务器上有哪些文件和目录；服务器包含的文件和目录应该与本地系统相同。你可以像遍历其他文件系统一样遍历这个文件系统。
+
+> **注意**　
+>
+> 即便你使用的是 Windows 系统，也应使用这里列出的命令（如`ls`而不是`dir`），因为你正通过远程连接运行一个 Linux 终端。
+
+在❷处，我们执行了创建超级用户的命令，它像第18章在本地系统创建超级用户一样提示你输入相关的信息。在这个终端会话中创建超级用户后，使用命令`exit`返回到本地系统的终端会话（见❸）。
+
+现在，你可以在在线应用程序的 URL 末尾添加/admin/来登录管理网站了。对我而言，这个 URL 为 https://afternoon-meadow-2775.herokuapp.com/admin/。
+
+如果已经有其他人开始使用这个项目，别忘了你可以访问他们的所有数据！千万别不把这当回事，否则用户就不会再将其数据托付给你了。
+
+**2. 在 Heroku 上创建对用户友好的 URL**
+
+你可能希望 URL 更友好，比 https://afternoon-meadow-2775.herokuapp.com/更好记。为此，可只需使用一个命令来重命名应用程序：
+
+```
+(ll_env)learning_log$ heroku apps:rename learning-log
+Renaming afternoon-meadow-2775 to learning-log... done
+https://learning-log.herokuapp.com/ | https://git.heroku.com/learning-log.git
+Git remote heroku updated
+(ll_env)learning_log$
+```
+
+给应用程序命名时，可使用字母、数字和连字符；你想怎么命名应用程序都可以，只要指定的名称未被别人使用就行。现在，项目的 URL 变成了https://learning-log.herokuapp.com/；使用以前的 URL 再也无法访问它，命令`apps:rename`将整个项目都移到了新的 URL 处。
+
+> **注意**　
+>
+> 你使用 Heroku 提供的免费服务来部署项目时，如果项目在指定的时间内未收到请求或过于活跃，Heroku 将让项目进入休眠状态。用户初次访问处于休眠状态的网站时，加载时间将更长，但对于后续请求，服务器的响应速度将更快。这就是 Heroku 能够提供免费部署的原因所在。
+
+#### **20.2.15　确保项目的安全**
+
+当前，我们部署的项目存在一个严重的安全问题：settings.py 包含设置`DEBUG=True`，它在发生错误时显示调试信息。开发项目时，Django 的错误页面向你显示了重要的调试信息，如果将项目部署到服务器后依然保留这个设置，将给攻击者提供大量可供利用的信息。我们还需确保任何人都无法看到这些信息，也不能冒充项目托管网站来重定向请求。
+
+下面来修改 settings.py，以让我们能够在本地看到错误消息，但部署到服务器后不显示任何错误消息：
+
+**settings.py**
+
+```
+  --snip--
+  # Heroku 设置
+  if os.getcwd() == '/app':
+      --snip--
+      # 让 request.is_secure()承认 X-Forwarded-Proto 头
+      SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+      # 只允许 Heroku 托管这个项目
+❶     ALLOWED_HOSTS = ['learning-log.herokuapp.com']
+
+❷     DEBUG = False
+
+      # 静态资产配置
+      --snip--
+```
+
+我们只需做两方面的修改。在❶处，修改`ALLOWED_HOSTS`，只允许 Heroku 托管这个项目。你需要使用应用程序的名称，可以是 Heroku 提供的名称（如 afternoon-meadow-2775.herokuapp.com），也可以是你选择的名称。在❷处，我们将`DEBUG`设置为`False`，让 Django 不在错误发生时显示敏感信息。
+
+#### **20.2.16　提交并推送修改**
+
+现在需要将对 settings.py 所做的修改提交到 Git 仓库，再将修改推送到 Heroku。下面的终端会话演示了这个过程：
+
+```
+❶ (ll_env)learning_log$ git commit -am "Set DEBUG=False for Heroku."
+  [master 081f635] Set DEBUG=False for Heroku.
+   1 file changed, 4 insertions(+), 2 deletions(-)
+❷ (ll_env)learning_log$ git status
+  # On branch master
+  nothing to commit, working directory clean
+  (ll_env)learning_log$
+```
+
+我们执行命令`git commit`，并指定了一条简短而具有描述性的提交消息（见❶）。别忘了，标志`-am`让 Git 提交所有修改过的文件，并记录一条日志消息。Git 找出唯一一个修改过的文件，并将所做的修改提交到仓库。
+
+❷处显示的状态表明我们在仓库的分支 master 上工作，当前没有任何未提交的修改。推送到 Heroku 之前，必须检查状态并看到刚才所说的消息。如果你没有看到这样的消息，说明有未提交的修改，而这些修改将不会推送到服务器。在这种情况下，可尝试再次执行命令`commit`，但如果你不知道该如何解决这个问题，请阅读附录 D，更深入地了解 Git 的用法。
+
+下面来将修改后的仓库推送到 Heroku：
+
+```
+(ll_env)learning_log$ git push heroku master
+--snip--
+remote: -----> Python app detected
+remote: -----> Installing dependencies with pip
+--snip--
+remote: -----> Launching... done, v8
+remote:        https://learning-log.herokuapp.com/ deployed to Heroku
+remote: Verifying deploy.... done.
+To https://git.heroku.com/learning-log.git
+   4c9d111..ef65d2b  master -> master
+(ll_env)learning_log$
+```
+
+Heroku 发现仓库发生了变化，因此重建项目，确保所有的修改都已生效。它不会重建数据库，因此这次无需执行命令`migrate`。
+
+现在要核实部署更安全了，请输入项目的 URL，并在末尾加上我们未定义的扩展。例如，尝试访问 http://learning-log.herokuapp.com/letmein/。你将看到一个通用的错误页面，它没有泄露任何有关该项目的具体信息。如果你尝试向本地的“学习笔记”发出同样的请求——输入 URL http://localhost:8000/letmein/，你将看到完整的 Django 错误页面。这样的结果非常理想，你接着开发这个项目时，将看到信息丰富的错误消息，但用户看不到有关项目代码的重要信息。
+
+#### **20.2.17　创建自定义错误页面**
+
+在第19章，我们对“学习笔记”进行了配置，使其在用户请求不属于他的主题或条目时返回404错误。你可能还遇到过一些500错误（内部错误）。404错误通常意味着你的 Django 代码是正确的，但请求的对象不存在。500错误通常意味着你编写的代码有问题，如 views.py 中的函数有问题。当前，在这两种情况下，Django 都返回通用的错误页面，但我们可以编写外观与“学习笔记”一致的404和500错误页面模板。这些模板必须放在根模板目录中。
+
+**1. 创建自定义模板**
+
+在文件夹 learning_log/learning_log 中，新建一个文件夹，并将其命名为 templates；再在这个文件夹中新建一个名为 404.html 的文件，并在其中输入如下内容：
+
+**404.html**
+
+```
+{% extends "learning_logs/base.html" %}
+
+{% block header %}
+    <h2>The item you requested is not available. (404)</h2>
+{% endblock header %}
+```
+
+这个简单的模板指定了通用的404错误页面包含的信息，并且该页面的外观与网站的其他部分一致。
+
+再创建一个名为 500.html 的文件，并在其中输入如下代码：
+
+**500.html**
+
+```
+{% extends "learning_logs/base.html" %}
+
+{% block header %}
+    <h2>There has been an internal error. (500)</h2>
+{% endblock header %}
+```
+
+这些新文件要求对 settings.py 做细微的修改：
+
+**settings.py**
+
+```
+--snip--
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'learning_log/templates')],
+        'APP_DIRS': True,
+        --snip--
+    },
+]
+--snip--
+```
+
+这项修改让 Django 在根模板目录中查找错误页面模板。
+
+**2. 在本地查看错误页面**
+
+在将项目推送到 Heroku 之前，如果你要在本地查看错误页面是什么样的，首先需要在本地设置中设置`Debug=False`，以禁止显示默认的 Django 调试页面。为此，可对 settings.py 做如下修改（请确保你修改的是用于本地环境的 settings.py 部分，而不是用于 Heroku 的部分）：
+
+**settings.py**
+
+```
+--snip--
+# 安全警告：不要在在线环境中启用调试！
+DEBUG = False
+
+ALLOWED_HOSTS = ['localhost']
+--snip--
+```
+
+`DEBUG`被设置为`False`时，你必须在`ALLOWED_HOSTS`中指定一个主机。现在，请求一个不属于你的主题或条目，以查看404错误页面；请求不存在的 URL（如 localhost:8000/letmein/），以查看500错误页面。
+
+查看错误页面后，将`DEBUG`重新设置为`True`，以方便你进一步开发“学习笔记”。（在 settings.py 中用于 Heroku 部署的部分中，确保`DEBUG`依然被设置为`False`）。
+
+> **注意**　
+>
+> 500错误页面不会显示任何有关当前用户的信息，因为发生服务器错误时，Django 不会通过响应发送任何上下文信息。
+
+**3. 将修改推送到 Heroku**
+
+现在需要提交对模板所做的修改，并将这些修改推送到 Heroku：
+
+```
+❶ (ll_env)learning_log$ git add .
+❷ (ll_env)learning_log$ git commit -am "Added custom 404 and 500 error pages."
+   3 files changed, 15 insertions(+), 10 deletions(-)
+   create mode 100644 learning_log/templates/404.html
+   create mode 100644 learning_log/templates/500.html
+❸ (ll_env)learning_log$ git push heroku master
+  --snip--
+  remote: Verifying deploy.... done.
+  To https://git.heroku.com/learning-log.git
+     2b34ca1..a64d8d3  master -> master
+  (ll_env)learning_log$
+```
+
+在❶处，我们执行了命令`git add`，这是因为我们在项目中创建了一些新文件，因此需要让 Git 跟踪这些文件。然后，我们提交所做的修改（见❷），并将修改后的项目推送到 Heroku（见❸）。
+
+现在，错误页面出现时，其样式应该与网站的其他部分一致，这样在发生错误时，用户将不会感到突兀。
+
+**4. 使用方法 get_object_or_404()**
+
+现在，如果用户手工请求不存在的主题或条目，将导致500错误。Django 尝试渲染请求的页面，但没有足够的信息来完成这项任务，进而引发500错误。对于这种情形，将其视为404错误更合适，为此可使用 Django 快捷函数`get_object_or_404()`。这个函数尝试从数据库获取请求的对象，如果这个对象不存在，就引发404异常。我们在 views.py 中导入这个函数，并用它替换函数`get()`：
+
+**views.py**
+
+```
+--snip--
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, Http404
+--snip--
+@login_required
+def topic(request, topic_id):
+    """显示单个主题及其所有的条目"""
+    topic = get_object_or_404(Topic, id=topic_id)
+    # 确定主题属于当前用户
+    --snip--
+```
+
+现在，如果你请求不存在的主题（例如，使用 URLhttp://localhost:8000/topics/999999/），将看到404错误页面。为部署这里所做的修改，再次提交，并将项目推送到 Heroku。
+
+#### **20.2.18　继续开发**
+
+将项目“学习笔记”推送到服务器后，你可能想进一步开发它或开发要部署的其他项目。更新项目的过程几乎完全相同。
+
+首先，你对本地项目做必要的修改。如果在修改过程中创建了新文件，使用命令`git add .`（千万别忘记这个命令末尾的句点）将它们加入到 Git 仓库中。如果有修改要求迁移数据库，也需要执行这个命令，因为每个迁移都将生成新的迁移文件。
+
+然后，使用命令`git commit -am` *"commit message"*将修改提交到仓库，再使用命令`git push heroku master`将修改推送到 Heroku。如果你在本地迁移了数据库，也需要迁移在线数据库。为此，你可以使用一次性命令`heroku run python manage.py migrate`，也可使用`heroku run bash`打开一个远程终端会话，并在其中执行命令`python manage.py migrate`。然后访问在线项目，确认你期望看到的修改已生效。
+
+在这个过程中很容易犯错，因此看到错误时不要大惊小怪。如果代码不能正确地工作，请重新审视所做的工作，尝试找出其中的错误。如果找不出错误，或者不知道如何撤销错误，请参阅附录 C 中有关如何寻求帮助的建议。不要羞于去寻求帮助：每个学习开发项目的人都可能遇到过你面临的问题，因此总有人乐意伸出援手。通过解决遇到的每个问题，可让你的技能稳步提高，最终能够开发可靠而有意义的项目，还能解决别人遇到的问题。
+
+#### **20.2.19　设置 SECRET_KEY**
+
+Django 根据 settings.py 中设置`SECRET_KEY`的值来实现大量的安全协议。在这个项目中，我们提交到仓库的设置文件包含设置`SECRET_KEY`。对于一个练习项目而言，这足够了，但对于生产网站，应更细致地处理设置`SECRET_KEY`。如果你创建的项目的用途很重要，务必研究如何更安全地处理设置`SECRET_KEY`。
+
+#### **20.2.20　将项目从 Heroku 删除**
+
+一个不错的练习是，使用同一个项目或一系列小项目执行部署过程多次，直到对部署过程了如指掌。然而，你需要知道如何删除部署的项目。Heroku 可能还限制了你可免费托管的项目数，另外，你也不希望让自己的账户中塞满大量的练习项目。
+
+在 Heroku 网站（https://heroku.com/）登录后，你将被重定向到一个页面，其中列出了你托管的所有项目。单击要删除的项目，你将看到另一个页面，其中显示了有关这个项目的信息。单击链接 Settings，再向下滚动，找到用于删除项目的链接并单击它。这种操作是不可撤销的，因此 Heroku 让你手工输入要删除的项目的名称，以确认你确实要删除它。
+
+如果你喜欢在终端中工作，也可使用命令`destroy`来删除项目：
+
+```
+(ll_env)learning_log$ heroku apps:destroy --app appname
+```
+
+其中*appname*是要删除的项目的名称，可能类似于`afternoon-meadow-2775`，也可能类似于`learning-log`（如果你重命名了项目）。你将被要求再次输入项目名，以确认你确实要删除它。
+
+> **注意**　
+>
+> 删除 Heroku 上的项目对本地项目没有任何影响。如果没有人使用你部署的项目，就尽管去练习部署过程好了，在 Heroku 删除项目再重新部署完全合情合理。
+
+> **动手试一试**
+>
+> **20-3 在线博客**：将你一直在开发的项目 Blog 部署到 Heroku。确保将`DEBUG`设置为`False`，并修改设置`ALLOWED_HOSTS`，让部署相当安全。
+>
+> **20-4 在更多的情况下显示404错误页面**：在视图函数`new_entry()`和`edit_entry()`中，也使用函数`get_object_or_404()`。完成这些修改后进行测试：输入类似于 http://localhost:8000/new_entry/99999/ 的 URL，确认你能够看到404错误页面。
+>
+> **20-5 扩展“学习笔记”**：在“学习笔记”中添加一项功能，将修改推送到在线部署。尝试做一项简单的修改，如在主页中对项目作更详细的描述；再尝试添加一项更高级的功能，如让用户能够将主题设置为公开的。为此，需要在模型`Topic`中添加一个名为`public`的属性（其默认值为`False`），并在`new_topic`页面中添加一个表单元素，让用户能够将私有主题改为公开的。然后，你需要迁移项目，并修改 views.py，让未登录的用户也可以看到所有公开的主题。将修改推送到 Heroku 后，别忘了迁移在线数据库。
+
+### **20.3　小结**
+
+在本章中，你学习了如何使用 Bootstrap 库和应用程序 django-bootstrap3 赋予应用程序简单而专业的外观。使用 Bootstrap 意味着无论用户使用哪种设备来访问你的项目，你选择的样式都将实现几乎相同的效果。
+
+你学习了 Bootstrap 的模板，并使用模板 Static top navbar 赋予了“学习笔记”简单的外观。你学习了如何使用 jumbotron 来突出主页中的消息，还学习了如何给网站的所有网页设置一致的样式。
+
+在本章的最后一部分，你学习了如何将项目部署到 Heroku 的服务器，让任何人都能够访问它。你创建了一个 Heroku 账户，并安装了一些帮助管理部署过程的工具。你使用 Git 将能够正确运行的项目提交到一个仓库，再将这个仓库推送到 Heroku 的服务器。最后，你将`DEBUG`设置为`False`，以确保在线服务器上应用程序的安全。
+
+至此，开发完了项目“学习笔记”后，你可以自己动手开发项目了。请先让项目尽可能简单，确定它能正确运行后，再添加复杂的功能。愿你学习愉快，开发项目时有好运相伴！
+
+------
+
+
+
+# 附录 A　安装 Python
+
+> Python 有多个不同的版本，而在各种操作系统中安装它的方式有很多。如果第1章介绍的方法不管用，或者你要安装非系统自带的 Python 版本，这个附录可提供帮助。
+
+### **A.1　在 Linux 系统中安装 Python**
+
+几乎所有 Linux 系统都默认安装了 Python，但你可能想使用非默认版本。如果是这样，请首先确定已安装的 Python 版本。
+
+#### **A.1.1　确定已安装的版本**
+
+打开一个终端窗口，并执行如下命令：
+
+```
+$ python --version
+Python 2.7.6
+```
+
+输出表明默认版本是2.7.6，但系统可能还安装了一个 Python 3 版本。为核实这一点，请执行如下命令：
+
+```
+$ python3 --version
+Python 3.5.0
+```
+
+输出表明也安装了 Python 3.5.0。安装新版本前，有必要执行上述两个命令。
+
+#### **A.1.2　在 Linux 系统中安装 Python 3**
+
+如果你的系统没有安装 Python 3，或者你想安装较新的 Python 3 版本，只需执行几个命令即可。我们使用一个名为`deadsnakes`的包，它让安装多个 Python 版本变得很容易：
+
+```
+$ sudo add-apt-repository ppa:fkrull/deadsnakes
+$ sudo apt-get update
+$ sudo apt-get install python3.5
+```
+
+这些命令在你的系统中安装 Python 3.5。下面的命令启动一个运行 Python 3.5 的终端会话：
+
+```
+$ python3.5
+>>>
+```
+
+配置文本编辑器使其使用 Python 3 以及从终端运行程序时，也需要用到这个命令。
+
+### **A.2　在 OS X 系统中安装 Python**
+
+大多数 OS X 系统都安装了 Python，但你可能想使用非默认版本。如果是这样，请首先确定已安装了哪个版本的 Python。
+
+#### **A.2.1　确定已安装的版本**
+
+打开一个终端窗口，并执行如下命令：
+
+```
+$ python --version
+Python 2.7.6
+```
+
+你还应尝试执行命令`python3 --version`。执行这个命令时，可能会出现错误消息，但若要确定安装了哪些 Python 版本，有必要执行这个命令。
+
+#### **A.2.2　使用 Homebrew 来安装 Python 3**
+
+如果你的系统只安装了 Python 2，或者已安装的 Python 3 版本较旧，可使用一个名为 Homebrew 的包来安装最新的 Python 3 版本。
+
+**1. 安装 Homebrew**
+
+Homebrew 依赖于 Apple 包 Xcode，因此请打开一个终端窗口并执行如下命令：
+
+```
+$ xcode-select --install
+```
+
+在不断出现的确认对话框中都单击 OK 按钮（根据网络连接的速度，这可能会花一些时间）。接下来安装 Homebrew：
+
+```
+$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+这个命令可在 Homebrew 网站（http://brew.sh/）的首页找到。在`curl -fsSL`和 URL 之间，务必包含一个空格。
+
+> **注意**　
+>
+> 这个命令中的`-e`让 Ruby（Homebrew 就是使用这种编程语言编写的）执行下载的代码。除非来源是你信任的，否则不要运行这样的命令。
+
+为确认正确地安装了 Homebrew，请执行如下命令：
+
+```
+$ brew doctor
+Your system is ready to brew.
+```
+
+上述输出表明你可以使用 Homebrew 来安装 Python 包了。
+
+**2. 安装 Python 3**
+
+为安装最新的 Python 3 版本，请执行如下命令：
+
+```
+$ brew install python3
+```
+
+下面来检查使用这个命令安装的是哪个版本：
+
+```
+$ python3 --version
+Python 3.5.0
+$
+```
+
+现在，你可以使用命令`python3`来启动 Python 3 终端会话了，还可使用命令`python3`来配置文本编辑器，使其使用 Python 3 而不是 Python 2 来运行 Python 程序。
+
+### **A.3　在 Windows 系统中安装 Python**
+
+Windows 系统默认未安装 Python，但有必要检查系统是否安装了它。为此，按住 Shift 键并右击桌面，再选择“在此处打开命令窗口”来打开一个终端窗口。你也可以在开始菜单中执行命令`command`。在打开的终端窗口中，执行如下命令：
+
+```
+> python --version
+Python 3.5.0
+```
+
+如果你看到了类似于上面的输出，说明已安装了 Python，但你可能想安装更新的版本。如果看到一条错误消息，就说明你需要下载并安装 Python。
+
+#### **A.3.1　在 Windows 系统中安装 Python 3**
+
+访问 http://python.org/downloads/，并单击你要安装的 Python 版本。下载安装程序，并在运行它时选择复选框 Add Python to PATH。这让你不用手工修改系统的环境变量，在执行命令`python`时也无需指定其完整路径。安装 Python 后，打开一个新的终端窗口，并在其中执行命令`python --version`。如果没有报错，就说明 Python 安装好了。
+
+#### **A.3.2　查找 Python 解释器**
+
+如果不能执行简单命令`python`，你就需要告诉 Windows 去哪里查找 Python 解释器。要确定 Python 解释器的位置，请打开 C 盘，并在其中查找名称以 Python 打头的文件夹（要找到这样的文件夹，你可能需要在 Windows 资源管理器中的搜索栏中输入单词 python）。打开这个文件夹，并查找名称为 python（全部小写）的文件。右击这个文件并选择“属性”，你将在“位置：”右边看到它的路径。
+
+在终端窗口中，使用该路径来确定刚安装的 Python 版本：
+
+```
+$ C:\\Python35\python --version
+Python 3.5.0
+```
+
+#### **A.3.3　将 Python 添加到环境变量 Path 中**
+
+如果每次启动 Python 终端时都需要输入完整的路径，那就太讨厌了；有鉴于此，我们将在系统中添加这个路径，让你只需使用命令`python`即可。如果你在安装 Python 时选择了复选框 Add Python to PATH，可跳过这一步。打开控制面板并单击“系统和安全”，再单击“系统”。单击“高级系统设置”，在打开的窗口中单击按钮“环境变量”。
+
+在“系统变量”部分，找到并单击变量`Path`，再单击按钮“编辑”。在出现的对话框中，单击“变量值”，并使用右箭头键滚到最右边。千万不要覆盖变量原来的值，如果你不小心这样做了，单击“取消”按钮，再重复前面的步骤。在变量值的末尾添加一个分号，再添加文件 python.exe 的路径：
+
+```
+%SystemRoot%\system32\...\System32\WindowsPowerShell\v1.0\;C:\Python34
+```
+
+关闭终端窗口，再打开一个新的终端窗口。这将在终端会话中加载变量`Path`的新值。现在当你执行命令`python --version`时，将看到刚才在变量`Path`中设置的 Python 版本。现在，你只需在命令提示符下输入`python`并按回车，就可启动 Python 终端会话了。
+
+### **A.4　Python 关键字和内置函数**
+
+Python 包含一系列关键字和内置函数，给变量命名时，知道这些关键字和内置函数很重要。编程中面临的一个挑战是给变量指定合适的名称，变量名可以是任何东西，只要它长短合适并描述了变量的作用。同时，不能将 Python 关键字用作变量名；也不应将 Python 内置函数的名称用作变量名，否则将覆盖相应的内置函数。
+
+本节将列出 Python 关键字和内置函数的名称，让你知道应避免使用哪些变量名。
+
+#### **A.4.1　Python 关键字**
+
+下面的关键字都有特殊含义，如果你将它们用作变量名，将引发错误：
+
+| `False`  | `class`    | `finally` | `is`       | `return` |
+| -------- | ---------- | --------- | ---------- | -------- |
+| `None`   | `continue` | `for`     | `lambda`   | `try`    |
+| `True`   | `def`      | `from`    | `nonlocal` | `while`  |
+| `and`    | `del`      | `global`  | `not`      | `with`   |
+| `as`     | `elif`     | `if`      | `or`       | `yield`  |
+| `assert` | `else`     | `import`  | `pass`     |          |
+| `break`  | `except`   | `in`      | `raise`    |          |
+
+#### **A.4.2　Python 内置函数**
+
+将内置函数名用作变量名时，不会导致错误，但将覆盖这些函数的行为：
+
+| `abs()`         | `divmod()`    | `input()`      | `open()`          | `staticmethod()` |
+| --------------- | ------------- | -------------- | ----------------- | ---------------- |
+| `all()`         | `enumerate()` | `int()`        | `ord()`           | `str()`          |
+| `any()`         | `eval()`      | `isinstance()` | `pow()`           | `sum()`          |
+| `basestring()`  | `execfile()`  | `issubclass()` | `print()`         | `super()`        |
+| `bin()`         | `file()`      | `iter()`       | `property()`      | `tuple()`        |
+| `bool()`        | `filter()`    | `len()`        | `range()`         | `type()`         |
+| `bytearray()`   | `float()`     | `list()`       | `raw_input()`     | `unichr()`       |
+| `callable()`    | `format()`    | `locals()`     | `reduce()`        | `unicode()`      |
+| `chr()`         | `frozenset()` | `long()`       | `reload()`        | `vars()`         |
+| `classmethod()` | `getattr()`   | `map()`        | `repr()`          | `xrange()`       |
+| `cmp()`         | `globals()`   | `max()`        | `reversed()zip()` | `Zip()`          |
+| `compile()`     | `hasattr()`   | `memoryview()` | `round()`         | `__import__()`   |
+| `complex()`     | `hash()`      | `min()`        | `set()`           | `apply()`        |
+| `delattr()`     | `help()`      | `next()`       | `setattr()`       | `buffer()`       |
+| `dict()`        | `hex()`       | `object()`     | `slice()`         | `coerce()`       |
+| `dir()`         | `id()`        | `oct()`        | `sorted()`        | `intern()`       |
+
+> **注意**　
+>
+> 在 Python 2.7 中，`print`是关键字而不是函数。另外，Python 3 没有内置函数`unicode()`。这两个单词都不应用作变量名。
+
+------
+
+
+
+# 附录 B　文本编辑器
+
+> 程序员花大量时间来编写、阅读和编辑代码，因此使用的文本编辑器必须能够尽可能提高完成这种工作的效率。高效的编辑器应突出代码的结构，让你在编写代码时就能够发现常见的 bug。它还应包含自动缩进功能、显示代码长度的标志以及用于执行常见操作的快捷键。
+>
+> 如果你是编程新手，应使用具备上述功能但学习起来又不难的编辑器。另外，你最好对更高级的编辑器有所了解，这样就知道何时该考虑升级编辑器了。
+>
+> 对于每种主要的操作系统，我们都将介绍一款符合上述条件的编辑器：使用 Linux 或 Windows 系统的初学者可使用 Geany；使用 OS X 的初学者可使用 Sublime Text（它在 Linux 和 Windows 系统中的效果也很好）。我们还将介绍 Python 自带的编辑器 IDLE。最后，我们将介绍 Emacs 和 vim，这是两款高级编辑器，随着你不断地学习编程，经常会听到有人提起它们。我们将把 hello_world.py 作为示例程序，在上述每款编辑器中运行它。
+
+### **B.1　Geany**
+
+Geany 是一款简单的编辑器，你可以在其中直接运行几乎任何程序。它还在一个终端窗口中显示程序的输出，这有助于你逐渐习惯使用终端。
+
+#### **B.1.1　在 Linux 系统中安装 Geany**
+
+在大多数 Linux 系统中，安装 Geany 只需一个命令：
+
+```
+$ sudo apt-get install geany
+```
+
+如果你的系统安装了多个版本的 Python，就必须配置 Geany，使其使用正确的版本。启动 Geany，选择菜单 File ▶ Save As，将当前的空文件保存为 hello_world.py，再在编辑窗口中输入下面一行代码：
+
+```
+print("Hello Python world!")
+```
+
+选择菜单 Build ▶ Set Build Commands，你将看到文字 Compile 和 Execute，它们旁边都有一个命令。默认情况下，这两个命令都是`python`，要让 Geany 使用命令`python3`，必须做相应的修改。将编译命令修改成下面这样：
+
+```
+python3 -m py_compile "%f"
+```
+
+你必须完全按这里显示的这样输出这个命令，确保空格和大小写都完全相同。
+
+将执行命令修改成下面这样：
+
+```
+python3 "%f"
+```
+
+同样，务必确保空格和大小写都完全与显示的相同。
+
+#### **B.1.2　在 Windows 系统中安装 Geany**
+
+要下载 Windows Greany 安装程序，可访问 http://geany.org/，单击 Download 下的 Releases，找到安装程序 geany-1.25_setup.exe 或类似的文件。下载安装程序后，运行它并接受所有的默认设置。
+
+启动 Geany，选择菜单 File ▶ Save As，将当前的空文件保存为 hello_world.py，再在编辑窗口中输入下面一行代码：
+
+```
+print("Hello Python world!")
+```
+
+现在选择菜单 Build ▶ Set Build Commands，你将看到文字 Compile 和 Execute，它们旁边都有一个命令。默认情况下，这两个命令都是`python`（全部小写），但 Geany 不知道这个命令位于系统的什么地方。你需要添加启动终端会话时使用的路径（如果你按附录 A 描述的那样设置了变量`Path`，可跳过这些步骤）。在编译命令和执行命令中，添加命令`python`所在的驱动器和文件夹。编译命令应类似于下面这样：
+
+```
+C:\Python35\python -m py_compile "%f"
+```
+
+在你的系统上，路径可能稍有不同，但你必须确保空格和大小写都与这里显示的完全相同。
+
+执行命令应类似于下面这样：
+
+```
+C:\Python35\python "%f"
+```
+
+同样，务必确保空格和大小写都与这里显示的完全相同。正确地设置这些命令后，单击 OK 按钮。现在，你应该能够成功地运行程序了。
+
+#### **B.1.3　在 Geany 中运行 Python 程序**
+
+在 Geany 中运行程序的方式有三种。为运行程序 hello_world.py，可选择菜单 Build ▶ Execute、单击由两个齿轮组成的图标或按 F5。运行 hello_world.py 时，将弹出一个终端窗口，其中包含如下输出：
+
+```
+Hello Python world!
+
+------------------
+(program exited with code: 0)
+Press return to continue
+```
+
+#### **B.1.4　定制 Geany 的设置**
+
+下面来定制本附录开头提到的功能，尽可能提高 Geany 的效率。
+
+**1. 将制表符转换为空格**
+
+在代码中混合使用制表符和空格可能会给 Python 程序带来极难诊断的问题。为在 Geany 中查看缩进设置，选择菜单 Edit ▶ Preferences，再依次单击 Editor 和 Indentation。将制表符宽度设置为4，并将 Type 设置为 Spaces。
+
+如果你在程序中混合使用了标识符和空格，可选择菜单 Document ▶ Replace Tabs by Spaces（“替换制表符为空格”），将所有制表符都转换为空格。
+
+**2. 设置行长标志**
+
+在大多数编辑器中，都可设置视觉线索（通常是一条竖线），来指出代码行应在什么地方结束。要在 Geany 中设置这项功能，请选择菜单 Edit ▶ Preferences，再依次单击 Editor 和 Display，确保启用了长行标志，再确保文本框“列”中的值为79。
+
+**3. 缩进和撤销缩进代码块**
+
+要缩进代码块，可选择它，再选择菜单 Edit ▶ Format ▶ Increase Indent，也可按 Ctrl+I。要撤销代码块缩进，可选择菜单 Edit ▶ Format ▶ Decrease Indent，也可按 Ctrl+U。
+
+**4. 将代码块注释掉**
+
+要暂时禁用一个代码块，可选择它，并将它注释掉，这样 Python 将忽略它。为此，可选择菜单 Edit ▶ Format ▶ Toggle Line Commentation，也可按 Ctrl+E。选择的代码将被注释掉，并使用特殊字符序列`#~`指出这不是常规注释。要对代码块取消注释，可选择它，并再次选择前述菜单。
+
+### **B.2　Sublime Text**
+
+Sublime Text 是一款简单的文本编辑器，它在 OS X（及其他系统）中易于安装，让你能够直接运行几乎所有程序。它还能在内嵌在 Sublime Text 窗口内的终端会话中运行代码，让你能够轻松地查看输出。
+
+Sublime Text 的许可策略非常灵活，你可以永久地免费使用这款编辑器，但如果你喜欢它并想长期使用，作者建议你购买许可证。我们将下载 Sublime Text 3——编写本书时的最新版本。
+
+#### **B.2.1　在 OS X 系统中安装 Sublime Text**
+
+要下载 Sublime Text 安装程序，可访问 http://sublimetext.com/3，单击链接 Download，并查找 OS X 安装程序。下载安装程序后，打开它，再将 Sublime Text 图标拖放到文件夹 Applications。
+
+#### **B.2.2　在 Linux 系统中安装 Sublime Text**
+
+在大多数 Linux 系统中，安装 Sublime Text 的最简单方式是通过终端会话，如下所示：
+
+```
+$ sudo add-apt-repository ppa:webupd8team/sublime-text-3
+$ sudo apt-get update
+$ sudo apt-get install sublime-text-installer
+```
+
+#### **B.2.3　在 Windows 系统中安装 Sublime Text**
+
+从 http://www.sublimetext.com/3 下载 Windows 安装程序。运行这个安装程序，你将在开始菜单中看到 Sublime Text。
+
+#### **B.2.4　在 Sublime Text 中运行 Python 程序**
+
+如果你使用的是系统自带的 Python 版本，可能无需调整任何设置就能运行程序。要运行程序，可选择菜单 Tools ▶ Build 或按 Ctrl+B。运行 hello_world.py 时，你将在 Sublime Text 窗口的底部看到一个终端屏幕，其中包含如下输出：
+
+```
+Hello Python world!
+[Finished in 0.1s]
+```
+
+#### **B.2.5　配置 Sublime Text**
+
+如果你安装了多个 Python 版本或者 Sublime Text 不能自动运行程序，你可能需要设置一个配置文件。你首先需要知道 Python 解释器的完整路径，为此，在 Linux 或 OS X 系统中执行如下命令：
+
+```
+$ type -a python3
+python3 is /usr/local/bin/python3
+```
+
+请将`python3`替换为你启动终端会话时使用的命令。
+
+如果你使用的是 Windows 系统，要获悉 Python 解释器的路径，请参阅“在 Windows 系统中安装 Python 3”一节。
+
+现在，启动 Sublime Text，并选择菜单 Tools ▶ Build System ▶ New Build System，这将打开一个新的配置文件。删除其中的所有内容，再输入如下内容：
+
+**Python3 .sublime-build**
+
+```
+{
+    "cmd": ["/usr/local/bin/python3", "-u", "$file"],
+}
+```
+
+这些代码让 Sublime Text 使用命令`python3`来运行当前打开的文件。请确保其中的路径为你在前一步获悉的路径（在 Windows 系统中，该路径类似于`C:/Python35/python`）。将这个配置文件命名为 Python3.sublime-build，并将其保存到默认目录——选择菜单 Save 时 Sublime Text 打开的目录。
+
+打开 hello_world.py，选择菜单 Tools ▶ Build System ▶ Python3，再选择菜单 Tools ▶ Build，你将在内嵌在 Sublime Text 窗口底部的终端中看到输出。
+
+#### **B.2.6　定制 Sublime Text 的设置**
+
+下面来定制本附录开头提到的功能，以尽可能提高 Sublime Text 的效率。
+
+**1. 将制表符转换为空格**
+
+选择菜单 View ▶ Indentation，核实选择了复选框 Indent Using Spaces。如果没有选择该复选框，现在选择它。
+
+**2. 设置行长标志**
+
+选择菜单 View ▶ Ruler，再单击80，Sublime Text 将在这个80字符标志处放置一条竖线。
+
+**3. 缩进和取消缩进代码块**
+
+要缩进代码块，可选择它，再选择菜单 Edit ▶ Line ▶ Indent 或按 Ctrl+]。要取消缩进代码块，可选择菜单 Edit ▶ Line ▶ Unindent 或按 Ctrl+[。
+
+**4. 将代码块注释掉**
+
+要将代码块注释掉，可选择它，再选择菜单 Edit ▶ Comment ▶ Toggle Comment 或按 Ctrl+/。要取消代码块注释，再次执行这个命令。
+
+### **B.3　IDLE**
+
+IDLE 是 Python 的默认编辑器，相比于 Geany 和 Sublime Text，它不那么直观，但其他教程指出它适合初学者使用，因此你不妨试一试。
+
+#### **B.3.1　在 Linux 系统中安装 IDLE**
+
+如果你使用的是 Python 3，请像下面这样安装`idle3`包：
+
+```
+$ sudo apt-get install idle3
+```
+
+如果你使用的是 Python 2，请像下面这样安装`idle`包：
+
+```
+$ sudo apt-get install idle
+```
+
+#### **B.3.2　在 OS X 系统中安装 IDLE**
+
+如果你的 Python 是使用 Homebrew 安装的，那么可能已经安装了 IDLE。在终端中，执行命令`brew linkapps`，它告诉 IDLE 如何在系统中查找正确的 Python 解释器。随后，你会在文件夹 Applications 中看到 IDLE。
+
+如果你的 Python 不是使用 Homebrew 安装的，请访问https://www.python.org/download/mac/tcltk/，并按这里的说明做。你还需安装 IDLE 依赖的一些图形包。
+
+#### **B.3.3　在 Windows 系统中安装 IDLE**
+
+你安装 Python 时，应该自动安装了 IDLE，因此它应该包含在开始菜单中。
+
+#### **B.3.4　定制 IDLE 的设置**
+
+由于 IDLE 是默认的 Python 编辑器，因此它的大多数设置都被设置为推荐的 Python 设置：将制表符自动转换为空格；行长标志出现在80字符处。
+
+**1. 缩进和取消缩进代码块**
+
+要缩进代码块，可选择它，再选择菜单 Format ▶ Indent Region 或按 Ctrl+]；要取消代码块缩进，可选择菜单 Format ▶ Dedent Region 或按 Ctrl+[。
+
+**2. 将代码块注释掉**
+
+要将代码块注释掉，可选择它，再选择菜单 Format ▶ Comment Out Region 或按 Alt+3。要取消代码块注释，可选择菜单 Format ▶ Uncomment Region 或按 Alt+4。
+
+### **B.4　Emacs 和 vim**
+
+Emacs 和 vim 是两款流行的编辑器，深受众多经验丰富的程序员的喜爱，因为使用它们时，用户根本不用离开键盘。因此，学会使用这些编辑器后，编写、阅读和编辑代码的效率将极高；这也意味着学习使用它们的难度极大。
+
+程序员通常会推荐你试一试，但很多熟练的程序员忘了编程新手尝试学习使用它们将花费很多时间。知道这些编辑器是有益的，但请先使用简单的编辑器，它们让你能够专注于学习编程，而不是费时间去学习如何使用编辑器。等你能够熟悉地编写和编辑代码后，再去使用这些编辑器吧。
+
+------
+
+
+
+# 附录 C　寻求帮助
+
+> 每个人学习编程时都会遇到困难，因此作为程序员，需要学习的最重要的技能之一是如何高效地摆脱困境。这个附录简要地介绍几种方法，以帮助你摆脱编程困境。
+
+### **C.1　第一步**
+
+陷入困境后，首先需要判断形势。你必须能够明确地回答如下三个问题，才能够从他人那里获得帮助。
+
+- 你想要做什么？
+- 你已尝试哪些方式？
+- 结果如何？
+
+答案应尽可能具体。对于第一个问题，像“我要在我的 Windows 10 计算机上安装最新版本的 Python 3”这样明确的陈述足够详细，让 Python 社区的其他人员能够施以援手；而像“我要安装 Python”这样的陈述没有提供足够的信息，别人无法提供太多的帮助。
+
+对于第二个问题，你的答案应提供足够多的细节，这样别人就不会建议你去重复已经尝试过的方式：相比于“我访问 Python 网站，并下载了一个安装程序”，“我访问 http://python.org/downloads/，并单击 Python 3 的 Download 按钮，再运行这个安装程序”提供的信息更详细。
+
+对于最后一个问题，知道准确的错误消息对在线搜索解决方案或寻求帮助很有用。
+
+有时候，通过回答这三个问题，你会发现遗漏了什么，从而无需再做其他的事情就能摆脱困境。程序员甚至给这种情形提供了一个名称，称之为橡皮鸭子调试法。如果你向一只橡皮鸭子（或任何无生命的东西）清楚地阐述自己的处境，并向它提出具体的问题，你常常能够回答这个问题。有些编程公司甚至在办公室放置一个橡皮鸭子，旨在鼓励程序员“与这只鸭子交流”。
+
+#### **C.1.1　再试试**
+
+只需回过头去重新来一次，就足以解决很多问题。假设你正模仿本书的示例编写一个`for`循环，你可能遗漏了某种简单的东西，如`for`语句末尾的冒号。再试一次可能就会帮助你避免重复同样的错误。
+
+#### **C.1.2　歇一会儿**
+
+如果你很长时间内一直在试图解决同一个问题，那么休息一会儿实际上是你可采取的最佳战术。长时间从事一个任务时，你可能变得一根筋，脑子里想的都是一个解决方案。你对所做的假设往往会视而不见，而休息一会儿有助于你从不同的角度看问题。不用休息很长时间，只需让你能够摆脱当前的思维方式就行。如果你坐了很长时间，起来做做运动。溜达溜达或去外面待一会儿，也可以喝杯水，或者吃点清淡而健康的零食。
+
+如果你心情沮丧，也许该将工作放到一边，整天都不考虑了。晚上睡个好觉后，你常常会发现问题并不是那么难解决。
+
+#### **C.1.3　参考本书的在线资源**
+
+本书通过 http://www.ituring.com.cn/book/1861 提供了配套的在线资源，其中包含大量有用的信息，比如如何设置系统以及如何解决每章可能遇到的难题。如果你还没有查看这些资源，现在就去查看吧，看看它们能否提供帮助。
+
+### **C.2　在线搜索**
+
+很可能有人以前遇到过你面临的问题，并在网上发表了相关的文章。良好的搜索技能和具体的关键字有助于你找到现有的资源，供你用来解决当前面临的问题。例如，如果你无法在使用 Windows 10 的计算机上安装 Python 3，那么搜索“python 3 windows 10”可能会让你马上找到解决问题的方案。
+
+搜索计算机显示的错误消息也极有帮助。例如，假设你试图启动 Python 终端会话时出现了如下错误消息：
+
+```
+> python
+'python' is not recognized as an internal or external command
+>
+```
+
+通过搜索完整的错误消息“python is not recognized as an internal or external command ”，也许能得到不错的建议。
+
+当你搜索与编程相关的主题时，有几个网站会反复出现。下面简要地介绍一下这些网站，让你知道它们可能提供什么样的帮助。
+
+#### **C.2.1　Stack Overflow**
+
+Stack Overflow（http://stackoverflow.com/）是最受程序员欢迎的问答网站之一，当你执行与 Python 相关的搜索时，它常常会出现在第一个结果页中。其成员在陷入困境时提出问题，其他成员努力提供有帮助的答案。用户可推荐他认为最有帮助的答案，因此前几个答案通常就是最佳答案。
+
+对于很多基本的 Python 问题，Stack Overflow 都有非常明确的答案，因为这个社区在不断改进。它鼓励用户发布更新的帖子，因此这里的答案通常与时俱进。编写本书时，Stack Overflow 回答的与 Python 相关的问题超过了400000个。
+
+#### **C.2.2　Python 官方文档**
+
+对初学者来说，Python 官方文档（http://docs.python.org/）显得有点漫不经心，因为其主要目的是阐述这门语言，而不是进行解释。官方文档中的示例应该很有用，但你也许不能完全弄懂。虽然如此，这还是一个不错的资源，如果它出现在搜索结果中，就值得你去参考；另外，随着你对 Python 的认识越来越深入，这个资源的用处将越来越大。
+
+#### **C.2.3　官方库文档**
+
+如果你使用了库，如 Pygame、matplotlib、Django 等，搜索结果中通常会包含到其官方文档的链接，例如，http://docs.djangoproject.com/ 就很有用。如果你要使用这些库，最好熟悉其官方文档。
+
+#### **C.2.4　r/learnpython**
+
+Reddit 包含很多子论坛，这些子论坛被称为 subreddit，其中的 r/learnpython（http://reddit.com/r/learnpython/）非常活跃，提供的信息也很有帮助。你可以在这里阅读其他人提出的问题，也可提出自己的问题。
+
+#### **C.2.5　博客**
+
+很多程序员都有博客，旨在与人分享针对其使用的语言部分撰写的帖子。接受博客文章提供的建议前，你应大致浏览一下前几个评论，看看其他人的反应。如果文章没有任何评论，请对其持保留态度——它提供的建议可能还没有人验证过。
+
+### **C.3　IRC**
+
+程序员通过 IRC（Internet Relay Chat）实时地交流。如果你被问题困住，那么在网上搜索也找不到答案，那么在相关的 IRC 频道（channel）中寻求帮助可能是最佳选择。出没在这些频道中的人大多彬彬有礼、乐于助人，在你能够详细地描述你想做什么、尝试了哪些方法以及这些方法的结果时尤其如此。
+
+#### **C.3.1　创建 IRC 账户**
+
+要建立 IRC 账户，请访问 http://webchat.freenode.net/，选择一个昵称，输入验证码，再单击 Connect。你将看到一条消息，欢迎你访问 freenode IRC 服务器。在窗口底部的方框中，输入如下命令：
+
+```
+/msg nickserv register password email
+```
+
+请将其中的`password`和`email`替换为你的密码和电子邮件地址。请选择一个不用于其他账户的简单密码，这个密码不会以安全的方式传输，因此根本不要试图去创建安全的密码。你将收到一封邮件，其中包含有关如何验证账户的说明。这封邮件将向你提供一个类似于下面的命令：
+
+```
+/msg nickserv verify register nickname verification_code
+```
+
+将这一行粘贴到 IRC 网站，将其中的`nickname`替换为你在前面选择的昵称，并将`verification_code`替换为你看到的验证码。现在，你就可以加入频道了。
+
+#### **C.3.2　加入频道**
+
+要加入 Python 主频道，可在输入框中输入/join #python，你将看到一条确认消息，指出你加入了该频道，还将看到有关该频道的简介。
+
+频道 ##learnpython（两个井号）也非常活跃。这个频道与http://reddit.com/r/learnpython/ 相关联，因此你在其中也将看到有关 r/learnpython 上发表的帖子的消息。频道 #pyladies 专注于支持学习 Python 的女性和女性程序员拥趸。如果你正在开发 Web 应用程序，可能想加入频道 #django。
+
+加入频道后，就可看到其他人的交流，还可提出问题。
+
+#### **C.3.3　IRC 文化**
+
+要获得有效的帮助，你需要知道一些有关 IRC 文化的细节。将重点放在这个附录开头所说的三个问题，无疑有助于获得可行的解决方案。如果你能准确地阐述你要做什么、尝试了哪些方法以及得到的结果，别人就会乐意伸出援手。为分享代码或输出，IRC 成员使用专门为此创建的外部网站，如https://bpaste.net/+python/（#python 通过它来分享代码和输出）。这避免了频道充斥着代码，还让分享的代码阅读起来容易得多。
+
+一定要有耐心，这样别人才会更乐意帮助你。准确地提出问题，并等待别人来回答。虽然大家都在忙于交流，但通常总会有人及时地回答你的问题。如果频道的参与者较少，可能需要等一段时间才会有人回答你的问题。
+
+------
+
+
+
+# 附录 D　使用 Git 进行版本控制
+
+> 版本控制软件让你能够拍摄处于可行状态的项目的快照。修改项目（如实现新功能）后，如果项目不能正常运行，可恢复到前一个可行状态。
+>
+> 通过使用版本控制软件，你可以无忧无虑地改进项目，不用担心项目因你犯了错而遭到破坏。对大型项目来说，这显得尤其重要，但对于较小的项目，哪怕是只包含一个文件的程序，这也大有裨益。
+>
+> 在这个附录中，你将学习如何安装 Git，以及如何使用它来对当前开发的程序进行版本控制。Git 是当前最流行的版本控制软件，它包含很多高级工具，可帮助团队协作开发大型项目，但其最基本的功能也非常适合独立开发人员使用。Git 通过跟踪对项目中每个文件的修改来实现版本控制，如果你犯了错，只需恢复到保存的前一个状态即可。
+
+### **D.1　安装 Git**
+
+Git 可在所有操作系统上运行，但其安装方法因操作系统而异。接下来的几节详细说明了如何在各种操作系统中安装它。
+
+#### **D.1.1　在 Linux 系统中安装 Git**
+
+要在 Linux 系统中安装 Git，请执行如下命令：
+
+```
+$ sudo apt-get install git
+```
+
+这就成了。你现在可以在项目中使用 Git 了。
+
+#### **D.1.2　在 OS X 系统中安装 Git**
+
+你的 OS X 系统可能已经安装了 Git，因此请尝试执行命令`git --version`。如果你在输出中看到了具体的版本号，说明你的系统安装了 Git；如果你看到一条消息，提示你安装或升级 Git，只需按屏幕上的说明做即可。
+
+你也可以访问 https://git-scm.com/，单击链接 Downloads，再单击适合你所用系统的安装程序。
+
+#### **D.1.3　在 Windows 系统中安装 Git**
+
+要在 Windows 系统中安装 Git，请访问 http://msysgit.github.io/，并单击 Download。
+
+#### **D.1.4　配置 Git**
+
+Git 跟踪谁修改了项目，哪怕参与项目开发的人只有一个。为此，Git 需要知道你的用户名和电子邮件地址。你必须提供用户名，但可以使用虚构的电子邮件地址：
+
+```
+$ git config --global user.name "username"
+$ git config --global user.email "username@example.com"
+```
+
+如果你忘记了这一步，在你首次提交时，Git 将提示你提供这些信息。
+
+### **D.2　创建项目**
+
+我们来创建一个要进行版本控制的项目。在你的系统中创建一个文件夹，并将其命名为 git_practice。在这个文件夹中，创建一个简单的 Python 程序：
+
+**hello_world.py**
+
+```
+print("Hello Git world!")
+```
+
+我们将使用这个程序来探索 Git 的基本功能。
+
+### **D.3　忽略文件**
+
+扩展名为.pyc 的文件是根据.py 文件自动生成的，因此我们无需让 Git 跟踪它们。这些文件存储在目录__pycache__中。为让 Git 忽略这个目录，创建一个名为.gitignore 的特殊文件（这个文件名以句点打头，且没有扩展名），并在其中添加下面一行内容：
+
+**.gitignore**
+
+```
+__pycache__/
+```
+
+这让 Git 忽略目录__pycache__中的所有文件。使用文件.gitignore 可避免项目混乱，开发起来更容易。
+
+> **注意**　
+>
+> 如果你使用的是 Python 2.7，请将这行内容改为`*.pyc`。Python 2.7 不会创建目录__pycache__，它将每个.pyc 文件都存储在相应.py 文件所在的目录中。其中的星号让 Git 忽略所有扩展名为.pyc 的文件。
+
+你可能需要修改文本编辑器的设置，使其显示隐藏的文件，这样才能使用它来打开文件.gitignore。有些编辑器被设置成忽略名称以句点打头的文件。
+
+### **D.4　初始化仓库**
+
+你创建了一个目录，其中包含一个 Python 文件和一个.gitignore 文件，可以初始化一个 Git 仓库了。为此，打开一个终端窗口，切换到文件夹 git_practice，并执行如下命令：
+
+```
+git_practice$ git init
+Initialized empty Git repository in git_practice/.git/
+git_practice$
+```
+
+输出表明 Git 在 git_practice 中初始化了一个空仓库。仓库是程序中被 Git 主动跟踪的一组文件。Git 用来管理仓库的文件都存储在隐藏的.git/中，你根本不需要与这个目录打交道，但千万不要删除这个目录，否则将丢弃项目的所有历史记录。
+
+### **D.5　检查状态**
+
+执行其他操作前，先来看一下项目的状态：
+
+```
+  git_practice$ git status
+❶ # On branch master
+  #
+  # Initial commit
+  #
+❷ # Untracked files:
+  #   (use "git add ..." to include in what will be committed)
+  #
+  #   .gitignore
+  #   hello_world.py
+  #
+❸ nothing added to commit but untracked files present (use "git add" to track)
+  git_practice$
+```
+
+在 Git 中，**分支**是项目的一个版本。从这里的输出可知，我们位于分支 master上（见❶）。你每次查看项目的状态时，输出都将指出你位于分支 master 上。接下来的输出表明，我们将进行初始提交。**提交**是项目在特定时间点的快照。
+
+Git 指出了项目中未被跟踪的文件（见❷），因为我们还没有告诉它要跟踪哪些文件。接下来，我们被告知没有将任何东西添加到当前提交中，但我们可能需要将未跟踪的文件加入到仓库中（见❸）。
+
+### **D.6　将文件加入到仓库中**
+
+下面将这两个文件加入到仓库中，并再次检查状态：
+
+```
+❶ git_practice$ git add .
+❷ git_practice$ git status
+  # On branch master
+  #
+  # Initial commit
+  #
+  # Changes to be committed:
+  #   (use "git rm --cached ..." to unstage)
+  #
+❸ #   new file:   .gitignore
+  #   new file:   hello_world.py
+  #
+  git_practice$
+```
+
+命令`git add .`将项目中未被跟踪的所有文件都加入到仓库中（见❶）。它不提交这些文件，而只是让 Git 开始关注它们。现在我们检查项目的状态时，发现 Git 找出了需要提交的一些修改（见❷）。标签`new file`意味着这些文件是新添加到仓库中的（见❸）。
+
+### **D.7　执行提交**
+
+下面来执行第一次提交：
+
+```
+❶ git_practice$ git commit -m "Started project."
+❷ [master (root-commit) c03d2a3] Started project.
+❸  2 files changed, 1 insertion(+)
+   create mode 100644 .gitignore
+   create mode 100644 hello_world.py
+❹ git_practice$ git status
+  # On branch master
+  nothing to commit, working directory clean
+  git_practice$
+```
+
+我们执行命令`git commit -m` *"message"*（见❶）以拍摄项目的快照。标志`-m`让 Git 将接下来的消息（`"Started project."`）记录到项目的历史记录中。输出表明我们在分支 master上（见❷），且有两个文件被修改了（见❸）。
+
+现在我们检查状态时，发现我们在分支 master 上，且工作目录是干净的（见❹）。这是你每次提交项目的可行状态时都希望看到的消息。如果显示的消息不是这样的，请仔细阅读，很可能你在提交前忘记了添加文件。
+
+### **D.8　查看提交历史**
+
+Git 记录所有的项目提交。下面来看一下提交历史：
+
+```
+git_practice$ git log
+commit a9d74d87f1aa3b8f5b2688cb586eac1a908cfc7f
+Author: Eric Matthes 
+Date:   Mon Mar 16 07:23:32 2015 -0800
+
+    Started project.
+git_practice$
+```
+
+你每次提交时，Git 都会生成一个包含40字符的独一无二的引用 ID。它记录提交是谁执行的、提交的时间以及提交时指定的消息。并非在任何情况下你都需要所有这些信息，因此 Git 提供了一个选项，让你能够打印提交历史条目的更简单的版本：
+
+```
+git_practice$ git log --pretty=oneline
+a9d74d87f1aa3b8f5b2688cb586eac1a908cfc7f Started project.
+git_practice$
+```
+
+标志`--pretty=oneline`指定显示两项最重要的信息：提交的引用 ID 以及为提交记录的消息。
+
+### **D.9　第二次提交**
+
+为展示版本控制的强大威力，我们需要对项目进行修改，并提交所做的修改。为此，我们在 hello_world.py 中再添加一行代码：
+
+**hello_world.py**
+
+```
+print("Hello Git world!")
+print("Hello everyone.")
+```
+
+如果我们现在查看项目的状态，将发现 Git 注意到了这个文件发生了变化：
+
+```
+  git_practice$ git status
+❶ # On branch master
+  # Changes not staged for commit:
+  #   (use "git add ..." to update what will be committed)
+  #   (use "git checkout -- ..." to discard changes in working directory)
+  #
+❷ #   modified:   hello_world.py
+  #
+❸ no changes added to commit (use "git add" and/or "git commit -a")
+  git_practice$
+```
+
+输出指出了我们当前所在的分支（见❶）、被修改了的文件的名称（见❷），还指出了所做的修改未提交（见❸）。下面来提交所做的修改，并再次查看状态：
+
+```
+❶ git_practice$ git commit -am "Extended greeting."
+  [master 08d4d5e] Extended greeting.
+   1 file changed, 1 insertion(+)
+❷ git_practice$ git status
+  # On branch master
+  nothing to commit, working directory clean
+❸ git_practice$ git log --pretty=oneline
+  08d4d5e39cb906f6cff197bd48e9ab32203d7ed6 Extended greeting.
+  be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project.
+  git_practice$
+```
+
+我们再次执行了提交，并在执行命令`git commit`时指定了标志`-am`（见❶）。标志`-a`让 Git 将仓库中所有修改了的文件都加入到当前提交中（如果你在两次提交之间创建了新文件，可再次执行命令`git add .`将这些新文件加入到仓库中）。标志`-m`让 Git 在提交历史中记录一条消息。
+
+我们查看项目的状态时，发现工作目录也是干净的（见❷）。最后，我们发现提交历史中包含两个提交（见❸）。
+
+### **D.10　撤销修改**
+
+下面来看看如何放弃所做的修改，恢复到前一个可行状态。为此，首先在 hello_world.py 中再添加一行代码：
+
+**hello_world.py**
+
+```
+print("Hello Git world!")
+print("Hello everyone.")
+
+print("Oh no, I broke the project!")
+```
+
+保存并运行这个文件。
+
+我们查看状态，发现 Git 注意到了所做的修改：
+
+```
+  git_practice$ git status
+  # On branch master
+  # Changes not staged for commit:
+  #   (use "git add ..." to update what will be committed)
+  #   (use "git checkout -- ..." to discard changes in working directory)
+  #
+❶ #   modified:   hello_world.py
+  #
+  no changes added to commit (use "git add" and/or "git commit -a")
+  git_practice$
+```
+
+Git 注意到我们修改了 hello_world.py（见❶）。我们可以提交所做的修改，但这次我们不提交所做的修改，而要恢复到最后一个提交（我们知道，那次提交时项目能够正常地运行）。为此，我们不对 hello_world.py 执行任何操作——不删除刚添加的代码行，也不使用文本编辑器的撤销功能，而在终端会话中执行如下命令：
+
+```
+git_practice$ git checkout .
+git_practice$ git status
+# On branch master
+nothing to commit, working directory clean
+git_practice$
+```
+
+命令`git checkout`让你能够恢复到以前的任何提交。命令`git checkout .`放弃自最后一次提交后所做的所有修改，将项目恢复到最后一次提交的状态。
+
+如果我们返回到文本编辑器，将发现 hello_world.py 被修改成了下面这样：
+
+```
+print("Hello Git world!")
+print("Hello everyone.")
+```
+
+就这个项目而言，恢复到前一个状态微不足道，但如果我们开发的是大型项目，其中数十个文件都被修改了，那么恢复到前一个状态，将撤销自最后一次提交后对这些文件所做的所有修改。这个功能很有用：实现新功能时，你可以根据需要做任意数量的修改，如果这些修改不可行，可撤销它们，而不会对项目有任何伤害。你无需记住做了哪些修改，因而不必手工撤销所做的修改，Git 会替你完成所有这些工作。
+
+> **注意**　
+>
+> 想要看到以前的版本，你可能需要在编辑器窗口中单击，以刷新文件。
+
+### **D.11　检出以前的提交**
+
+你可以检出提交历史中的任何提交，而不仅仅是最后一次提交，为此可在命令`git check`末尾指定该提交的引用 ID 的前6个字符（而不是句点）。通过检出以前的提交，你可以对其进行审核，然后返回到最后一次提交，或者放弃最近所做的工作，并选择以前的提交：
+
+```
+  git_practice$ git log --pretty=oneline
+  08d4d5e39cb906f6cff197bd48e9ab32203d7ed6 Extended greeting.
+  be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project.
+  git_practice$ git checkout be017b
+  Note: checking out 'be017b'.
+
+❶ You are in 'detached HEAD' state. You can look around, make experimental
+  changes and commit them, and you can discard any commits you make in this
+  state without impacting any branches by performing another checkout.
+
+  If you want to create a new branch to retain commits you create, you may
+  do so (now or later) by using -b with the checkout command again. Example:
+
+    git checkout -b new_branch_name
+
+  HEAD is now at be017b7... Started project.
+  git_practice$
+```
+
+检出以前的提交后，你将离开分支 master，并进入 Git 所说的分离头指针（detached HEAD）状态（见❶）。HEAD 表示项目的当前状态，之所以说我们处于分离状态，是因为我们离开了一个命名分支（这里是`master`）。
+
+要回到分支`master`，可检出它：
+
+```
+git_practice$ git checkout master
+Previous HEAD position was be017b7... Started project.
+Switched to branch 'master'
+git_practice$
+```
+
+这让你回到分支`master`。除非你要使用 Git 的高级功能，否则在检出以前的提交后，最好不要对项目做任何修改。然而，如果参与项目开发的人只有你自己，而你又想放弃较近的所有提交，并恢复到以前的状态，也可以将项目重置到以前的提交。为此，可在处于分支`master`上的情况下，执行如下命令：
+
+```
+❶ git_practice$ git status
+  # On branch master
+  nothing to commit, working directory clean
+❷ git_practice$ git log --pretty=oneline
+  08d4d5e39cb906f6cff197bd48e9ab32203d7ed6 Extended greeting.
+  be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project.
+❸ git_practice$ git reset --hard be017b
+  HEAD is now at be017b7 Started project.
+❹ git_practice$ git status
+  # On branch master
+  nothing to commit, working directory clean
+❺ git_practice$ git log --pretty=oneline
+  be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project.
+  git_practice$
+```
+
+我们首先查看了状态，确认我们在分支 master 上（见❶）。查看提交历史时，我们看到了两个提交（见❷）。接下来，我们执行命令`git reset --hard`，并在其中指定了要永久地恢复到的提交的引用 ID 的前6个字符（见❸）。再次查看状态，发现我们在分支`master`上，且没有需要提交的修改（见❹）。再次查看提交历史时，发现我们处于要从它重新开始的提交中（见❺）。
+
+### **D.12　删除仓库**
+
+有时候，仓库的历史记录被你搞乱了，而你又不知道如何恢复。在这种情况下，你首先应考虑使用附录 C 介绍的方法寻求帮助。如果无法恢复且参与项目开发的只有你一个人，可继续使用这些文件，但要将项目的历史记录删除——删除目录.git。这不会影响任何文件的当前状态，而只会删除所有的提交，因此你将无法检出项目的其他任何状态。
+
+为此，可打开一个文件浏览器，并将目录.git 删除，也可通过命令行完成这个任务。这样做后，你需要重新创建一个仓库，以重新对修改进行跟踪。下面演示了如何在终端会话中完成这个过程：
+
+```
+❶ git_practice$ git status
+  # On branch master
+  nothing to commit, working directory clean
+❷ git_practice$ rm -rf .git
+❸ git_practice$ git status
+  fatal: Not a git repository (or any of the parent directories): .git
+❹ git_practice$ git init
+  Initialized empty Git repository in git_practice/.git/
+❺ git_practice$ git status
+  # On branch master
+  #
+  # Initial commit
+  #
+  # Untracked files:
+  #   (use "git add ..." to include in what will be committed)
+  #
+  #   .gitignore
+  #   hello_world.py
+  #
+  nothing added to commit but untracked files present (use "git add" to track)
+❻ git_practice$ git add .
+  git_practice$ git commit -m "Starting over."
+  [master (root-commit) 05f5e01] Starting over.
+   2 files changed, 2 insertions(+)
+   create mode 100644 .gitignore
+   create mode 100644 hello_world.py
+❼ git_practice$ git status
+  # On branch master
+  nothing to commit, working directory clean
+  git_practice$
+```
+
+我们首先查看了状态，发现工作目录是干净的（见❶）。接下来，我们使用命令`rm -rf .git`（在 Windows 系统中，应使用命令`rmdir /s .git`）删除了目录.git（见❷）。删除文件夹.git 后，当我们再次查看状态时，被告知这不是一个 Git 仓库（见❸）。Git 用来跟踪仓库的信息都存储在文件夹.git 中，因此删除该文件夹也将删除整个仓库。
+
+接下来，我们使用命令`git init`新建一个全新的仓库（见❹）。然后，我们查看状态，发现又回到了初始状态，等待着第一次提交（见❺）。我们将所有文件都加入仓库，并执行第一次提交（见❻）。然后，我们再次查看状态，发现我们在分支`master`上，且没有任何未提交的修改（见❼）。
+
+需要经过一定的练习才能学会使用版本控制，但一旦开始使用，你就再也离不开它。
+
+------
+
+
+
+# 后记
+
+> 祝贺你！你已学习了 Python 基本知识，并利用这些知识创建了一些有意义的项目：创建了一款游戏，对一些数据进行了可视化，还创建了一个 Web 应用程序。现在，可以通过众多不同的方式进一步提高编程技能了。
+
+首先，你应该根据自己的兴趣继续开发有意义的项目。当你通过编程来解决重要的相关问题时，编程将更具吸引力，而现在你具备了开发各种项目所需的技能。你可以开发自己的游戏，也可以开发模仿经典街机游戏的游戏。你可能想研究一些对你来说很重要的数据，并通过可视化将其中有趣的规律和关系展示出来。你可以创建自己的 Web 应用程序，也可尝试模拟自己喜欢的应用程序。
+
+只要有机会就向别人发出邀请，让他们尝试使用你编写的程序。如果你编写了游戏，邀请别人来玩一玩；如果你创建了图表，向别人展示展示，看看他们能否看明白；如果你创建了 Web 应用程序，将其部署到在线服务器，并邀请别人尝试使用它。听听用户怎么说，并尝试根据他们的反馈对项目进行改进，这样你就能成为更优秀的程序员。
+
+自己动手开发项目时，肯定会遇到棘手乃至自己无法解决的问题。想办法寻求帮助，在 Python 社区找到适合自己的位置。加入当地的 Python 用户组，或者到一些在线 Python 社区去逛逛。另外，考虑参加附近举办的 Python 开发者大会（PyCon）。
+
+你应尽力在开发自己感兴趣的项目和提高 Python 技能之间取得平衡。网上有很多 Python 学习资料，市面上还有大量针对中级程序员编写的 Python 图书。现在你掌握了基本知识，并知道了如何将学到的技能付诸应用，因此这些资料中很多都是你能看懂的。通过阅读教程和图书积累更多的知识，加深你对编程和 Python 的认识。深入学习 Python 后再去开发项目时，你将能够更高效地解决更多的问题。
+
+祝贺你在学习 Python 的道路上走了这么远，愿你在以后的学习中有好运相伴！
+
+------
+
+
+
+# 结业测试
+
+本次结业测评共包含四道考试题目，请同学们独立完成之后再查看参考答案。
+
+**题目一：在字典类型对象中，有 get 方法，但是，在列表中没有类似方法。比如完成如下操作，就会报错，为了解决这个问题，请编写一个函数，对列表实现类似字典中 get 方法。（10 分）**
+
+```
+>>> lst = ["a", "b"]
+>>> lst[3]
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+IndexError: list index out of range
+```
+
+------
+
+**题目二：写一个类，用阿拉伯数字实例化之后，能够得到相应的罗马数字。（20 分）**
+
+------
+
+**题目三：下载此数据集数据：https://github.com/qiwsir/DataSet/blob/master/jiangsu/ 并利用 Matplotlib 制图，最终得到下图所示效果。（30 分）**
+
+![enter image description here](https://images.gitbook.cn/98f2eaf0-804b-11e9-b35f-7d9c7aa7d3aa)
+
+------
+
+**题目四：利用 Django 框架，搭建一个简单的 Blog 系统。（40 分）**

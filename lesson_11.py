@@ -40,8 +40,9 @@ class NameTestCase(unittest.TestCase):
 
     def test_get_formatter_middle_name1(self):
         formatted_name = get_formatted_middle_name('janis', 'joplin', 'a')
-        self.assertEqual(formatted_name, 'Janis a Joplin')
+        self.assertEqual(formatted_name, 'Janis A Joplin')
 
 
 """我们运行lesson_11.py 时，所有以`test_`打头的方法都将自动运行"""
 unittest.main()
+

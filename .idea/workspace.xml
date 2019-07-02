@@ -2,9 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bae21bee-c9d5-481f-ad54-8d68aa31a443" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/lesson_11.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lesson_11_name_function.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lesson_11_1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lesson_11_2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lesson_11_survey.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/1.1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/1.2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/1.3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/Python编程：从入门到实践_含导读.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/Python编程：从入门到实践_含导读.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第一章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第七章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第三章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第九章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第二章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第五章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第八章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第六章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第十章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/第四章.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_11.py" beforeDir="false" afterPath="$PROJECT_DIR$/lesson_11.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,35 +31,51 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_10_2.py">
+        <entry file="file://$PROJECT_DIR$/lesson_11_name_function.py">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret selection-end-column="111" />
+              <caret column="10" selection-start-column="10" selection-end-column="11" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_11_name_function.py">
+        <entry file="file://$PROJECT_DIR$/lesson_11.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="14" column="9" lean-forward="true" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
+            <state relative-caret-position="625">
+              <caret line="34" selection-start-line="34" selection-end-line="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lesson_11_1.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="224">
+              <caret line="50" column="1" selection-start-line="50" selection-start-column="1" selection-end-line="50" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lesson_11.py">
+        <entry file="file://$PROJECT_DIR$/lesson_11_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="637">
-              <caret line="41" column="37" selection-start-line="41" selection-start-column="37" selection-end-line="41" selection-end-column="37" />
+            <state relative-caret-position="575">
+              <caret line="23" column="36" lean-forward="true" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
+              <folding>
+                <element signature="e#119#134#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_8_1.py">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/lesson_11_survey.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -53,16 +85,6 @@
               <caret line="168" selection-start-line="168" selection-end-line="168" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/username.json">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_8_2.py">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -77,7 +99,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lesson_9_1_mycar.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-425">
+            <state relative-caret-position="325">
               <caret line="13" column="34" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
             </state>
           </provider>
@@ -87,7 +109,7 @@
         <entry file="file://$PROJECT_DIR$/test/numbers.json">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="20" lean-forward="true" selection-start-column="20" selection-end-column="20" />
+              <caret column="20" selection-start-column="20" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -125,7 +147,11 @@
         <option value="$PROJECT_DIR$/lesson_10_2.py" />
         <option value="$PROJECT_DIR$/lesson_9.py" />
         <option value="$PROJECT_DIR$/lesson_11_name_function.py" />
+        <option value="$PROJECT_DIR$/lesson_11_survey.py" />
         <option value="$PROJECT_DIR$/lesson_11.py" />
+        <option value="$PROJECT_DIR$/lesson_11_test.py" />
+        <option value="$PROJECT_DIR$/lesson_11_1.py" />
+        <option value="$PROJECT_DIR$/lesson_11_2.py" />
       </list>
     </option>
   </component>
@@ -144,7 +170,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -161,12 +186,13 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lesson_11_2.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -187,8 +213,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.lesson_11">
-    <configuration name="lesson_10" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python tests.Unittests in lesson_11_2.py">
+    <configuration name="lesson_11_1" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -201,7 +227,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_10.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_11_1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -210,20 +236,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="lesson_10_1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="lesson_11_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\13564\AppData\Local\Programs\Python\Python37\pythonw.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_10_1.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_11_2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -232,79 +258,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="lesson_10_2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Unittests in lesson_11_2.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_10_2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/lesson_11_2.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="lesson_11" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_11.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+    <list>
+      <item itemvalue="Python.lesson_11_2" />
+      <item itemvalue="Python.lesson_11_1" />
+      <item itemvalue="Python tests.Unittests in lesson_11_2.py" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.lesson_11" />
-        <item itemvalue="Python.lesson_10_2" />
-        <item itemvalue="Python.test" />
-        <item itemvalue="Python.lesson_10_1" />
-        <item itemvalue="Python.lesson_10" />
+        <item itemvalue="Python tests.Unittests in lesson_11_2.py" />
+        <item itemvalue="Python.lesson_11_1" />
       </list>
     </recent_temporary>
   </component>
@@ -337,7 +314,9 @@
       <workItem from="1561556619857" duration="3480000" />
       <workItem from="1561561266670" duration="481000" />
       <workItem from="1561642580037" duration="5657000" />
-      <workItem from="1561986897223" duration="4728000" />
+      <workItem from="1561986897223" duration="4786000" />
+      <workItem from="1562057868596" duration="4238000" />
+      <workItem from="1562077856492" duration="3858000" />
     </task>
     <task id="LOCAL-00001" summary="提交第三章所有代码内容">
       <created>1559658620911</created>
@@ -416,30 +395,78 @@
       <option name="project" value="LOCAL" />
       <updated>1561648883441</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="提交lesson 11的内容">
+      <created>1561991647047</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1561991647048</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="Unittests_in_lesson_11_test_py - 2019.07.02 at 23h 01m 08s.xml">
+      <configuration name="Unittests in lesson_11_test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_lesson_11_test_TestAnonymousSurvey - 2019.07.02 at 23h 01m 36s.xml">
+      <configuration name="Unittests for lesson_11_test.TestAnonymousSurvey" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_lesson_11_2_TestAnonymousSurvey - 2019.07.02 at 23h 02m 36s.xml">
+      <configuration name="Unittests for lesson_11_2.TestAnonymousSurvey" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_lesson_11_2_py - 2019.07.02 at 23h 03m 42s.xml">
+      <configuration name="Unittests in lesson_11_2.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_single_response - 2019.07.02 at 23h 07m 54s.xml">
+      <configuration name="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_three_response - 2019.07.02 at 23h 08m 02s.xml">
+      <configuration name="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_three_response" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_lesson_11_2_py - 2019.07.02 at 23h 09m 34s.xml">
+      <configuration name="Unittests in lesson_11_2.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_lesson_11_2_py - 2019.07.02 at 23h 31m 17s.xml">
+      <configuration name="Unittests in lesson_11_2.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_lesson_11_2_py - 2019.07.02 at 23h 31m 39s.xml">
+      <configuration name="Unittests in lesson_11_2.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_lesson_11_2_py - 2019.07.02 at 23h 31m 47s.xml">
+      <configuration name="Unittests in lesson_11_2.py" configurationId="tests" />
+    </history-entry>
+  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62409000" />
+    <option name="totallyTimeSpent" value="70563000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15938166" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16257995" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32952183" />
-      <window_info anchor="bottom" id="Run" order="3" weight="0.46257797" />
+      <window_info anchor="bottom" id="Run" order="3" weight="0.45530146" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="7" />
+      <window_info anchor="bottom" id="TODO" order="7" weight="0.32952183" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32952183" />
       <window_info anchor="bottom" id="Terminal" order="10" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.32952183" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="bottom" id="调试" order="13" weight="0.32952183" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -459,7 +486,8 @@
     <MESSAGE value="提交lesson 7的内容" />
     <MESSAGE value="提交lesson 9的内容" />
     <MESSAGE value="提交lesson 10的内容" />
-    <option name="LAST_COMMIT_MESSAGE" value="提交lesson 10的内容" />
+    <MESSAGE value="提交lesson 11的内容" />
+    <option name="LAST_COMMIT_MESSAGE" value="提交lesson 11的内容" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -479,19 +507,27 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/python$lesson_9_1_myelectriccar.coverage" NAME="lesson_9_1_myelectriccar Coverage Results" MODIFIED="1561386874598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_test_TestAnonymousSurvey.coverage" NAME="Unittests for lesson_11_test.TestAnonymousSurvey Coverage Results" MODIFIED="1562079693492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_single_response.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response Coverage Results" MODIFIED="1562080073943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_3.coverage" NAME="lesson 3 Coverage Results" MODIFIED="1559658432309" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$Unittests_in_lesson_11_test_py.coverage" NAME="Unittests in lesson_11_test.py Coverage Results" MODIFIED="1562079664858" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9.coverage" NAME="lesson_9 Coverage Results" MODIFIED="1561190004940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$lesson_11_2.coverage" NAME="lesson_11_2 Coverage Results" MODIFIED="1562080271292" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey Coverage Results" MODIFIED="1562079756376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_10.coverage" NAME="lesson_10 Coverage Results" MODIFIED="1561471592219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_7.coverage" NAME="lesson 7 Coverage Results" MODIFIED="1560850191341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$test.coverage" NAME="test Coverage Results" MODIFIED="1561646511344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$lesson_11_1.coverage" NAME="lesson_11_1 Coverage Results" MODIFIED="1562079873132" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$Unittests_in_lesson_11_2_py.coverage" NAME="Unittests in lesson_11_2.py Coverage Results" MODIFIED="1562081507091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9_2.coverage" NAME="lesson_9_2 Coverage Results" MODIFIED="1561455352734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_10_1.coverage" NAME="lesson_10_1 Coverage Results" MODIFIED="1561561088715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_1_2.coverage" NAME="lesson 1-2 Coverage Results" MODIFIED="1559611976273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_8.coverage" NAME="lesson 8 Coverage Results" MODIFIED="1560850917869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_10_2.coverage" NAME="lesson_10_2 Coverage Results" MODIFIED="1561647310024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/python$lesson_11.coverage" NAME="lesson_11 Coverage Results" MODIFIED="1561990977566" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$lesson_11.coverage" NAME="lesson_11 Coverage Results" MODIFIED="1562059518607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_4.coverage" NAME="lesson 4 Coverage Results" MODIFIED="1560223852747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9_1_mycar.coverage" NAME="lesson_9_1_mycar Coverage Results" MODIFIED="1561388711380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_three_response.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_three_response Coverage Results" MODIFIED="1562080082028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/lesson 1-2.py" />
@@ -595,30 +631,37 @@
     <entry file="file://$PROJECT_DIR$/lesson_8_1.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/json/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4150">
-          <caret line="168" selection-start-line="168" selection-end-line="168" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/username.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lesson_8_2.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/numbers.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="20" lean-forward="true" selection-start-column="20" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lesson_10_2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret selection-end-column="111" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lesson_11_name_function.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="10" selection-start-column="10" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lesson_11_survey.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/json/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4150">
+          <caret line="168" selection-start-line="168" selection-end-line="168" />
         </state>
       </provider>
     </entry>
@@ -631,22 +674,53 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lesson_9_1_mycar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-425">
+        <state relative-caret-position="325">
           <caret line="13" column="34" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_11_name_function.py">
+    <entry file="file://$PROJECT_DIR$/test/numbers.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="14" column="9" lean-forward="true" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
+        <state>
+          <caret column="20" selection-start-column="20" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/unittest/__init__.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="33" column="8" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lesson_11.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="637">
-          <caret line="41" column="37" selection-start-line="41" selection-start-column="37" selection-end-line="41" selection-end-column="37" />
+        <state relative-caret-position="625">
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lesson_11_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="611">
+          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lesson_11_1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="50" column="1" selection-start-line="50" selection-start-column="1" selection-end-line="50" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lesson_11_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="575">
+          <caret line="23" column="36" lean-forward="true" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
+          <folding>
+            <element signature="e#119#134#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

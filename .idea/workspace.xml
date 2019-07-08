@@ -2,25 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bae21bee-c9d5-481f-ad54-8d68aa31a443" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/lesson_11_1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lesson_11_2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lesson_11_survey.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/alien_invasion.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/bullet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/game_functions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/ship.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/1.1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/1.2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/1.3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/Python编程：从入门到实践_含导读.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/Python编程：从入门到实践_含导读.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第一章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第七章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第三章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第九章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第二章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第五章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第八章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第六章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第十章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/第四章.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_11.py" beforeDir="false" afterPath="$PROJECT_DIR$/lesson_11.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/have_to_try.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/have_to_try.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_1-2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_1-2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_10.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_10.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_10_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_10_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_10_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_10_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_11.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_11_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_11_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_11_name_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_name_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_11_survey.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_survey.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_4.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_5.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_6.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_6.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_7.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_7.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_8.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_8_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_8_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_8_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_8_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_9.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_9_1_car.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9_1_car.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_9_1_mycar.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9_1_mycar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_9_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Alice in Wonderland.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/Alice in Wonderland.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/greetuser.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/greetuser.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/greetuser1.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/greetuser1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/null_message.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/null_message.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/numbers.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/numbers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/pi_digits.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/pi_digits.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/pi_string.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/pi_string.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/username.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/username.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,86 +47,65 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_11_name_function.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="10" selection-start-column="10" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_11.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
-              <caret line="34" selection-start-line="34" selection-end-line="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_11_1.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="50" column="1" selection-start-line="50" selection-start-column="1" selection-end-line="50" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lesson_11_2.py">
+        <entry file="file://$PROJECT_DIR$/group_two/alien_invasion.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="575">
-              <caret line="23" column="36" lean-forward="true" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
+            <state relative-caret-position="25">
+              <caret line="10" column="15" lean-forward="true" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
               <folding>
-                <element signature="e#119#134#0" expanded="true" />
+                <element signature="e#0#13#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_11_survey.py">
+        <entry file="file://$PROJECT_DIR$/group_two/game_functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+            <state relative-caret-position="-1126">
+              <caret line="18" column="55" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/json/__init__.py">
+        <entry file="file://$PROJECT_DIR$/group_one/lesson_10_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4150">
-              <caret line="168" selection-start-line="168" selection-end-line="168" />
+            <state relative-caret-position="100">
+              <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_9.py">
+        <entry file="file://$PROJECT_DIR$/group_two/bullet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="3" selection-start-line="3" selection-end-line="4" />
+            <state relative-caret-position="324">
+              <caret line="44" selection-start-line="44" selection-end-line="44" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lesson_9_1_mycar.py">
+        <entry file="file://$PROJECT_DIR$/group_two/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="13" column="34" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
+            <state relative-caret-position="399">
+              <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="28" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/numbers.json">
+        <entry file="file://$PROJECT_DIR$/group_two/ship.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="20" selection-start-column="20" selection-end-column="20" />
+            <state relative-caret-position="199">
+              <caret line="45" column="50" lean-forward="true" selection-start-line="45" selection-start-column="27" selection-end-line="45" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -152,6 +148,13 @@
         <option value="$PROJECT_DIR$/lesson_11_test.py" />
         <option value="$PROJECT_DIR$/lesson_11_1.py" />
         <option value="$PROJECT_DIR$/lesson_11_2.py" />
+        <option value="$PROJECT_DIR$/第二部分/settings.py" />
+        <option value="$PROJECT_DIR$/第二部分/alien_invasion.py" />
+        <option value="$PROJECT_DIR$/group_two/ship.py" />
+        <option value="$PROJECT_DIR$/group_two/settings.py" />
+        <option value="$PROJECT_DIR$/group_two/bullet.py" />
+        <option value="$PROJECT_DIR$/group_two/alien_invasion.py" />
+        <option value="$PROJECT_DIR$/group_two/game_functions.py" />
       </list>
     </option>
   </component>
@@ -170,6 +173,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -180,13 +184,22 @@
             <path>
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="doc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="python" type="462c0819:PsiDirectoryNode" />
+              <item name="group_one" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="python" type="462c0819:PsiDirectoryNode" />
+              <item name="group_two" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -201,6 +214,11 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Python代码\python\group_one" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -213,8 +231,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests in lesson_11_2.py">
-    <configuration name="lesson_11_1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.lesson_10_2">
+    <configuration name="alien_invasion (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -222,12 +240,56 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_11_1.py" />
+      <option name="SCRIPT_NAME" value="D:\Python代码\python\group_two\Alien Invasion\alien_invasion.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="alien_invasion" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/第二部分" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/第二部分/alien_invasion.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="lesson_10_2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_one" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/group_one/lesson_10_2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -249,7 +311,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lesson_11_2.py" />
+      <option name="SCRIPT_NAME" value="D:\Python代码\python\group_one\lesson_11_2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -258,30 +320,58 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in lesson_11_2.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="ship" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="D:\Python代码\python\group_two\Alien Invasion\ship.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_one" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/lesson_11_2.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;lesson_11_2.TestAnonymousSurvey.test_store_single_response&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Python.lesson_11_2" />
-      <item itemvalue="Python.lesson_11_1" />
-      <item itemvalue="Python tests.Unittests in lesson_11_2.py" />
+      <item itemvalue="Python.alien_invasion" />
+      <item itemvalue="Python.alien_invasion (1)" />
+      <item itemvalue="Python.ship" />
+      <item itemvalue="Python tests.Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" />
+      <item itemvalue="Python.lesson_10_2" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests in lesson_11_2.py" />
-        <item itemvalue="Python.lesson_11_1" />
+        <item itemvalue="Python.lesson_10_2" />
+        <item itemvalue="Python.alien_invasion (1)" />
+        <item itemvalue="Python.ship" />
+        <item itemvalue="Python tests.Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" />
+        <item itemvalue="Python.alien_invasion" />
       </list>
     </recent_temporary>
   </component>
@@ -316,7 +406,10 @@
       <workItem from="1561642580037" duration="5657000" />
       <workItem from="1561986897223" duration="4786000" />
       <workItem from="1562057868596" duration="4238000" />
-      <workItem from="1562077856492" duration="3858000" />
+      <workItem from="1562077856492" duration="3956000" />
+      <workItem from="1562305244993" duration="15708000" />
+      <workItem from="1562325359254" duration="35000" />
+      <workItem from="1562594246184" duration="3810000" />
     </task>
     <task id="LOCAL-00001" summary="提交第三章所有代码内容">
       <created>1559658620911</created>
@@ -402,13 +495,17 @@
       <option name="project" value="LOCAL" />
       <updated>1561991647048</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="提交lesson 11的内容">
+      <created>1562081869782</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1562081869783</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_in_lesson_11_test_py - 2019.07.02 at 23h 01m 08s.xml">
-      <configuration name="Unittests in lesson_11_test.py" configurationId="tests" />
-    </history-entry>
     <history-entry file="Unittests_for_lesson_11_test_TestAnonymousSurvey - 2019.07.02 at 23h 01m 36s.xml">
       <configuration name="Unittests for lesson_11_test.TestAnonymousSurvey" configurationId="tests" />
     </history-entry>
@@ -436,9 +533,12 @@
     <history-entry file="Unittests_in_lesson_11_2_py - 2019.07.02 at 23h 31m 47s.xml">
       <configuration name="Unittests in lesson_11_2.py" configurationId="tests" />
     </history-entry>
+    <history-entry file="Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_single_response - 2019.07.05 at 15h 27m 46s.xml">
+      <configuration name="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="70563000" />
+    <option name="totallyTimeSpent" value="90214000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -451,14 +551,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16257995" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1673774" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32952183" />
-      <window_info anchor="bottom" id="Run" order="3" weight="0.45530146" />
+      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49733475" visible="true" weight="0.45530146" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -466,9 +567,9 @@
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32952183" />
       <window_info anchor="bottom" id="Terminal" order="10" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.32952183" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5026652" side_tool="true" weight="0.45379025" />
       <window_info anchor="bottom" id="Python Console" order="12" />
-      <window_info anchor="bottom" id="调试" order="13" weight="0.32952183" />
+      <window_info anchor="bottom" id="调试" order="13" sideWeight="0.4989339" weight="0.32952183" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -502,13 +603,13 @@
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="username" />
+        <watch expression="event.type == pygame.K_RIGHT" />
+        <watch expression="event.type == pygame.KEYDOWN" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/python$lesson_9_1_myelectriccar.coverage" NAME="lesson_9_1_myelectriccar Coverage Results" MODIFIED="1561386874598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_test_TestAnonymousSurvey.coverage" NAME="Unittests for lesson_11_test.TestAnonymousSurvey Coverage Results" MODIFIED="1562079693492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_single_response.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response Coverage Results" MODIFIED="1562080073943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_single_response.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response Coverage Results" MODIFIED="1562311665818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_one" />
     <SUITE FILE_PATH="coverage/python$lesson_3.coverage" NAME="lesson 3 Coverage Results" MODIFIED="1559658432309" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$Unittests_in_lesson_11_test_py.coverage" NAME="Unittests in lesson_11_test.py Coverage Results" MODIFIED="1562079664858" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9.coverage" NAME="lesson_9 Coverage Results" MODIFIED="1561190004940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -516,18 +617,23 @@
     <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey Coverage Results" MODIFIED="1562079756376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_10.coverage" NAME="lesson_10 Coverage Results" MODIFIED="1561471592219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_7.coverage" NAME="lesson 7 Coverage Results" MODIFIED="1560850191341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/python$test.coverage" NAME="test Coverage Results" MODIFIED="1561646511344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_11_1.coverage" NAME="lesson_11_1 Coverage Results" MODIFIED="1562079873132" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$Unittests_in_lesson_11_2_py.coverage" NAME="Unittests in lesson_11_2.py Coverage Results" MODIFIED="1562081507091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9_2.coverage" NAME="lesson_9_2 Coverage Results" MODIFIED="1561455352734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_10_1.coverage" NAME="lesson_10_1 Coverage Results" MODIFIED="1561561088715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_1_2.coverage" NAME="lesson 1-2 Coverage Results" MODIFIED="1559611976273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/python$lesson_8.coverage" NAME="lesson 8 Coverage Results" MODIFIED="1560850917869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/python$lesson_10_2.coverage" NAME="lesson_10_2 Coverage Results" MODIFIED="1561647310024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/python$lesson_11.coverage" NAME="lesson_11 Coverage Results" MODIFIED="1562059518607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_4.coverage" NAME="lesson 4 Coverage Results" MODIFIED="1560223852747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9_1_mycar.coverage" NAME="lesson_9_1_mycar Coverage Results" MODIFIED="1561388711380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_three_response.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_three_response Coverage Results" MODIFIED="1562080082028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$lesson_9_1_myelectriccar.coverage" NAME="lesson_9_1_myelectriccar Coverage Results" MODIFIED="1561386874598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$alien_invasion.coverage" NAME="alien_invasion Coverage Results" MODIFIED="1562310967053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/第二部分" />
+    <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_test_TestAnonymousSurvey.coverage" NAME="Unittests for lesson_11_test.TestAnonymousSurvey Coverage Results" MODIFIED="1562079693492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$test.coverage" NAME="test Coverage Results" MODIFIED="1561646511344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$ship.coverage" NAME="ship Coverage Results" MODIFIED="1562314097534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two" />
+    <SUITE FILE_PATH="coverage/python$alien_invasion__1_.coverage" NAME="alien_invasion (1) Coverage Results" MODIFIED="1562597604076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two" />
+    <SUITE FILE_PATH="coverage/python$lesson_8.coverage" NAME="lesson 8 Coverage Results" MODIFIED="1560850917869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$lesson_10_2.coverage" NAME="lesson_10_2 Coverage Results" MODIFIED="1562598017686" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_one" />
+    <SUITE FILE_PATH="coverage/python$lesson_11.coverage" NAME="lesson_11 Coverage Results" MODIFIED="1562059518607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/lesson 1-2.py" />
@@ -546,48 +652,48 @@
     <entry file="file://$PROJECT_DIR$/lesson 7.py" />
     <entry file="file://$PROJECT_DIR$/lesson 8.py" />
     <entry file="file://$PROJECT_DIR$/lesson_9_1_myelectriccar.py" />
-    <entry file="file://$PROJECT_DIR$/lesson_9_1_car.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_9_1_car.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="700">
           <caret line="28" selection-start-line="28" selection-end-line="28" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_9_2.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_9_2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret selection-end-column="87" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_10.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_10.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2100">
           <caret line="84" column="36" selection-start-line="84" selection-start-column="36" selection-end-line="84" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/null_message.txt">
+    <entry file="file://$PROJECT_DIR$/group_one/test/null_message.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/pi_digits.txt">
+    <entry file="file://$PROJECT_DIR$/group_one/test/pi_digits.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="50">
           <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/pi_string.txt">
+    <entry file="file://$PROJECT_DIR$/group_one/test/pi_string.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
           <caret line="10" selection-start-line="10" selection-end-line="10" selection-end-column="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_3.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_3.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_10_1.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_10_1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="388">
           <caret line="48" column="12" lean-forward="true" selection-start-line="48" selection-end-line="48" selection-end-column="22" />
@@ -615,46 +721,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/greetuser.json">
+    <entry file="file://$PROJECT_DIR$/group_one/test/greetuser.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/test.py" />
-    <entry file="file://$PROJECT_DIR$/lesson_6.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_6.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_7.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_7.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_8.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_8.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_8_1.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_8_1.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/username.json">
+    <entry file="file://$PROJECT_DIR$/group_one/test/username.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_8_2.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_8_2.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_10_2.py">
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/unittest/__init__.pyi">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="111" />
+        <state relative-caret-position="313">
+          <caret line="33" column="8" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_11_name_function.py">
+    <entry file="file://$PROJECT_DIR$/lesson_11_test.py" />
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_11.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="10" selection-start-column="10" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_11_survey.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+        <state relative-caret-position="850">
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
         </state>
       </provider>
     </entry>
@@ -665,61 +765,125 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_9.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_9.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="3" selection-start-line="3" selection-end-line="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_9_1_mycar.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_9_1_mycar.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
           <caret line="13" column="34" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/numbers.json">
+    <entry file="file://$PROJECT_DIR$/group_one/test/numbers.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="20" selection-start-column="20" selection-end-column="20" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/unittest/__init__.pyi">
+    <entry file="file://$PROJECT_DIR$/venv/pyvenv.cfg">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/pygame/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_11_name_function.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="33" column="8" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="8" />
+        <state>
+          <caret column="10" selection-start-column="10" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_11.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_11_survey.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
+        <state relative-caret-position="75">
+          <caret line="3" selection-start-line="3" selection-end-line="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_11_test.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_11_1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="611">
-          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_11_1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
+        <state relative-caret-position="1250">
           <caret line="50" column="1" selection-start-line="50" selection-start-column="1" selection-end-line="50" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lesson_11_2.py">
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_11_2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
-          <caret line="23" column="36" lean-forward="true" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
+        <state relative-caret-position="71">
+          <caret line="15" column="27" lean-forward="true" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
           <folding>
             <element signature="e#119#134#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/507279944/pygame/surface.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="20" column="8" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/ship.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="45" column="50" lean-forward="true" selection-start-line="45" selection-start-column="27" selection-end-line="45" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/pygame/sprite.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="550" column="8" selection-start-line="550" selection-start-column="8" selection-end-line="550" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/bullet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/game_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1126">
+          <caret line="18" column="55" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_10_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/alien_invasion.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="10" column="15" lean-forward="true" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>

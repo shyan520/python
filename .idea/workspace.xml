@@ -2,42 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bae21bee-c9d5-481f-ad54-8d68aa31a443" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/group_two/alien_invasion.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group_two/bullet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group_two/game_functions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group_two/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group_two/ship.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/Matplotlib/mpl_squares.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/Matplotlib/scatter_squares.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/Random/random_walk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group_two/Random/rw_visual.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/have_to_try.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/have_to_try.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_1-2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_1-2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_10.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_10.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_10_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_10_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_10_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_10_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_11.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_11_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_11_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_11_name_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_name_function.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_11_survey.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_11_survey.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_4.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_5.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_5.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_6.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_6.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_7.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_7.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_8.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_8.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_8_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_8_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_8_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_8_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_9.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_9_1_car.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9_1_car.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_9_1_mycar.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9_1_mycar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_9_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/lesson_9_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Alice in Wonderland.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/Alice in Wonderland.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/greetuser.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/greetuser.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/greetuser1.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/greetuser1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/null_message.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/null_message.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/numbers.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/numbers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/pi_digits.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/pi_digits.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/pi_string.txt" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/pi_string.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/username.json" beforeDir="false" afterPath="$PROJECT_DIR$/group_one/test/username.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,43 +16,59 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/group_two/Matplotlib/mpl_squares.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="514">
+              <caret line="30" column="10" selection-start-line="30" selection-start-column="10" selection-end-line="30" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/group_two/Matplotlib/scatter_squares.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="925">
+              <caret line="37" selection-start-line="37" selection-end-line="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/group_two/alien_invasion.py">
+        <entry file="file://$PROJECT_DIR$/group_two/Random/rw_visual.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="25">
-              <caret line="10" column="15" lean-forward="true" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
+            <state relative-caret-position="128">
+              <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
               <folding>
-                <element signature="e#0#13#0" expanded="true" />
+                <element signature="e#0#31#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group_two/game_functions.py">
+        <entry file="file://$PROJECT_DIR$/group_one/lesson_8_1.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/group_one/lesson_8.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/matplotlib/pyplot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1126">
-              <caret line="18" column="55" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="69725">
+              <caret line="2838" column="46" selection-start-line="2838" selection-start-column="46" selection-end-line="2838" selection-end-column="46" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group_one/lesson_10_2.py">
+        <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/bullet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group_two/bullet.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
+            <state relative-caret-position="1075">
               <caret line="44" selection-start-line="44" selection-end-line="44" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
@@ -93,19 +78,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group_two/settings.py">
+        <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="28" />
+            <state relative-caret-position="650">
+              <caret line="26" column="28" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="28" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/group_two/ship.py">
+        <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/ship.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="45" column="50" lean-forward="true" selection-start-line="45" selection-start-column="27" selection-end-line="45" selection-end-column="50" />
+            <state relative-caret-position="1125">
+              <caret line="45" column="50" selection-start-line="45" selection-start-column="27" selection-end-line="45" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -155,6 +140,10 @@
         <option value="$PROJECT_DIR$/group_two/bullet.py" />
         <option value="$PROJECT_DIR$/group_two/alien_invasion.py" />
         <option value="$PROJECT_DIR$/group_two/game_functions.py" />
+        <option value="$PROJECT_DIR$/group_two/Matplotlib/mpl_squares.py" />
+        <option value="$PROJECT_DIR$/group_two/Matplotlib/scatter_squares.py" />
+        <option value="$PROJECT_DIR$/group_two/Random/random_walk.py" />
+        <option value="$PROJECT_DIR$/group_two/Random/rw_visual.py" />
       </list>
     </option>
   </component>
@@ -216,6 +205,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Python代码\python\group_two\Alien Invasion" />
       <recent name="D:\Python代码\python\group_one" />
     </key>
   </component>
@@ -231,51 +221,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.lesson_10_2">
-    <configuration name="alien_invasion (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="D:\Python代码\python\group_two\Alien Invasion\alien_invasion.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="alien_invasion" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/第二部分" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/第二部分/alien_invasion.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.rw_visual">
     <configuration name="lesson_10_2" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -320,7 +266,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ship" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="mpl_squares" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -328,12 +274,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two/Matplotlib" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="D:\Python代码\python\group_two\Alien Invasion\ship.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/group_two/Matplotlib/mpl_squares.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -342,36 +288,87 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="random_walk" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_one" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two/Random" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;lesson_11_2.TestAnonymousSurvey.test_store_single_response&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/group_two/Random/random_walk.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rw_visual" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two/Random" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/group_two/Random/rw_visual.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scatter_squares" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/group_two/Matplotlib" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/group_two/Matplotlib/scatter_squares.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Python.lesson_11_2" />
-      <item itemvalue="Python.alien_invasion" />
-      <item itemvalue="Python.alien_invasion (1)" />
-      <item itemvalue="Python.ship" />
-      <item itemvalue="Python tests.Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" />
       <item itemvalue="Python.lesson_10_2" />
+      <item itemvalue="Python.mpl_squares" />
+      <item itemvalue="Python.scatter_squares" />
+      <item itemvalue="Python.random_walk" />
+      <item itemvalue="Python.rw_visual" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.rw_visual" />
+        <item itemvalue="Python.random_walk" />
+        <item itemvalue="Python.scatter_squares" />
+        <item itemvalue="Python.mpl_squares" />
         <item itemvalue="Python.lesson_10_2" />
-        <item itemvalue="Python.alien_invasion (1)" />
-        <item itemvalue="Python.ship" />
-        <item itemvalue="Python tests.Unittests for lesson_11_2.TestAnonymousSurvey.test_store_single_response" />
-        <item itemvalue="Python.alien_invasion" />
       </list>
     </recent_temporary>
   </component>
@@ -409,7 +406,9 @@
       <workItem from="1562077856492" duration="3956000" />
       <workItem from="1562305244993" duration="15708000" />
       <workItem from="1562325359254" duration="35000" />
-      <workItem from="1562594246184" duration="3810000" />
+      <workItem from="1562594246184" duration="4107000" />
+      <workItem from="1562655492648" duration="11757000" />
+      <workItem from="1562929826606" duration="6421000" />
     </task>
     <task id="LOCAL-00001" summary="提交第三章所有代码内容">
       <created>1559658620911</created>
@@ -502,7 +501,14 @@
       <option name="project" value="LOCAL" />
       <updated>1562081869783</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="重构代码目录">
+      <created>1562598174513</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1562598174513</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -538,7 +544,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="90214000" />
+    <option name="totallyTimeSpent" value="108689000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -551,15 +557,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1673774" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1705757" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32952183" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49733475" visible="true" weight="0.45530146" />
+      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49733475" visible="true" weight="0.24324325" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -573,7 +578,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.32995737" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
@@ -588,7 +593,8 @@
     <MESSAGE value="提交lesson 9的内容" />
     <MESSAGE value="提交lesson 10的内容" />
     <MESSAGE value="提交lesson 11的内容" />
-    <option name="LAST_COMMIT_MESSAGE" value="提交lesson 11的内容" />
+    <MESSAGE value="重构代码目录" />
+    <option name="LAST_COMMIT_MESSAGE" value="重构代码目录" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -622,32 +628,24 @@
     <SUITE FILE_PATH="coverage/python$lesson_9_2.coverage" NAME="lesson_9_2 Coverage Results" MODIFIED="1561455352734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_10_1.coverage" NAME="lesson_10_1 Coverage Results" MODIFIED="1561561088715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_1_2.coverage" NAME="lesson 1-2 Coverage Results" MODIFIED="1559611976273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$rw_visual.coverage" NAME="rw_visual Coverage Results" MODIFIED="1562936602084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two/Random" />
     <SUITE FILE_PATH="coverage/python$lesson_4.coverage" NAME="lesson 4 Coverage Results" MODIFIED="1560223852747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9_1_mycar.coverage" NAME="lesson_9_1_mycar Coverage Results" MODIFIED="1561388711380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_2_TestAnonymousSurvey_test_store_three_response.coverage" NAME="Unittests for lesson_11_2.TestAnonymousSurvey.test_store_three_response Coverage Results" MODIFIED="1562080082028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_9_1_myelectriccar.coverage" NAME="lesson_9_1_myelectriccar Coverage Results" MODIFIED="1561386874598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$alien_invasion.coverage" NAME="alien_invasion Coverage Results" MODIFIED="1562310967053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/第二部分" />
     <SUITE FILE_PATH="coverage/python$Unittests_for_lesson_11_test_TestAnonymousSurvey.coverage" NAME="Unittests for lesson_11_test.TestAnonymousSurvey Coverage Results" MODIFIED="1562079693492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$mpl_squares.coverage" NAME="mpl_squares Coverage Results" MODIFIED="1562661584935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two/Matplotlib" />
     <SUITE FILE_PATH="coverage/python$test.coverage" NAME="test Coverage Results" MODIFIED="1561646511344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$random_walk.coverage" NAME="random_walk Coverage Results" MODIFIED="1562933030820" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two/Random" />
     <SUITE FILE_PATH="coverage/python$ship.coverage" NAME="ship Coverage Results" MODIFIED="1562314097534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two" />
     <SUITE FILE_PATH="coverage/python$alien_invasion__1_.coverage" NAME="alien_invasion (1) Coverage Results" MODIFIED="1562597604076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two" />
     <SUITE FILE_PATH="coverage/python$lesson_8.coverage" NAME="lesson 8 Coverage Results" MODIFIED="1560850917869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/python$lesson_10_2.coverage" NAME="lesson_10_2 Coverage Results" MODIFIED="1562598017686" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_one" />
     <SUITE FILE_PATH="coverage/python$lesson_11.coverage" NAME="lesson_11 Coverage Results" MODIFIED="1562059518607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python$scatter_squares.coverage" NAME="scatter_squares Coverage Results" MODIFIED="1562932561623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/group_two/Matplotlib" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lesson 1-2.py" />
-    <entry file="file://$PROJECT_DIR$/doc/Python编程：从入门到实践_含导读.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor />
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lesson 5.py" />
-    <entry file="file://$PROJECT_DIR$/lesson 3.py" />
-    <entry file="file://$PROJECT_DIR$/lesson 4.py" />
     <entry file="file://$PROJECT_DIR$/lesson 6.py" />
     <entry file="file://$PROJECT_DIR$/lesson 7.py" />
     <entry file="file://$PROJECT_DIR$/lesson 8.py" />
@@ -729,12 +727,6 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/group_one/lesson_7.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/group_one/lesson_8.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/group_one/lesson_8_1.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/group_one/test/username.json">
@@ -830,13 +822,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group_two/ship.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="45" column="50" lean-forward="true" selection-start-line="45" selection-start-column="27" selection-end-line="45" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/pygame/sprite.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
@@ -844,26 +829,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group_two/settings.py">
+    <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/alien_invasion.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/group_two/bullet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        <state relative-caret-position="25">
+          <caret line="10" column="15" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group_two/game_functions.py">
+    <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/game_functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1126">
+        <state relative-caret-position="375">
           <caret line="18" column="55" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
@@ -874,16 +852,78 @@
     <entry file="file://$PROJECT_DIR$/group_one/lesson_10_2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
-          <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+          <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/group_two/alien_invasion.py">
+    <entry file="file://$PROJECT_DIR$/group_two/Matplotlib/scatter1.png" />
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_8_1.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_one/lesson_8.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/matplotlib/pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="10" column="15" lean-forward="true" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
+        <state relative-caret-position="69725">
+          <caret line="2838" column="46" selection-start-line="2838" selection-start-column="46" selection-end-line="2838" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/bullet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1075">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="650">
+          <caret line="26" column="28" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Alien Invasion/ship.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1125">
+          <caret line="45" column="50" selection-start-line="45" selection-start-column="27" selection-end-line="45" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Matplotlib/scatter.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Random/random_walk.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Matplotlib/mpl_squares.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="30" column="10" selection-start-line="30" selection-start-column="10" selection-end-line="30" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Matplotlib/scatter_squares.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="925">
+          <caret line="37" selection-start-line="37" selection-end-line="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/group_two/Random/rw_visual.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
